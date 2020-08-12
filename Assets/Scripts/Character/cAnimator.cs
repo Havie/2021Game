@@ -18,7 +18,7 @@ namespace Animancer.Examples.Events
     {
         private int _lastId;
         private Character.eDirection _direction= Character.eDirection.DOWN;
-        Dictionary<int,ClipState.Transition> _8dir = new Dictionary<int, ClipState.Transition>();
+  
         /************************************************************************************************************************/
 
         // Without Animancer, you would reference an Animator component to control animations.
@@ -58,8 +58,6 @@ namespace Animancer.Examples.Events
         /// </summary>
         private void OnEnable()
         {
-            Debug.Log("Size of Enums = " + Enum.GetNames(typeof(Character.eDirection)).Length);
-
             if (_Animancer == null)
                 _Animancer = this.GetComponent<AnimancerComponent>();
             // On startup, play the idle animation.
@@ -92,14 +90,14 @@ namespace Animancer.Examples.Events
         }
         public void SetState(Character.eDirection direction)
         {
-            Debug.Log("Set Dir=" + direction);
+            //Debug.Log("Set Dir=" + direction);
             _direction = direction;
             PlayAnim(_lastId);
         }
 
         public void PlayAnim(int id)
         {
-            Debug.Log("PlayAnim" + id);
+           // Debug.Log("PlayAnim" + id);
             switch (id)
             {
                 case 0:
