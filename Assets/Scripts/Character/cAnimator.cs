@@ -16,11 +16,13 @@ namespace Animancer.Examples.Events
     [HelpURL(Strings.APIDocumentationURL + ".Examples.AnimationEvents/GolfHitControllerAnimancer")]
     public sealed class cAnimator : MonoBehaviour
     {
+
+        //https://www.youtube.com/watch?v=nnrOhb5UdRc for state machine logic
         private int _lastId;
         private Character.eDirection _direction= Character.eDirection.DOWN;
-        Dictionary<int,ClipState.Transition> _8dir = new Dictionary<int, ClipState.Transition>();
-        /************************************************************************************************************************/
 
+        /************************************************************************************************************************/
+        #region AnimancerProperties
         // Without Animancer, you would reference an Animator component to control animations.
         // But with Animancer, you reference an AnimancerComponent instead.
         [SerializeField] private AnimancerComponent _Animancer;
@@ -50,7 +52,7 @@ namespace Animancer.Examples.Events
 
 
         [SerializeField] private SimpleEventReceiver _EventReceiver;
-
+        #endregion
         /************************************************************************************************************************/
 
         /// <summary>
@@ -58,8 +60,6 @@ namespace Animancer.Examples.Events
         /// </summary>
         private void OnEnable()
         {
-            Debug.Log("Size of Enums = " + Enum.GetNames(typeof(Character.eDirection)).Length);
-
             if (_Animancer == null)
                 _Animancer = this.GetComponent<AnimancerComponent>();
             // On startup, play the idle animation.
@@ -92,14 +92,14 @@ namespace Animancer.Examples.Events
         }
         public void SetState(Character.eDirection direction)
         {
-            Debug.Log("Set Dir=" + direction);
+            //Debug.Log("Set Dir=" + direction);
             _direction = direction;
             PlayAnim(_lastId);
         }
 
         public void PlayAnim(int id)
         {
-            Debug.Log("PlayAnim" + id);
+           // Debug.Log("PlayAnim" + id);
             switch (id)
             {
                 case 0:
