@@ -35,7 +35,7 @@ public class MovementController : MonoBehaviour
     private void Update()
     {
         // If the player inputted to select
-        if (InputController.GetSelectPressDown())
+       /* if (InputController.GetSelectPressDown())
         {
             // Get the mouse's raycast world position
             Vector3 hitPos = InputController.GetCursorRayWorldPosition();      
@@ -45,7 +45,7 @@ public class MovementController : MonoBehaviour
                 _agent.SetDestination(hitPos);
                 shownPath = false;
             }
-        }
+        }*/
 
         if (_agent.hasPath && !shownPath)
         {
@@ -55,6 +55,15 @@ public class MovementController : MonoBehaviour
             {
                 Instantiate(_testDot, corners[i], Quaternion.identity);
             }
+        }
+    }
+    public void DoMovement(Vector3 Pos)
+    {
+        if (Pos != Vector3.negativeInfinity)
+        {
+            // Move our agent
+            _agent.SetDestination(Pos);
+            shownPath = false;
         }
     }
 }

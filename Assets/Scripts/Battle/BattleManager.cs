@@ -41,15 +41,19 @@ public class BattleManager : MonoBehaviour
     void Start()
     {
         _turnManager = new TurnManager(true);
+        TEST();
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.B))
-            StartBattle();
 
         if (Input.GetKeyDown(KeyCode.N))
             _turnManager.Next();
+    }
+
+    private void TEST()
+    {
+        StartBattle();
     }
 
     public void StartBattle()
