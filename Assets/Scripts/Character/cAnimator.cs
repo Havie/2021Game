@@ -16,11 +16,13 @@ namespace Animancer.Examples.Events
     [HelpURL(Strings.APIDocumentationURL + ".Examples.AnimationEvents/GolfHitControllerAnimancer")]
     public sealed class cAnimator : MonoBehaviour
     {
+
+        //https://www.youtube.com/watch?v=nnrOhb5UdRc for state machine logic
         private int _lastId;
         private Character.eDirection _direction= Character.eDirection.DOWN;
-  
-        /************************************************************************************************************************/
 
+        /************************************************************************************************************************/
+        #region AnimancerProperties
         // Without Animancer, you would reference an Animator component to control animations.
         // But with Animancer, you reference an AnimancerComponent instead.
         [SerializeField] private AnimancerComponent _Animancer;
@@ -50,7 +52,7 @@ namespace Animancer.Examples.Events
 
 
         [SerializeField] private SimpleEventReceiver _EventReceiver;
-
+        #endregion
         /************************************************************************************************************************/
 
         /// <summary>
