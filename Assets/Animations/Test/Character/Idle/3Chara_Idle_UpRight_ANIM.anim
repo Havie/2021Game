@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Chara_Idle_Down_ANIM
+  m_Name: 2Chara_Idle_UpRight_ANIM
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,7 +20,7 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 5511488748141986983, guid: 5ed058c7617021841a9a782d8dfcc8ee,
+      value: {fileID: 8840460811068208780, guid: 5ed058c7617021841a9a782d8dfcc8ee,
         type: 3}
     attribute: m_Sprite
     path: 
@@ -41,7 +41,7 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 5511488748141986983, guid: 5ed058c7617021841a9a782d8dfcc8ee, type: 3}
+    - {fileID: 8840460811068208780, guid: 5ed058c7617021841a9a782d8dfcc8ee, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
