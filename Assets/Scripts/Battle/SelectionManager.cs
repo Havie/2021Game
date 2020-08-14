@@ -73,7 +73,6 @@ public class SelectionManager : MonoBehaviour
         Debug.Log("MoveClick");
         if (_activeChar)
         {
-            Debug.Log("ActiveChar");
             Ray ray = Camera.main.ScreenPointToRay(mousePos);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
@@ -81,7 +80,6 @@ public class SelectionManager : MonoBehaviour
                Debug.DrawRay(Camera.main.transform.position, ray.direction * 10, Color.red, 10);
                if(!CheckPlayable(hit))
                 {
-                    Debug.Log("Not Playable: " + hit.transform.gameObject);
                     if (hit.transform.gameObject.tag.Equals("Ground"))
                     {
                         var mc = _activeChar.GetComponent<MovementController>();

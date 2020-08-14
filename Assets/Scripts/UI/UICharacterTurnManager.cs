@@ -39,10 +39,6 @@ public class UICharacterTurnManager : MonoBehaviour
     }
     private void Update()
     {
-        if(_icons.Capacity>0)
-        {
-            Debug.Log("TEST:" + _icons[0].transform.localPosition);
-        }
     }
 
     public void SetUpBar(List<GameObject> characters)
@@ -52,13 +48,11 @@ public class UICharacterTurnManager : MonoBehaviour
         {
             GameObject button = Instantiate(_PREFABTurnOrder);
             button.gameObject.transform.SetParent(this.transform);
-            button.transform.localPosition = new Vector3(-120 + (_offset * index++), 0, 0);
+            button.transform.localPosition = new Vector3(-120 + (_offset * index++), 50, 0);
             Debug.Log(button.transform.localPosition);
             button.transform.localRotation = Quaternion.identity; 
             button.transform.localScale = new Vector3(1, 1, 1);
             _icons.Add(button);
         }
-        foreach (GameObject g in _icons)
-            Debug.Log("FINAL Button Pos= " +g.transform.localPosition);
     }
 }
