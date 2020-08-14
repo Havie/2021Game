@@ -19,7 +19,7 @@ namespace Animancer.Examples.Events
 
         //https://www.youtube.com/watch?v=nnrOhb5UdRc for state machine logic
         private int _lastId;
-        private Character.eDirection _direction= Character.eDirection.DOWN;
+        private EightDir.eDirection _direction= EightDir.eDirection.DOWN;
 
         /************************************************************************************************************************/
         #region AnimancerProperties
@@ -90,7 +90,7 @@ namespace Animancer.Examples.Events
         {
             PlayAnim(0);
         }
-        public void SetState(Character.eDirection direction)
+        public void SetState(EightDir.eDirection direction)
         {
             //Debug.Log("Set Dir=" + direction);
             _direction = direction;

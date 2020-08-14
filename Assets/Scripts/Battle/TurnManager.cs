@@ -53,17 +53,17 @@ public class TurnManager
             {
                 if (!newOrder.Contains(go))
                 {
-                    UnitStats us = go.GetComponent<UnitStats>();
-                    if (us)
+                    cGeneral general = go.GetComponent<cGeneral>();
+                    if (general)
                     {
-                        if (us.GetMorale() > highestMorale)
+                        if (general.GetMorale() > highestMorale)
                         {
                             lastGo = go;
-                            highestMorale = us.GetMorale();
+                            highestMorale = general.GetMorale();
                         }
                     }
                     else
-                        Debug.LogError("passed in Character doesnt have US");
+                        Debug.LogError("passed in Character doesnt have a General");
                 }
             }
             highestMorale = 0; //reset
@@ -71,6 +71,8 @@ public class TurnManager
             --iterations;
 
         }
+        //Tell The UI Turn Manager The order 
+        UICharacterTurnManager.Instance.SetUpBar(newOrder);
         return newOrder;
     }
     public void Next()
