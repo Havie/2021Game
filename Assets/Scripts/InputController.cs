@@ -55,4 +55,51 @@ public class InputController
 
         return Vector3.negativeInfinity;
     }
+
+    /// <summary>
+    /// Casts a ray from the cursor to the world using Physics.Raycast.
+    /// If Physics.Raycast returns true, it returns the position of the hit, otherwise returns Vector3.negativeInfinitiy.
+    /// Only casts the ray on a specific layermask
+    /// </summary>
+    /// <param name="_layerMask_">LayerMask to do the Physics.Raycast on.</param>
+    /// <returns>Vector3</returns>
+    public static Vector3 GetCursorRayWorldPosition(int _layerMask_)
+    {
+        RaycastHit hit;
+        return GetCursorRayWorldPosition(out hit, _layerMask_);
+    }
+
+    /// <summary>
+    /// Casts a ray from the cursor to the world using Physics.Raycast.
+    /// If Physics.Raycast returns true, it returns the position of the hit, otherwise returns Vector3.negativeInfinitiy.
+    /// Accepts a RaycastHit as output.
+    /// Only casts the ray on a specific layermask
+    /// </summary>
+    /// <param name="_hit_">RaycastHit that will be used for the Physics.Raycast call.</param>
+    /// <param name="_layerMask_">LayerMask to do the Physics.Raycast on.</param>
+    /// <returns>Vector3</returns>
+    public static Vector3 GetCursorRayWorldPosition(out RaycastHit _hit_, int _layerMask_)
+    {
+        // Create a ray
+        Ray ray = Camera.main.ScreenPointToRay(GetCursorPosition());
+
+        if (Physics.Raycast(ray, out _hit_, float.PositiveInfinity, _layerMask_))
+        {
+            return _hit_.point;
+        }
+
+        return Vector3.negativeInfinity;
+    }
+
+    /// <summary>
+    /// Returns true when the cursor changes position.
+    /// </summary>
+    /// <returns>bool</returns>
+    public static bool GetHasCursorMoved()
+    {
+        if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
+            return true;
+
+        return false;
+    }
 }

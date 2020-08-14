@@ -15,7 +15,7 @@ TagManager:
   - 
   - 
   - Player
-  - 
+  - Ground
   - 
   - 
   - 
@@ -41,6 +41,9 @@ TagManager:
   m_SortingLayers:
   - name: Ground
     uniqueID: 3498472065
+    locked: 0
+  - name: MovementPreview
+    uniqueID: 1375691753
     locked: 0
   - name: Default
     uniqueID: 0
