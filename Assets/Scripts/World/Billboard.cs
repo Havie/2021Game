@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorldObj : MonoBehaviour
+public class Billboard : MonoBehaviour
 {
 
     // Update is called once per frame

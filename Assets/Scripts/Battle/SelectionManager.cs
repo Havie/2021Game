@@ -5,10 +5,10 @@ using UnityEngine;
 public class SelectionManager : MonoBehaviour
 {
 
-    public enum SelectionState { Campaign, Battle, Pause};
-    private SelectionState _selectionState = SelectionState.Battle;
+    public enum SelectionState { Free, Move, Attack};
+    private SelectionState _selectionState = SelectionState.Free;
 
-
+    Playable _activeChar;
 
     void Start()
     {
@@ -25,16 +25,17 @@ public class SelectionManager : MonoBehaviour
     {
         switch (_selectionState)
         {
-            case SelectionState.Campaign:
+            case SelectionState.Free:
                 {
+                    FreeClick(mousePos);
                     break;
                 }
-            case SelectionState.Battle:
+            case SelectionState.Move:
                 {
-                    BattleClick(mousePos);
+                    MoveClick(mousePos);
                     break;
                 }
-            case SelectionState.Pause:
+            case SelectionState.Attack:
                 {
                     break;
                 }
@@ -43,7 +44,7 @@ public class SelectionManager : MonoBehaviour
         }
     }
 
-    private void BattleClick(Vector3 mousePos)
+    private void FreeClick(Vector3 mousePos)
     {
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit hit;
@@ -57,11 +58,55 @@ public class SelectionManager : MonoBehaviour
                 if(p.isActive())
                 {
                     Debug.Log("IT's" + p.gameObject.name + "'s  Turn!");
+                    //Not sure if its important turning this on
                     MovementController mc = p.GetComponent<MovementController>();
                     if (mc)
-                        mc.DoMovement(mousePos);
+                        mc.enabled = true;
+                    _activeChar = p;
+                    _selectionState = SelectionState.Move;
                 }
             }
         }
+    }
+    private void MoveClick(Vector3 mousePos)
+    {
+        Debug.Log("MoveClick");
+        if (_activeChar)
+        {
+            Debug.Log("ActiveChar");
+            Ray ray = Camera.main.ScreenPointToRay(mousePos);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+               Debug.DrawRay(Camera.main.transform.position, ray.direction * 10, Color.red, 10);
+               if(!CheckPlayable(hit))
+                {
+                    Debug.Log("Not Playable: " + hit.transform.gameObject);
+                    if (hit.transform.gameObject.tag.Equals("Ground"))
+                    {
+                        var mc = _activeChar.GetComponent<MovementController>();
+                        if (mc)
+                            mc.DoMovement(InputController.GetCursorRayWorldPosition());
+                    }
+                }
+            }
+           
+        }
+    }
+
+    private bool CheckPlayable(RaycastHit hit)
+    {
+        Playable p = hit.transform.GetComponent<Playable>();
+        if (p)
+        {
+            if (p.isActive())
+            {
+                _activeChar = null;
+                _selectionState = SelectionState.Free;
+               
+            }
+            return true;
+        }
+        return false;
     }
 }

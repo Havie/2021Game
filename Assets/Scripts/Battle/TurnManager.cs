@@ -71,6 +71,8 @@ public class TurnManager
             --iterations;
 
         }
+        //Tell The UI Turn Manager The order 
+        UICharacterTurnManager.Instance.SetUpBar(newOrder);
         return newOrder;
     }
     public void Next()
