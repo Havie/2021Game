@@ -31,6 +31,8 @@ public class TurnManager
     }
     public void BeginTurn()
     {
+        if (_turnNo == 0)
+            UICharacterTurnManager.Instance.StartBattle();
         //Debug.Log("Begin Turn: "+_turnNo);
         _index = 0;
         ++_turnNo;
@@ -72,7 +74,7 @@ public class TurnManager
 
         }
         //Tell The UI Turn Manager The order 
-        UICharacterTurnManager.Instance.SetUpBar(newOrder);
+        UICharacterTurnManager.Instance.SetUpTurn(newOrder);
         return newOrder;
     }
     public void Next()

@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class Faction : MonoBehaviour
 {
+
+    [SerializeField]private bool _isHuman;
+    //Ideally we'd need a faction int ID as well but we only have 2 factions;
+
+
     // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public bool IsHuman() => _isHuman;
 }

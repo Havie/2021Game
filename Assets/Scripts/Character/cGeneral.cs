@@ -9,6 +9,8 @@ public class cGeneral : MonoBehaviour
     private Army _army; //Can be null
   //  private Skill[] _skills;
     private TroopDetails _troops;
+    public Sprite _portrait;
+    public string _name;
 
     #region StatBoosts
     private float _moraleBoost = 1f;
@@ -31,7 +33,9 @@ public class cGeneral : MonoBehaviour
 
     #region Getters
     public Army GetArmy() => _army;
-
+    public Sprite GetPortrait() => _portrait;
+    public Faction GetFaction() => _faction;
+    public string GetName() => _name;
     //For damage calculations
     public int GetMorale() { return _troops !=null ? ((int)_moraleBoost * _troops.GetMorale()) : 0; }
     public int GetAttack() { return _troops != null ? ((int)_attackBoost * _troops.GetAttack()) : 0; }
@@ -56,6 +60,8 @@ public class cGeneral : MonoBehaviour
     public int GetWillBonus() => ((int)_willBoost * 100) - 100;
     public int GetMoveSpeedBonus() => ((int)_moveSpeedBoost * 100) - 100;
     public int GetAPBonus() => ((int)_apBoost * 100) - 100;
+
+
     #endregion
 
     #region Setters
@@ -80,6 +86,12 @@ public class cGeneral : MonoBehaviour
         {
 
         }
+        if (_name.Equals(""))
+            _name = gameObject.name;
+        if (_faction == null)
+            _faction = this.GetComponent<Faction>();
+        if (_portrait == null)
+            _portrait = Resources.Load<Sprite>("UI/Battle/CharacterPortraits/TmpChar_BattleSelect");
     }
     private void Start()
     {
