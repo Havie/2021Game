@@ -1101,6 +1101,7 @@ GameObject:
   - component: {fileID: 1188228284}
   - component: {fileID: 1188228296}
   - component: {fileID: 1188228287}
+  - component: {fileID: 1188228286}
   m_Layer: 8
   m_Name: Character (1)
   m_TagString: Untagged
@@ -1335,6 +1336,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _Animator: {fileID: 1188228293}
   _ActionOnDisable: 0
+--- !u!114 &1188228286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1188228283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b36608dbffe50f4a807a7f8a936c183, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _idle: []
+  _walk: []
+  _attack: []
+  _death: []
+  _burst: []
 --- !u!114 &1188228287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2031,6 +2049,7 @@ GameObject:
   - component: {fileID: 1905690749}
   - component: {fileID: 1905690748}
   - component: {fileID: 1905690750}
+  - component: {fileID: 1905690752}
   m_Layer: 8
   m_Name: Character (2)
   m_TagString: Untagged
@@ -2231,6 +2250,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _Animator: {fileID: 1905690758}
   _ActionOnDisable: 0
+--- !u!114 &1905690752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905690747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b36608dbffe50f4a807a7f8a936c183, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _idle: []
+  _walk: []
+  _attack: []
+  _death: []
+  _burst: []
 --- !u!114 &1905690753
 MonoBehaviour:
   m_ObjectHideFlags: 0
