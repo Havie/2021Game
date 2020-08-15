@@ -10,6 +10,8 @@ public class TroopDetails : MonoBehaviour
     private int _hpMAX;
     private int _hp;
 
+    public bool test;
+
     #region animations 
     // Might only use these for *juice* death anims on field
 
@@ -43,10 +45,12 @@ public class TroopDetails : MonoBehaviour
     {
 
         _unitStats = new UnitStats(RNG(), RNG(), RNG(), RNG(), RNG(), RNG());
+        if (test)
+            _unitStats.setMorale(100);
     }
     private int RNG()
     {
-        return Random.Range(1, 99);
+        return Random.Range(1, 90);
     }
 
 

@@ -5,11 +5,28 @@ using UnityEngine;
 public class SelectionManager : MonoBehaviour
 {
 
-    public enum SelectionState { Free, Move, Attack};
-    private SelectionState _selectionState = SelectionState.Free;
+    public Material _normal;
+    public Material _selected;
+    public Material _allied;
+    public Material _enemy;
+
+    public enum SelectionState { FREE, MOVE, ATTACK};
+    private SelectionState _selectionState = SelectionState.FREE;
 
     Playable _activeChar;
 
+
+    private void Awake()
+    {
+        if (_normal == null)
+            Debug.LogError("Normal resource is null, No idea how to load from package folder, assign in inspector");
+        if(_selected==null)
+            _selected= Resources.Load<Material>("Sprites/SelectionOutline");
+        if (_allied == null)
+            _allied = Resources.Load<Material>("Sprites/SelectionOutline_Allied");
+        if (_enemy == null)
+            _enemy = Resources.Load<Material>("Sprites/SelectionOutline_Enemy");
+    }
     void Start()
     {
         
@@ -25,17 +42,17 @@ public class SelectionManager : MonoBehaviour
     {
         switch (_selectionState)
         {
-            case SelectionState.Free:
+            case SelectionState.FREE:
                 {
                     FreeClick(mousePos);
                     break;
                 }
-            case SelectionState.Move:
+            case SelectionState.MOVE:
                 {
                     MoveClick(mousePos);
                     break;
                 }
-            case SelectionState.Attack:
+            case SelectionState.ATTACK:
                 {
                     break;
                 }
@@ -55,15 +72,27 @@ public class SelectionManager : MonoBehaviour
             Playable p = hit.transform.GetComponent<Playable>();
             if(p)
             {
-                if(p.isActive())
+                if(p.IsActive())
                 {
                     Debug.Log("IT's" + p.gameObject.name + "'s  Turn!");
                     //Not sure if its important turning this on
-                    MovementController mc = p.GetComponent<MovementController>();
-                    if (mc)
-                        mc.enabled = true;
-                    _activeChar = p;
-                    _selectionState = SelectionState.Move;
+                    SpriteRenderer sp = _activeChar.GetComponent<SpriteRenderer>();
+                    if (sp)
+                    {
+                        if(_activeChar.IsSelected())
+                        {
+                            _activeChar.SetSelected(false);
+                            sp.material = _normal;
+                        }
+                        else
+                        {
+                            _activeChar.SetSelected(true);
+                            sp.material = _selected;
+                        }
+                    }
+                    else
+                        Debug.LogWarning("cant find sprite renderer for "+_activeChar.gameObject);
+
                 }
             }
         }
@@ -97,14 +126,25 @@ public class SelectionManager : MonoBehaviour
         Playable p = hit.transform.GetComponent<Playable>();
         if (p)
         {
-            if (p.isActive())
+            if (p.IsActive())
             {
                 _activeChar = null;
-                _selectionState = SelectionState.Free;
+                _selectionState = SelectionState.FREE;
                
             }
             return true;
         }
         return false;
+    }
+
+    private void SetMoveable(bool cond)
+    {
+        MovementController mc = _activeChar.GetComponent<MovementController>();
+        if (mc)
+            mc.enabled = cond;
+        if(cond)
+            _selectionState = SelectionState.MOVE;
+        else
+            _selectionState = SelectionState.FREE; // might need diff logic
     }
 }
