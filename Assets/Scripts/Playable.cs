@@ -53,6 +53,7 @@ public class Playable : MonoBehaviour
     public void EndTurn()
     {
         _isActive = false;
+        ShowBattleMenu(false); //awkward because the SelectionManager turns it on
         //unsubscribe from event system 
         cEventSystem.Instance.ACT -= EndTurn;
     }

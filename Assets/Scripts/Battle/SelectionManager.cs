@@ -11,8 +11,8 @@ public class SelectionManager : MonoBehaviour
     public Material _allied;
     public Material _enemy;
 
-    public enum SelectionState { FREE, MOVE, ATTACK, MENU};
-    private SelectionState _selectionState = SelectionState.FREE;
+    public enum eSelectionState { FREE, MOVE, ATTACK, MENU};
+    private eSelectionState _selectionState = eSelectionState.FREE;
 
     Playable _activeChar;
 
@@ -52,26 +52,34 @@ public class SelectionManager : MonoBehaviour
     {
         if (InputController.GetSelectPressDown())
             HandleClick(InputController.GetCursorPosition());
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(_selectionState==eSelectionState.MOVE)
+            {
+                ShowBattleMenu();
+            }
+        }
     }
     private void HandleClick(Vector3 mousePos)
     {
         switch (_selectionState)
         {
-            case SelectionState.FREE:
+            case eSelectionState.FREE:
                 {
                     FreeClick(mousePos);
                     break;
                 }
-            case SelectionState.MOVE:
+            case eSelectionState.MOVE:
                 {
                     MoveClick(mousePos);
                     break;
                 }
-            case SelectionState.ATTACK:
+            case eSelectionState.ATTACK:
                 {
                     break;
                 }
-            case SelectionState.MENU:
+            case eSelectionState.MENU:
                 {
                     break;
                 }
@@ -91,8 +99,15 @@ public class SelectionManager : MonoBehaviour
             _activeChar = character;
             SetSelected(_activeChar, true);
         }
-        //Turn on the characters Menu
-        _selectionState = SelectionState.MENU;
+        ShowBattleMenu();
+    }
+    public void ShowBattleMenu()
+    {
+        if (_activeChar)
+        {
+            _selectionState = eSelectionState.MENU;
+            _activeChar.ShowBattleMenu(true);
+        }
     }
     private void SetSelected(Playable p, bool cond)
     {
@@ -101,7 +116,7 @@ public class SelectionManager : MonoBehaviour
 
         //It will probably already be off in some cases?
         //Might want to handle this inside the PLayable script-we'll see 
-        p.ShowBattleMenu(cond);
+        //p.ShowBattleMenu(cond);
 
         SpriteRenderer sp = p.GetComponent<SpriteRenderer>();
         if (sp)
@@ -118,7 +133,17 @@ public class SelectionManager : MonoBehaviour
         //ToDo
         //Tell the camera where to look
     }
-
+    public void EnableMove(bool cond)
+    {
+        _selectionState = eSelectionState.MOVE;
+        //Turn off the Menu
+        _activeChar.ShowBattleMenu(false);
+        //ToDo enable the cursor mode 
+    }
+    /**
+     * Not sure what this method will do 
+     * Currently not used 
+     */
     private void FreeClick(Vector3 mousePos)
     {
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
@@ -159,6 +184,7 @@ public class SelectionManager : MonoBehaviour
                         var mc = _activeChar.GetComponent<MovementController>();
                         if (mc)
                             mc.DoMovement(InputController.GetCursorRayWorldPosition());
+                        
                     }
                 }
             }
@@ -177,7 +203,7 @@ public class SelectionManager : MonoBehaviour
             if (p.IsActive())
             {
                 _activeChar = null;
-                _selectionState = SelectionState.FREE;
+                _selectionState = eSelectionState.FREE;
                
             }
             return true;
@@ -191,8 +217,8 @@ public class SelectionManager : MonoBehaviour
         if (mc)
             mc.enabled = cond;
         if(cond)
-            _selectionState = SelectionState.MOVE;
+            _selectionState = eSelectionState.MOVE;
         else
-            _selectionState = SelectionState.FREE; // might need diff logic
+            _selectionState = eSelectionState.FREE; // might need diff logic
     }
 }

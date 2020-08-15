@@ -102,12 +102,12 @@ public class UIBattleMenuController : MonoBehaviour
 
     private void DoMove()
     {
-        Debug.Log("MOVE");
-
+        SelectionManager.Instance.EnableMove(true);
     }
     private void DoAttack()
     {
         Debug.Log("Attack");
+        //Change the Menu to say "Basic , Skills, Burst"
     }
     private void DoEndTurn()
     {
