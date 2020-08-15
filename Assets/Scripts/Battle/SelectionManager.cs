@@ -4,20 +4,35 @@ using UnityEngine;
 
 public class SelectionManager : MonoBehaviour
 {
+    private static SelectionManager _instance;
 
     public Material _normal;
     public Material _selected;
     public Material _allied;
     public Material _enemy;
 
-    public enum SelectionState { FREE, MOVE, ATTACK};
+    public enum SelectionState { FREE, MOVE, ATTACK, MENU};
     private SelectionState _selectionState = SelectionState.FREE;
 
     Playable _activeChar;
 
+    public static SelectionManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = GameObject.FindObjectOfType<SelectionManager>();
+            return _instance;
+        }
+    }
 
     private void Awake()
     {
+        if (_instance == null)
+            _instance = this;
+        else if (_instance != this)
+            Destroy(this);
+
         if (_normal == null)
             Debug.LogError("Normal resource is null, No idea how to load from package folder, assign in inspector");
         if(_selected==null)
@@ -56,9 +71,52 @@ public class SelectionManager : MonoBehaviour
                 {
                     break;
                 }
+            case SelectionState.MENU:
+                {
+                    break;
+                }
             default:
                 break;
         }
+    }
+
+    public void SetActiveCharacter(Playable character)
+    {
+        //Clear the old character
+        if(_activeChar)
+            SetSelected(_activeChar, false);
+        //Assign the new 
+        if(character)
+        {
+            _activeChar = character;
+            SetSelected(_activeChar, true);
+        }
+        //Turn on the characters Menu
+        _selectionState = SelectionState.MENU;
+    }
+    private void SetSelected(Playable p, bool cond)
+    {
+        if (p == null)
+            return;
+
+        //It will probably already be off in some cases?
+        //Might want to handle this inside the PLayable script-we'll see 
+        p.ShowBattleMenu(cond);
+
+        SpriteRenderer sp = p.GetComponent<SpriteRenderer>();
+        if (sp)
+        {
+            p.SetSelected(cond);
+            if (cond)
+                sp.material = _selected;
+            else
+                sp.material = _normal;
+        }
+        else
+            Debug.LogWarning("Cant find Sprite Render for " + p.gameObject.name);
+
+        //ToDo
+        //Tell the camera where to look
     }
 
     private void FreeClick(Vector3 mousePos)
@@ -72,31 +130,18 @@ public class SelectionManager : MonoBehaviour
             Playable p = hit.transform.GetComponent<Playable>();
             if(p)
             {
-                if(p.IsActive())
-                {
-                    Debug.Log("IT's" + p.gameObject.name + "'s  Turn!");
-                    //Not sure if its important turning this on
-                    SpriteRenderer sp = _activeChar.GetComponent<SpriteRenderer>();
-                    if (sp)
-                    {
-                        if(_activeChar.IsSelected())
-                        {
-                            _activeChar.SetSelected(false);
-                            sp.material = _normal;
-                        }
-                        else
-                        {
-                            _activeChar.SetSelected(true);
-                            sp.material = _selected;
-                        }
-                    }
-                    else
-                        Debug.LogWarning("cant find sprite renderer for "+_activeChar.gameObject);
-
-                }
+                //This logics all ghetto going to rewrite from menu system
+                if(p.IsActive() && _activeChar)
+                    SetSelected(_activeChar, _activeChar.IsSelected());
+                else if (p.IsActive() && !_activeChar)
+                    SetSelected(p, true);
             }
         }
     }
+    /**
+     * Move active character to a location that isnt a playable
+     * Might have to rework logic if we want characters to move to and attack in 1 command
+     * */
     private void MoveClick(Vector3 mousePos)
     {
         Debug.Log("MoveClick");
@@ -120,7 +165,10 @@ public class SelectionManager : MonoBehaviour
            
         }
     }
-
+    /**
+     * Check if the Raycast Hit hit a playable object or not
+     * Logic is temp and will be reworked
+     * */
     private bool CheckPlayable(RaycastHit hit)
     {
         Playable p = hit.transform.GetComponent<Playable>();
