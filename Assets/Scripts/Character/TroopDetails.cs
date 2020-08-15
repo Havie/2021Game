@@ -41,7 +41,7 @@ public class TroopDetails : MonoBehaviour
     public void AssignArmy(Army a) { _army = a; }
     //public void SetType(TroopType t) { _type = t};
 
-    public void Start()
+    public void Init()
     {
 
         _unitStats = new UnitStats(RNG(), RNG(), RNG(), RNG(), RNG(), RNG());

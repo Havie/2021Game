@@ -39,9 +39,10 @@ public class MovementController : MonoBehaviour
             Vector3 hitPos = InputController.GetCursorRayWorldPosition();
             if (hitPos != Vector3.negativeInfinity)
             {
-              //  DoMovement(hitPos);
+                DoMovement(hitPos);
             }
         }
+        /*
         if(_agentThinking && _agent.hasPath)
         {
             _isMoving = true;
@@ -53,7 +54,7 @@ public class MovementController : MonoBehaviour
             _isMoving = false;
             //TODO going to need more specific if as in if its this playables current turn etc
             SelectionManager.Instance.ShowBattleMenu();
-        }
+        }*/
     }
     public void DoMovement(Vector3 Pos)
     {

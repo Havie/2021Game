@@ -13,7 +13,7 @@ public class Playable : MonoBehaviour
         //This could be on a faction OR a Character so we have to operate on GameObject?
         //Could try to getComponent character vs faction to set a bool that will tell this script how to operate.
     }
-    private void Start()
+    public void Init()
     {
         Transform child = this.transform.GetChild(0);
         if(child)

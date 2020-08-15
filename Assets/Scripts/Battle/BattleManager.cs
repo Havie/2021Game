@@ -24,7 +24,7 @@ public class BattleManager : MonoBehaviour
     #endregion
 
     #region ArtificalTestVars
-    public GameObject[] chars;
+    public GameObject[] _chars;
     #endregion
 
 
@@ -40,6 +40,20 @@ public class BattleManager : MonoBehaviour
     
     void Start()
     {
+        foreach (GameObject go in _chars)
+        {
+            if (go)
+            {
+                iniCharacter initChar = go.GetComponent<iniCharacter>();
+                if (initChar)
+                    initChar.Init();
+                else
+                    Debug.LogError("Could not find iniCharacter attached to " + go.name);
+            }
+            else
+                Debug.LogError("Null GameObject in BattleManager");
+        }
+
         _turnManager = new TurnManager(true);
         TEST();
     }
@@ -58,10 +72,11 @@ public class BattleManager : MonoBehaviour
 
     public void StartBattle()
     {
-        foreach (GameObject go in chars)
+        foreach (GameObject go in _chars)
             _turnManager.AddToList(go);
 
-        _turnManager.BeginNewTurn();
+        if (_chars.Length != 0)
+            _turnManager.BeginNewTurn();
         _turnManager.Subscribe(true);
     }
 
