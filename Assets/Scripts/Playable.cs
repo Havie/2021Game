@@ -3,6 +3,7 @@
 public class Playable : MonoBehaviour
 {
     public bool _isActive;
+    public bool _isSelected;
     private TurnManager _turnManager;
 
 
@@ -12,7 +13,11 @@ public class Playable : MonoBehaviour
         //Could try to getComponent character vs faction to set a bool that will tell this script how to operate.
     }
 
-    public bool isActive() => _isActive;
+    public bool IsActive() => _isActive;
+    public bool IsSelected() => _isSelected;
+
+    public void SetActive(bool cond) { _isActive = cond; }
+    public void SetSelected(bool cond) { _isSelected = cond; }
 
     public void YourTurn(TurnManager t)
     {
