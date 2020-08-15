@@ -11,6 +11,7 @@ public class MovementController : MonoBehaviour
     private NavMeshAgent _agent;
 
     private bool _isMoving;
+    private bool _agentThinking;
 
     // Called 0th
     private void Awake()
@@ -41,14 +42,17 @@ public class MovementController : MonoBehaviour
               //  DoMovement(hitPos);
             }
         }
-        if(_isMoving)
+        if(_agentThinking && _agent.hasPath)
         {
-            if(_agent.isStopped)
-            {
-                _isMoving = false;
-                //TODO going to need more specific if as in if its this playables current turn etc
-                SelectionManager.Instance.ShowBattleMenu();
-            }
+            _isMoving = true;
+            _agentThinking = false;
+        }
+        else if(_isMoving && !_agent.hasPath)
+        {
+            Debug.Log("Agent stopped");
+            _isMoving = false;
+            //TODO going to need more specific if as in if its this playables current turn etc
+            SelectionManager.Instance.ShowBattleMenu();
         }
     }
     public void DoMovement(Vector3 Pos)
@@ -57,7 +61,7 @@ public class MovementController : MonoBehaviour
         {
             // Move our agent
             _agent.SetDestination(Pos);
-            _isMoving = true;
+            _agentThinking = true;
         }
     }
 }
