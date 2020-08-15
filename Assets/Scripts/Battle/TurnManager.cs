@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using static cEventSystem;
 
 
 // I do not think its possible to write this in an abstract way that takes in Factions and Characters
@@ -19,6 +20,15 @@ public class TurnManager
     private int _turnNo;
     private int _index;
 
+    public void Subscribe(bool cond)
+    {
+        if(cond)
+            if (cEventSystem.Instance)
+                cEventSystem.Instance.ABR += BeginNewTurn;
+        else //Is this Legal? lol seems to work 
+            if(cEventSystem.Instance)
+                cEventSystem.Instance.ABR -= BeginNewTurn;
+    }
 
     public TurnManager(bool isBattle)
     {
@@ -29,8 +39,11 @@ public class TurnManager
         if (!_allPossible.Contains(go))
             _allPossible.Add(go);
     }
-    public void BeginTurn()
+    public void BeginNewTurn()
     {
+        Debug.Log("Begin new Turn!");
+        if (_turnNo == 0)
+            UICharacterTurnManager.Instance.StartBattle();
         //Debug.Log("Begin Turn: "+_turnNo);
         _index = 0;
         ++_turnNo;
@@ -72,13 +85,13 @@ public class TurnManager
 
         }
         //Tell The UI Turn Manager The order 
-        UICharacterTurnManager.Instance.SetUpBar(newOrder);
+        UICharacterTurnManager.Instance.SetUpTurn(newOrder);
         return newOrder;
     }
     public void Next()
     {
         if (_index == _inOrder.Count) // -1 ?
-            BeginTurn();
+            BeginNewTurn();
         else
         {
             //Both Factions and Characters implement Playable
