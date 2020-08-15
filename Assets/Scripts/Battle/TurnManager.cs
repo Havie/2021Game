@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using static cEventSystem;
 
 
 // I do not think its possible to write this in an abstract way that takes in Factions and Characters
@@ -19,24 +20,49 @@ public class TurnManager
     private int _turnNo;
     private int _index;
 
-
+    public void Subscribe(bool cond)
+    {
+        if (cond)
+            if (cEventSystem.Instance)
+                cEventSystem.Instance.ACT += Next;
+       else //Is this Legal? lol seems to work 
+            if (cEventSystem.Instance)
+                cEventSystem.Instance.ABR -= Next;
+    }
+    //Constructor
     public TurnManager(bool isBattle)
     {
         _isBattle = isBattle;
     }
+    /**
+     *Takes in game objects to cycle through (Characters or Factions) 
+     */
     public void AddToList(GameObject go)
     {
+        // TODO Based on battlemode should verify they are char vs faction 
         if (!_allPossible.Contains(go))
             _allPossible.Add(go);
     }
-    public void BeginTurn()
+    /**
+     * Called from Next() which is subscribed to the event system 
+     * Will determine the order and inform the UI 
+     */
+    public void BeginNewTurn()
     {
+        Debug.Log("Begin new Turn!");
+        if (_turnNo == 0)
+            UICharacterTurnManager.Instance.StartBattle();
         //Debug.Log("Begin Turn: "+_turnNo);
         _index = 0;
         ++_turnNo;
         _inOrder = DetermineOrder();
         Next();
     }
+    /**
+     * Character: Order based on Morale
+     * Factions : Default Order passed in
+     * Updates UI
+     */
     private List<GameObject> DetermineOrder()
     {
         if (!_isBattle)
@@ -53,17 +79,17 @@ public class TurnManager
             {
                 if (!newOrder.Contains(go))
                 {
-                    UnitStats us = go.GetComponent<UnitStats>();
-                    if (us)
+                    cGeneral general = go.GetComponent<cGeneral>();
+                    if (general)
                     {
-                        if (us.GetMorale() > highestMorale)
+                        if (general.GetMorale() > highestMorale)
                         {
                             lastGo = go;
-                            highestMorale = us.GetMorale();
+                            highestMorale = general.GetMorale();
                         }
                     }
                     else
-                        Debug.LogError("passed in Character doesnt have US");
+                        Debug.LogError("passed in Character doesnt have a General");
                 }
             }
             highestMorale = 0; //reset
@@ -71,19 +97,26 @@ public class TurnManager
             --iterations;
 
         }
+        //Tell The UI Turn Manager The order 
+        UICharacterTurnManager.Instance.SetUpTurn(newOrder);
         return newOrder;
     }
+
+    /**
+     * Advances to the next turn , letting the playable object Know its their turn 
+     * If last item, starts next round
+     * Called from the Event System
+     */
     public void Next()
     {
         if (_index == _inOrder.Count) // -1 ?
-            BeginTurn();
+            BeginNewTurn();
         else
         {
             //Both Factions and Characters implement Playable
             Playable p = _inOrder[_index++].GetComponent<Playable>();
             if (p)
-                p.YourTurn(this); // will call Next() when its done 
-           // Debug.Log("TURN:" + p.gameObject.name);
+                p.YourTurn(this); //Tells the selection Manager
         }
     }
 

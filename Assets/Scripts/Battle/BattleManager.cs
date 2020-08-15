@@ -61,6 +61,12 @@ public class BattleManager : MonoBehaviour
         foreach (GameObject go in chars)
             _turnManager.AddToList(go);
 
-        _turnManager.BeginTurn();
+        _turnManager.BeginNewTurn();
+        _turnManager.Subscribe(true);
+    }
+
+     void OnDestroy()
+    {
+        _turnManager.Subscribe(false);
     }
 }

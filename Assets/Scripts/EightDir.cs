@@ -5,7 +5,7 @@ using UnityEngine;
 
 
 
-public class Character : WorldObj
+public class EightDir : Billboard
 {
     [SerializeField]
     private AnimationClip[] animationClips = new AnimationClip[8];
