@@ -17,11 +17,18 @@ public class UICharacterTurnManager : MonoBehaviour
     private CharacterHolder _currentChar;
     private int _indexL = 0;
     private int _indexR = 0;
+    private bool _canShuffle = true; // based on whatever menu is up, can we shuffle
 
-    private enum eSelectionState { LEFT, NONE, RIGHT };
-    private eSelectionState _state = eSelectionState.NONE;
+
+
+    //TMP
+    public int _sizeOld;
+    public int _sizeNew;
+
+    public enum eSelectionState { LEFT, NONE, RIGHT };
+    public eSelectionState _state = eSelectionState.NONE;
     #endregion
-
+    #region Inilization
     public static UICharacterTurnManager Instance
     {
         get
@@ -34,7 +41,6 @@ public class UICharacterTurnManager : MonoBehaviour
 
     private void Awake()
     {
-
         if (_instance == null)
             _instance = this;
         else if (_instance != this)
@@ -57,12 +63,14 @@ public class UICharacterTurnManager : MonoBehaviour
     void OnEnable()
     {
         //Subscribe AdvanceTurn() 
-        cEventSystem.Instance.ACT += AdvanceTurn;
+        if (cEventSystem.Instance)
+            cEventSystem.Instance.ACT += AdvanceTurn;
     }
     void OnDisable() //does fire on destroy
     {
         //UnSubscribe AdvanceTurn() 
-        cEventSystem.Instance.ACT -= AdvanceTurn;
+        if(cEventSystem.Instance)
+            cEventSystem.Instance.ACT -= AdvanceTurn;
     }
     private void Start()
     {
@@ -71,6 +79,8 @@ public class UICharacterTurnManager : MonoBehaviour
         _newTurns = new List<CharacterHolder>();
 
     }
+    #endregion
+
     private void Update()
     {
         //TMP
@@ -78,7 +88,15 @@ public class UICharacterTurnManager : MonoBehaviour
             ShuffleLeft();
         if (Input.GetKeyDown(KeyCode.R))
             ShuffleRight();
+
+        if(Input.GetKeyDown(KeyCode.T))
+        {
+            _sizeOld = _oldTurns.Count;
+            _sizeNew = _newTurns.Count;
+        }
     }
+    public bool CanShuffle() => _canShuffle;
+    public void SetShuffle(bool cond) { _canShuffle = cond; }
     /**
 	* Sets up the UI elements and character portraits for the battle
 	*/
@@ -108,6 +126,7 @@ public class UICharacterTurnManager : MonoBehaviour
     }
     public void SetUpTurn(List<GameObject> characters)
     {
+        Debug.Log("-----NEW TURN--------");
         foreach (GameObject g in characters)
         {
             //Get the Portrait, the transform and faction from characters
@@ -116,36 +135,55 @@ public class UICharacterTurnManager : MonoBehaviour
             {
                 CharacterHolder ch = new CharacterHolder(general.GetPortrait(), g.transform, general.GetFaction().IsHuman(), general.GetName());
                 _newTurns.Add(ch);
+                Debug.LogWarning(ch._portrait.name);
             }
         }
-        _currentChar = _newTurns[0];
-        SetPortrait(2, _currentChar);
+        //_currentChar = _newTurns[0];
+        // _newTurns.Remove(_currentChar);
+        // SetPortrait(2, _currentChar);
+        AdvanceTurn();
         ResetBothSides();
     }
     public void AdvanceTurn()
     {
-        _oldTurns.Add(_currentChar);
+        if(_currentChar!=null)
+            _oldTurns.Add(_currentChar);
         if (_newTurns.Count!=0)
         {
             _currentChar = _newTurns[0];
             _newTurns.Remove(_currentChar);
             SetPortrait(2, _currentChar);
             ResetBothSides();
+
+            if (_newTurns.Count == 0)
+            {
+                _UIIcons[3].gameObject.SetActive(false);
+                _UIIcons[4].gameObject.SetActive(false);
+            }
+            else if (_newTurns.Count == 1)
+                _UIIcons[4].gameObject.SetActive(false);
+            else
+            {
+                _UIIcons[3].gameObject.SetActive(true);
+                _UIIcons[4].gameObject.SetActive(true);
+            }
         }
         else
         {
+            _currentChar = null;
             //Tell Event Manager round is over;
             cEventSystem.Instance.AdvanceBattleRound();
         }
     }
     private void ShuffleLeft()
     {
+        if (!_canShuffle)
+            return;
+        //Debug.Log("SHuffle left" + _indexL);
         if (_state == eSelectionState.LEFT)
         {
             if (_indexL - 1 >= 0)
             {
-                //_UIIcons[1] = _oldTurns[_indexL];
-                //_UIIcons[0] = _oldTurns[--_indexL];
                 SetPortrait(1, _oldTurns[_indexL]);
                 SetPortrait(0, _oldTurns[--_indexL]);
             }
@@ -154,8 +192,9 @@ public class UICharacterTurnManager : MonoBehaviour
         {
             if (_indexR - 1 >= 0)
             {
-                SetPortrait(3, _newTurns[_indexR]);
-                SetPortrait(4, _newTurns[--_indexR]);
+
+                SetPortrait(4, _newTurns[_indexR]);
+                SetPortrait(3, _newTurns[--_indexR]);
             }
             else
                 _state = eSelectionState.NONE;
@@ -165,19 +204,22 @@ public class UICharacterTurnManager : MonoBehaviour
     }
     private void ShuffleRight()
     {
+        if (!_canShuffle)
+            return;
+        // Debug.Log("SHuffle Right" + _indexL);
         if (_state == eSelectionState.LEFT)
         {
-            if (_indexL + 1 < _oldTurns.Count - 1)
+            if (_indexL + 1 < _oldTurns.Count )
             {
-                SetPortrait(1, _oldTurns[_indexL++]);
                 SetPortrait(0, _oldTurns[_indexL]);
+                SetPortrait(1, _oldTurns[++_indexL]);
             }
             else
                 _state = eSelectionState.NONE;
         }
         else if (_state == eSelectionState.RIGHT)
         {
-            if (_indexR + 1 < _newTurns.Count - 1)
+            if (_indexR + 1 < _newTurns.Count )
             {
                 SetPortrait(3, _newTurns[_indexR]);
                 SetPortrait(4, _newTurns[++_indexR]);
@@ -194,10 +236,7 @@ public class UICharacterTurnManager : MonoBehaviour
             SetPortrait(1, _oldTurns[_oldTurns.Count - 1]);
         }
         else if (_oldTurns.Count > 0)
-        {
             SetPortrait(1, _oldTurns[_oldTurns.Count - 1]);
-            //Set 0 to empty?? how
-        }
 
         if (_newTurns.Count > 1)
         {
@@ -205,10 +244,7 @@ public class UICharacterTurnManager : MonoBehaviour
             SetPortrait(4, _newTurns[1]);
         }
         else if (_newTurns.Count > 0)
-        {
             SetPortrait(3, _newTurns[0]);
-            //Set 4 to Empty somehow
-        }
 
         _indexL = _oldTurns.Count - 1;
         _indexR = 0;
