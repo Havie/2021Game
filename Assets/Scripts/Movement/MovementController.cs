@@ -10,6 +10,8 @@ public class MovementController : MonoBehaviour
     // Reference to the nav mesh agent on our character
     private NavMeshAgent _agent;
 
+    private bool _isMoving;
+
     // Called 0th
     private void Awake()
     {
@@ -39,6 +41,15 @@ public class MovementController : MonoBehaviour
               //  DoMovement(hitPos);
             }
         }
+        if(_isMoving)
+        {
+            if(_agent.isStopped)
+            {
+                _isMoving = false;
+                //TODO going to need more specific if as in if its this playables current turn etc
+                SelectionManager.Instance.ShowBattleMenu();
+            }
+        }
     }
     public void DoMovement(Vector3 Pos)
     {
@@ -46,6 +57,7 @@ public class MovementController : MonoBehaviour
         {
             // Move our agent
             _agent.SetDestination(Pos);
+            _isMoving = true;
         }
     }
 }
