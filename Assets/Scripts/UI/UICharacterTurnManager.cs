@@ -135,7 +135,7 @@ public class UICharacterTurnManager : MonoBehaviour
             {
                 CharacterHolder ch = new CharacterHolder(general.GetPortrait(), g.transform, general.GetFaction().IsHuman(), general.GetName());
                 _newTurns.Add(ch);
-                Debug.LogWarning(ch._portrait.name);
+                //Debug.LogWarning(ch._portrait.name);
             }
         }
         //_currentChar = _newTurns[0];
@@ -167,6 +167,7 @@ public class UICharacterTurnManager : MonoBehaviour
                 _UIIcons[3].gameObject.SetActive(true);
                 _UIIcons[4].gameObject.SetActive(true);
             }
+            //ToDo tell the camera to look at _currentChar._location
         }
         else
         {
