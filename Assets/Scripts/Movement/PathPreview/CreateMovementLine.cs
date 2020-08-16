@@ -4,9 +4,9 @@ using UnityEngine.AI;
 
 public class CreateMovementLine : MonoBehaviour
 {
-    // The transform of the starting position (the currently selected character)
-    [SerializeField]
-    private Transform _startTrans = null;
+    public CreateMovementLine Instance { get; private set; }
+
+    private Transform _startTrans;
     // The transform of the end positions (the cursor)
     [SerializeField]
     private Transform _endTrans = null;
@@ -27,11 +27,54 @@ public class CreateMovementLine : MonoBehaviour
 
     // List of dotted lines
     private List<DottedLine> _dotLines = new List<DottedLine>();
+    // If the preview is on
+    private bool _previewEnabled;
+
+    // Called 0th
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+    }
+    // Called when the gameobject is destroyed
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
+    // Called 1st
+    private void Start()
+    {
+        _previewEnabled = false;
+    }
 
     // Update is called once per frame
     private void Update()
     {
-        CreatePathPreview();     
+        if (_previewEnabled)
+            CreatePathPreview();     
+    }
+
+    /// <summary>
+    /// Enables the line preview.
+    /// </summary>
+    /// <param name="_charToMove_">MovementController of the character that will be moving.</param>
+    private void EnablePathPreview(MovementController _charToMove_)
+    {
+        _curCharaMove = _charToMove_;
+        _startTrans = _charToMove_.transform;
+        _previewEnabled = true;
+    }
+
+    /// <summary>
+    /// Disables the line preview.
+    /// </summary>
+    private void DisablePathPreview()
+    {
+        _curCharaMove = null;
+        _startTrans = null;
+        _previewEnabled = false;
     }
 
     /// <summary>
