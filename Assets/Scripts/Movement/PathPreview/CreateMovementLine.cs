@@ -21,9 +21,9 @@ public class CreateMovementLine : MonoBehaviour
     [SerializeField]
     private float _delta = 0.5f;
 
-    // A reference to the fake pather
+    // The current character movement controller
     [SerializeField]
-    private FakePathing _fakePathRef = null;
+    private MovementController _curCharaMove = null;
 
     // List of dotted lines
     private List<DottedLine> _dotLines = new List<DottedLine>();
@@ -59,7 +59,7 @@ public class CreateMovementLine : MonoBehaviour
             Vector3 endPos = _endTrans.transform.position;
 
             // Fake path with these positions to create a path
-            NavMeshPath path = _fakePathRef.GetPathFromTo(startPos, endPos);
+            NavMeshPath path = _curCharaMove.GetPotentialPath(endPos);
 
             // Iterate over the corners and create a dotted line between subsequent corners
             Vector3 curPos = startPos;

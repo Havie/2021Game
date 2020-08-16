@@ -57,6 +57,10 @@ public class MovementController : MonoBehaviour
             SelectionManager.Instance.ShowBattleMenu();
         }*/
     }
+    /// <summary>
+    /// Starts moving this character towards the given point.
+    /// </summary>
+    /// <param name="_pos_">End position of the path.</param>
     public void DoMovement(Vector3 _pos_)
     {
         if (_pos_ != Vector3.negativeInfinity)
@@ -66,5 +70,16 @@ public class MovementController : MonoBehaviour
             _agent.SetDestination(_pos_);
             _agentThinking = true;
         }
+    }
+
+    /// <summary>
+    /// Creates a potential path for the character to the given end point.
+    /// </summary>
+    /// <param name="_end_">End position of path</param>
+    public NavMeshPath GetPotentialPath(Vector3 _end_)
+    {
+        NavMeshPath path = new NavMeshPath();
+        _agent.CalculatePath(_end_, path);
+        return path;
     }
 }

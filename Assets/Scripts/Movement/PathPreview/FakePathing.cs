@@ -29,7 +29,8 @@ public class FakePathing : MonoBehaviour
     {
         this.transform.position = _start_;
         // Move our agent
-        _agent.SetDestination(_end_);
-        return _agent.path;
+        NavMeshPath path = new NavMeshPath();
+        _agent.CalculatePath(_end_, path);
+        return path;
     }
 }
