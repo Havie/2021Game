@@ -76,7 +76,7 @@ public class cGeneral : MonoBehaviour
 
     #endregion
 
-    void Awake()
+    public void Init()
     {
         //Try to get army component from parent if we have one?
 
@@ -92,9 +92,7 @@ public class cGeneral : MonoBehaviour
             _faction = this.GetComponent<Faction>();
         if (_portrait == null)
             _portrait = Resources.Load<Sprite>("UI/Battle/CharacterPortraits/TmpChar_BattleSelect");
-    }
-    private void Start()
-    {
+
         _troops = this.GetComponent<TroopDetails>();
     }
 

@@ -59,6 +59,10 @@ public class UICharacterTurnManager : MonoBehaviour
         _PREFABTurnOrderCurrent = Resources.Load<GameObject>("Prefabs/UI/TurnOrderFrameCurrent");
         if (_PREFABTurnOrderCurrent == null)
             Debug.LogError("(UICharacterTurnManager) Prefab Current is Missing ");
+
+        _UIIcons = new Button[5];
+        _oldTurns = new List<CharacterHolder>();
+        _newTurns = new List<CharacterHolder>();
     }
     void OnEnable()
     {
@@ -71,13 +75,6 @@ public class UICharacterTurnManager : MonoBehaviour
         //UnSubscribe AdvanceTurn() 
         if(cEventSystem.Instance)
             cEventSystem.Instance.ACT -= AdvanceTurn;
-    }
-    private void Start()
-    {
-        _UIIcons = new Button[5];
-        _oldTurns = new List<CharacterHolder>();
-        _newTurns = new List<CharacterHolder>();
-
     }
     #endregion
 
