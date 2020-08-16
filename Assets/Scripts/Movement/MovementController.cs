@@ -33,7 +33,7 @@ public class MovementController : MonoBehaviour
     private void Update()
     {
         // If the player inputted to select
-        if (InputController.GetSelectPressDown())
+        /*if (InputController.GetSelectPressDown())
         {
             Debug.Log("PressedDown");
             // Get the mouse's raycast world position
@@ -42,9 +42,9 @@ public class MovementController : MonoBehaviour
             {
                 DoMovement(hitPos);
             }
-        }
-        /*
-        if(_agentThinking && _agent.hasPath)
+        }*/
+
+        if (_agentThinking && _agent.hasPath)
         {
             _isMoving = true;
             _agentThinking = false;
@@ -55,7 +55,7 @@ public class MovementController : MonoBehaviour
             _isMoving = false;
             //TODO going to need more specific if as in if its this playables current turn etc
             SelectionManager.Instance.ShowBattleMenu();
-        }*/
+        }
     }
     /// <summary>
     /// Starts moving this character towards the given point.

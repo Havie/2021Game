@@ -1,10 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class SelectionManager : MonoBehaviour
 {
     private static SelectionManager _instance;
+
+    public CameraController _camera;
 
     public Material _normal;
     public Material _selected;
@@ -41,6 +45,9 @@ public class SelectionManager : MonoBehaviour
             _allied = Resources.Load<Material>("Sprites/SelectionOutline_Allied");
         if (_enemy == null)
             _enemy = Resources.Load<Material>("Sprites/SelectionOutline_Enemy");
+
+        if (_camera == null)
+            _camera = Camera.main.GetComponent<CameraController>();
     }
     void Start()
     {
@@ -63,6 +70,8 @@ public class SelectionManager : MonoBehaviour
     }
     private void HandleClick(Vector3 mousePos)
     {
+
+        //TellMyUIClick(mousePos);
         switch (_selectionState)
         {
             case eSelectionState.FREE:
@@ -130,8 +139,9 @@ public class SelectionManager : MonoBehaviour
         else
             Debug.LogWarning("Cant find Sprite Render for " + p.gameObject.name);
 
-        //ToDo
         //Tell the camera where to look
+        if (_camera && cond)
+            _camera.MoveCameraToPos(p.transform.position);
     }
     public void EnableMove(bool cond)
     {
@@ -139,6 +149,33 @@ public class SelectionManager : MonoBehaviour
         //Turn off the Menu
         _activeChar.ShowBattleMenu(false);
         //ToDo enable the cursor mode 
+    }
+
+    //UI - TMP Debugging
+    private void TellMyUIClick(Vector3 mousePos)
+    {
+        if (_activeChar)
+        {
+            GraphicRaycaster raycaster = _activeChar.transform.GetComponentInChildren<GraphicRaycaster>();
+            if (raycaster)
+            {
+                //Set up the new Pointer Event
+                PointerEventData pointerData = new PointerEventData(EventSystem.current);
+                List<RaycastResult> results = new List<RaycastResult>();
+
+                //Raycast using the Graphics Raycaster and mouse click position
+                pointerData.position = Input.mousePosition;
+                raycaster.Raycast(pointerData, results);
+
+                //For every result returned, output the name of the GameObject on the Canvas hit by the Ray
+                foreach (RaycastResult result in results)
+                {
+                    Debug.Log("Hit " + result.gameObject.name);
+                }
+            }
+
+        }
+
     }
     /**
      * Not sure what this method will do 

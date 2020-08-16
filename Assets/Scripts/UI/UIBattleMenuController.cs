@@ -4,8 +4,11 @@ using UnityEngine;
 using TMPro;
 using Button = UnityEngine.UI.Button;
 
+[RequireComponent(typeof(Canvas))]
 public class UIBattleMenuController : MonoBehaviour
 {
+    public Canvas _canvas;
+
     public TextMeshProUGUI _name;
     public GameObject _subpanel;
 
@@ -25,6 +28,12 @@ public class UIBattleMenuController : MonoBehaviour
         defaultActions.Add(DoMove);
         defaultActions.Add(DoAttack);
         defaultActions.Add(DoEndTurn);
+    }
+    private void Awake()
+    {
+        if (_canvas == null)
+            _canvas = this.GetComponent<Canvas>();
+        _canvas.worldCamera = Camera.main;
     }
 
     // Start is called before the first frame update
