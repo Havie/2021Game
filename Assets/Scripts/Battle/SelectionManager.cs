@@ -233,6 +233,7 @@ public class SelectionManager : MonoBehaviour
                     }
                 }
             }
+           // Camera.WorldToScreenPoint;
            
         }
         if(_activeChar)
