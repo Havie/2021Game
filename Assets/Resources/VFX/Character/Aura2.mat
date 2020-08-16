@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AuraMat
-  m_Shader: {fileID: -6465566751694194690, guid: fd650c222f1d23d40b527fbcd7dfecf0,
+  m_Name: Aura2
+  m_Shader: {fileID: -6465566751694194690, guid: 1124b5e732b44d0479416b5399b8a70a,
     type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 4
@@ -20,15 +20,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - Texture2D_EE0A9A8A:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: c11c606dd1f897246935370a585a09b9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - Vector1_1859FDC1: 0
-    - Vector1_94EFCF0B: 5
-    m_Colors: []
+    m_Floats: []
+    m_Colors:
+    - Color_18F9B8B4: {r: 1.754717, g: 0, b: 0, a: 0}

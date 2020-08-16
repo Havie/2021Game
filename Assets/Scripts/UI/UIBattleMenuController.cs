@@ -32,7 +32,7 @@ public class UIBattleMenuController : MonoBehaviour
     private void Awake()
     {
         if (_canvas == null)
-            _canvas = this.transform.parent.GetComponent<Canvas>();
+            _canvas = this.transform.GetComponent<Canvas>();
         _canvas.worldCamera = Camera.main;
     }
 

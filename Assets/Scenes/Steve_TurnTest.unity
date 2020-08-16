@@ -1515,7 +1515,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &357692570
 Transform:
   m_ObjectHideFlags: 0
@@ -1542,6 +1542,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c75a3da6333b274da31e27d6a8a2364, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _characterToFollow: {fileID: 0}
 --- !u!199 &357692572
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -6280,7 +6281,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &386715249
 Transform:
   m_ObjectHideFlags: 0
@@ -12178,6 +12179,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: ArtificalBattleManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6365409101328124071, guid: a9a3ba618f3a82d43ab29cabdacae756,
+        type: 3}
+      propertyPath: chars.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6365409101328124071, guid: a9a3ba618f3a82d43ab29cabdacae756,
+        type: 3}
+      propertyPath: _chars.Array.size
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 6365409101328124070, guid: a9a3ba618f3a82d43ab29cabdacae756,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12232,16 +12243,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6365409101328124071, guid: a9a3ba618f3a82d43ab29cabdacae756,
-        type: 3}
-      propertyPath: chars.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6365409101328124071, guid: a9a3ba618f3a82d43ab29cabdacae756,
-        type: 3}
-      propertyPath: _chars.Array.size
-      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a9a3ba618f3a82d43ab29cabdacae756, type: 3}
@@ -13560,8 +13561,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1259889338}
   - component: {fileID: 1259889337}
+  - component: {fileID: 1259889339}
   m_Layer: 0
-  m_Name: testmat
+  m_Name: CharacterAura
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13584,7 +13586,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 04cf4aa83d7a0604b9469860856cf989, type: 2}
+  - {fileID: 2100000, guid: 6c982004aeaffb5498e9868652e06cc4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -13605,7 +13607,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a7fcc5cf7cf2e254d84758eb27f20423, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8f3ee4178ceb89e44832fd34d7f9c867, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -13623,13 +13625,26 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1259889336}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: -0.869}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 1.655, y: -0.392, z: 0.315}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &1259889339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1259889336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c75a3da6333b274da31e27d6a8a2364, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterToFollow: {fileID: 1188228295}
 --- !u!1 &1280668134
 GameObject:
   m_ObjectHideFlags: 0

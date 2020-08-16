@@ -4,7 +4,17 @@ using UnityEngine.AI;
 
 public class CreateMovementLine : MonoBehaviour
 {
-    public CreateMovementLine Instance { get; private set; }
+
+    private static CreateMovementLine _instance;
+    public static CreateMovementLine Instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = GameObject.FindObjectOfType<CreateMovementLine>();
+            return _instance;
+        }
+    }
 
     private Transform _startTrans;
     // The transform of the end positions (the cursor)
@@ -33,15 +43,12 @@ public class CreateMovementLine : MonoBehaviour
     // Called 0th
     private void Awake()
     {
-        if (Instance == null)
-            Instance = this;
+        if (_instance == null)
+            _instance = this;
+        if (_instance != this)
+            Destroy(this);
     }
-    // Called when the gameobject is destroyed
-    private void OnDestroy()
-    {
-        if (Instance == this)
-            Instance = null;
-    }
+
 
     // Called 1st
     private void Start()
@@ -60,7 +67,7 @@ public class CreateMovementLine : MonoBehaviour
     /// Enables the line preview.
     /// </summary>
     /// <param name="_charToMove_">MovementController of the character that will be moving.</param>
-    private void EnablePathPreview(MovementController _charToMove_)
+    public void EnablePathPreview(MovementController _charToMove_)
     {
         _curCharaMove = _charToMove_;
         _startTrans = _charToMove_.transform;
@@ -70,7 +77,7 @@ public class CreateMovementLine : MonoBehaviour
     /// <summary>
     /// Disables the line preview.
     /// </summary>
-    private void DisablePathPreview()
+    public void DisablePathPreview()
     {
         _curCharaMove = null;
         _startTrans = null;

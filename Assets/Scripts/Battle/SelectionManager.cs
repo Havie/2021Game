@@ -117,6 +117,8 @@ public class SelectionManager : MonoBehaviour
             if(_selectionState == eSelectionState.MOVE)
             {
                 //Turn off cursor mode 
+                CursorController.Instance.ToggleCursosr(false);
+                CreateMovementLine.Instance.DisablePathPreview();
             }
 
             _selectionState = eSelectionState.MENU;
@@ -154,7 +156,8 @@ public class SelectionManager : MonoBehaviour
         //Turn off the Menu
         _activeChar.ShowBattleMenu(false);
         //ToDo enable the cursor mode 
-
+        CursorController.Instance.ToggleCursosr(true);
+        CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>());
     }
 
     //UI - TMP Debugging
