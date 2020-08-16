@@ -31,11 +31,7 @@ public class CreateMovementLine : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        // When the cursor moves, make a new path preview
-        if (InputController.GetHasCursorMoved())
-        {
-            CreatePathPreview();     
-        }
+        CreatePathPreview();     
     }
 
     /// <summary>
@@ -50,36 +46,35 @@ public class CreateMovementLine : MonoBehaviour
         }
         _dotLines.Clear();
 
-        // Get the cursor's current ground position
-        Vector3 cursorPos = InputController.GetCursorRayWorldPosition(LayerMask.GetMask("Ground"));
-        if (cursorPos != Vector3.negativeInfinity)
+        // Get the start and end positions
+        Vector3 startPos = _startTrans.transform.position;
+        Vector3 endPos = _endTrans.transform.position;
+
+        // Fake path with these positions to create a path
+        NavMeshPath path = _curCharaMove.GetPotentialPath(endPos);
+
+        // Iterate over the corners and create a dotted line between subsequent corners
+        Vector3 curPos = startPos;
+        float leftover = 0;
+        foreach (Vector3 corner in path.corners)
         {
-            // Get the start and end positions
-            Vector3 startPos = _startTrans.transform.position;
-            Vector3 endPos = _endTrans.transform.position;
+            Vector3 sub = (corner - curPos);
+            Vector3 dir = sub.normalized;
 
-            // Fake path with these positions to create a path
-            NavMeshPath path = _curCharaMove.GetPotentialPath(endPos);
+            // Create the dotted lines
+            Vector3 lineStart = curPos + dir * leftover;
+            lineStart.y = 0;
+            Vector3 lineEnd = corner;
+            lineEnd.y = 0;
+            _dotLines.Add(new DottedLine(_dotPref, _size, _delta, lineStart, lineEnd));
 
-            // Iterate over the corners and create a dotted line between subsequent corners
-            Vector3 curPos = startPos;
-            float leftover = 0;
-            foreach (Vector3 corner in path.corners)
-            {
-                Vector3 sub = (corner - curPos);
-                Vector3 dir = sub.normalized;
-                
-                // Create the dotted lines
-                _dotLines.Add(new DottedLine(_dotPref, _size, _delta, curPos + dir * leftover, corner));
+            float dist = sub.magnitude;
+            float amDots = dist / _delta;
+            leftover = (1 - (amDots - Mathf.FloorToInt(amDots))) * _delta;
+            if (leftover > 1 || leftover < 0)
+                leftover = 0;
 
-                float dist = sub.magnitude;
-                float amDots = dist / _delta;
-                leftover = (1 - (amDots - Mathf.FloorToInt(amDots))) * _delta;
-                if (leftover > 1 || leftover < 0)
-                    leftover = 0;
-
-                curPos = corner;
-            }
+            curPos = corner;
         }
     }
 }

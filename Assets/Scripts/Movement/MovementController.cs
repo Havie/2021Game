@@ -37,7 +37,7 @@ public class MovementController : MonoBehaviour
         {
             Debug.Log("PressedDown");
             // Get the mouse's raycast world position
-            Vector3 hitPos = InputController.GetCursorRayWorldPosition();
+            Vector3 hitPos = CursorController.Instance.GetCursorPosition();
             if (hitPos != Vector3.negativeInfinity)
             {
                 DoMovement(hitPos);
