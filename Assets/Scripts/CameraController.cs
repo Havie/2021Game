@@ -60,6 +60,7 @@ public class CameraController : MonoBehaviour
     /// <param name="_newPos_">New position for the camera view's center.</param>
     public void MoveCameraToPos(Vector3 _newPos_)
     {
+        Debug.Log("CALLED");
         if (_newPos_.x != float.NegativeInfinity &&
             _newPos_.y != float.NegativeInfinity &&
             _newPos_.z != float.NegativeInfinity)

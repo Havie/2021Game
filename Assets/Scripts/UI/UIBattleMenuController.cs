@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using Button = UnityEngine.UI.Button;
 
-[RequireComponent(typeof(Canvas))]
+
 public class UIBattleMenuController : MonoBehaviour
 {
     public Canvas _canvas;
@@ -32,7 +32,7 @@ public class UIBattleMenuController : MonoBehaviour
     private void Awake()
     {
         if (_canvas == null)
-            _canvas = this.GetComponent<Canvas>();
+            _canvas = this.transform.parent.GetComponent<Canvas>();
         _canvas.worldCamera = Camera.main;
     }
 
@@ -43,21 +43,26 @@ public class UIBattleMenuController : MonoBehaviour
     }
     private void OnEnable()
     {
-        ShowMenu(true);
+        ShowMenu(true,null);
     }
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.O))
-            ShowMenu(true);
+            ShowMenu(true, null);
         if (Input.GetKeyDown(KeyCode.C))
-            ShowMenu(false);
+            ShowMenu(false, null);
+
+ 
     }
     public void SetName(string name)  { _name.text = name;}
 
-    public void ShowMenu(bool cond)
+    public void ShowMenu(bool cond, Transform t)
     {
+        if (t)
+            this.transform.position = t.position;
+
         _subpanelAnimator.SetBool("Open", cond);
        for(int i=0; i<_menuButtons.Length; ++i)
         {

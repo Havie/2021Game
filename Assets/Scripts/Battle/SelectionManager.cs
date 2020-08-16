@@ -114,6 +114,11 @@ public class SelectionManager : MonoBehaviour
     {
         if (_activeChar)
         {
+            if(_selectionState == eSelectionState.MOVE)
+            {
+                //Turn off cursor mode 
+            }
+
             _selectionState = eSelectionState.MENU;
             _activeChar.ShowBattleMenu(true);
         }
@@ -149,6 +154,7 @@ public class SelectionManager : MonoBehaviour
         //Turn off the Menu
         _activeChar.ShowBattleMenu(false);
         //ToDo enable the cursor mode 
+
     }
 
     //UI - TMP Debugging
