@@ -17,7 +17,36 @@ public class InputController
     }
 
     /// <summary>
-    /// Returns the cursor's position in pixel coordinates.
+    /// Returns a Vector2 that represents how the cursor should move.
+    /// </summary>
+    /// <returns>Vector2</returns>
+    public static Vector2 GetCursorMoveAxis()
+    {
+        Vector2 arrowVect = Vector2.zero;
+
+        if (Input.GetKey(KeyCode.LeftArrow))
+            arrowVect.x = -1;
+        else if (Input.GetKey(KeyCode.RightArrow))
+            arrowVect.x = 1;
+        if (Input.GetKey(KeyCode.DownArrow))
+            arrowVect.y = -1;
+        else if (Input.GetKey(KeyCode.UpArrow))
+            arrowVect.y = 1;
+
+        Vector2 mouseVect = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+
+        Vector2 rtnVect = mouseVect;
+        if (Mathf.Abs(arrowVect.x) > Mathf.Abs(mouseVect.x))
+            rtnVect.x = arrowVect.x;
+        if (Mathf.Abs(arrowVect.y) > Mathf.Abs(mouseVect.y))
+            rtnVect.y = arrowVect.y;
+
+        return rtnVect;
+    }
+
+    /// <summary>
+    /// DEPRECATED
+    /// Returns the cursor's position in the world.
     /// </summary>
     /// <returns>Vector3</returns>
     public static Vector3 GetCursorPosition()
@@ -26,6 +55,7 @@ public class InputController
     }
 
     /// <summary>
+    /// DEPRECATED
     /// Casts a ray from the cursor to the world using Physics.Raycast.
     /// If it hits something, it returns the position of the hit, otherwise returns Vector3.negativeInfinitiy;
     /// </summary>
@@ -37,6 +67,7 @@ public class InputController
     }
 
     /// <summary>
+    /// DEPRECATED
     /// Casts a ray from the cursor to the world using Physics.Raycast.
     /// If Physics.Raycast returns true, it returns the position of the hit, otherwise returns Vector3.negativeInfinitiy.
     /// Accepts a RaycastHit as output.
@@ -57,6 +88,7 @@ public class InputController
     }
 
     /// <summary>
+    /// DEPRECATED
     /// Casts a ray from the cursor to the world using Physics.Raycast.
     /// If Physics.Raycast returns true, it returns the position of the hit, otherwise returns Vector3.negativeInfinitiy.
     /// Only casts the ray on a specific layermask
@@ -70,6 +102,7 @@ public class InputController
     }
 
     /// <summary>
+    /// DEPRECATED
     /// Casts a ray from the cursor to the world using Physics.Raycast.
     /// If Physics.Raycast returns true, it returns the position of the hit, otherwise returns Vector3.negativeInfinitiy.
     /// Accepts a RaycastHit as output.
@@ -92,6 +125,7 @@ public class InputController
     }
 
     /// <summary>
+    /// DEPRECATED
     /// Returns true when the cursor changes position.
     /// </summary>
     /// <returns>bool</returns>
