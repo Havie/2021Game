@@ -207,7 +207,7 @@ public class SelectionManager : MonoBehaviour
     private void MoveClick(Vector3 mousePos)
     {
         Debug.Log("MoveClick");
-        if (_activeChar)
+        if (_activeChar && false)
         {
             Ray ray = Camera.main.ScreenPointToRay(mousePos);
             RaycastHit hit;
@@ -220,12 +220,21 @@ public class SelectionManager : MonoBehaviour
                     {
                         var mc = _activeChar.GetComponent<MovementController>();
                         if (mc)
-                            mc.DoMovement(InputController.GetCursorRayWorldPosition());
-                        
+                            mc.DoMovement(CursorController.Instance.GetCursorPosition());
+
+                        //mc.DoMovement(InputController.GetCursorRayWorldPosition());
+
                     }
                 }
             }
            
+        }
+        if(_activeChar)
+        {
+            var mc = _activeChar.GetComponent<MovementController>();
+            if (mc)
+                mc.DoMovement(CursorController.Instance.GetCursorPosition());
+
         }
     }
     /**
