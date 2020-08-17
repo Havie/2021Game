@@ -7,11 +7,33 @@ public class VFXAura : MonoBehaviour
 {
     // This script exists due to 2D billboard rotations messing this effect up
     Material _mat;
+    //Not sure how to set these statically
+    public enum eColorChoice { WHITE, RED, PURPLE};
+    public eColorChoice _color;
 
     private void Awake()
     {
         if (_mat == null)
             _mat = this.GetComponent<SpriteRenderer>().material;
+
+        switch(_color)
+        {
+            case eColorChoice.WHITE:
+                {
+                    SetColor(ColorManager.Instance._white);
+                    break;
+                }
+            case eColorChoice.RED:
+                {
+                    SetColor(ColorManager.Instance._red);
+                    break;
+                }
+            case eColorChoice.PURPLE:
+                {
+                    SetColor(ColorManager.Instance._purple);
+                    break;
+                }
+        }
     }
     void LateUpdate()
     {
@@ -22,6 +44,8 @@ public class VFXAura : MonoBehaviour
 
         //TODO
         //If enemies are in range (hit collider?) Activate their glow 
+
+       
 
     }
     public void SetColor(Color c)
