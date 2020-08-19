@@ -116,8 +116,8 @@ public class SelectionManager : MonoBehaviour
         {
             if(_selectionState == eSelectionState.MOVE)
             {
-                //Turn off cursor mode 
-                CursorController.Instance.ToggleCursosr(false);
+                // Turn on cursor mode 
+                CursorController.Instance.ToggleCursosr(true);
                 CreateMovementLine.Instance.DisablePathPreview();
             }
 
@@ -134,7 +134,7 @@ public class SelectionManager : MonoBehaviour
         //Might want to handle this inside the PLayable script-we'll see 
         //p.ShowBattleMenu(cond);
 
-        SpriteRenderer sp = p.GetComponent<SpriteRenderer>();
+        SpriteRenderer sp = p.GetSpriteRenderer();
         if (sp)
         {
             p.SetSelected(cond);
@@ -152,7 +152,6 @@ public class SelectionManager : MonoBehaviour
     }
     public void EnableMove(bool cond)
     {
-        Debug.Log("EnableMove");
         _selectionState = eSelectionState.MOVE;
         //Turn off the Menu
         _activeChar.ShowBattleMenu(false);

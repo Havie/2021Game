@@ -33,10 +33,22 @@ public class DottedLine
         Vector3 point = _start_;
         Vector3 direction = (_end_ - _start_).normalized;
 
-        while ((_end_ - _start_).magnitude > (point - _start_).magnitude)
+        if (direction != Vector3.zero)
         {
-            _positions.Add(point);
-            point += (direction * _delta);
+            int maxInf = 100;
+            int infCheck = 0;
+            while ((_end_ - _start_).magnitude > (point - _start_).magnitude)
+            {
+                _positions.Add(point);
+                point += (direction * _delta);
+
+                if (++infCheck > maxInf)
+                {
+                    Debug.Log(direction);
+                    Debug.LogError("Infinite Dots");
+                    return;
+                }
+            }
         }
 
         // Spawn the dots
