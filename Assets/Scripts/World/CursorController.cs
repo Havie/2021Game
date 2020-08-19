@@ -65,10 +65,11 @@ public class CursorController : MonoBehaviour
                     _camFollow = false;
                 }
 
-                Vector3 mouseWorldPos = InputController.GetCursorRayWorldPosition();
+                int groundMask = LayerMask.GetMask("Ground");
+                Vector3 mouseWorldPos = InputController.GetCursorRayWorldPosition(groundMask);
                 if (mouseWorldPos.x != float.NegativeInfinity && mouseWorldPos.z != float.NegativeInfinity)
                 {
-                    mouseWorldPos.y = 0;
+                    //mouseWorldPos.y = 0;
                     this.transform.position = mouseWorldPos;
                 }
             }
