@@ -33,20 +33,12 @@ public class InputController
         else if (Input.GetKey(KeyCode.UpArrow))
             arrowVect.y = 1;
 
-        Vector2 mouseVect = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-
-        Vector2 rtnVect = mouseVect;
-        if (Mathf.Abs(arrowVect.x) > Mathf.Abs(mouseVect.x))
-            rtnVect.x = arrowVect.x;
-        if (Mathf.Abs(arrowVect.y) > Mathf.Abs(mouseVect.y))
-            rtnVect.y = arrowVect.y;
-
-        return rtnVect;
+        return arrowVect;
     }
 
     /// <summary>
     /// DEPRECATED
-    /// Returns the cursor's position in the world.
+    /// Returns the cursor's position on the screen.
     /// </summary>
     /// <returns>Vector3</returns>
     public static Vector3 GetCursorPosition()
@@ -55,7 +47,6 @@ public class InputController
     }
 
     /// <summary>
-    /// DEPRECATED
     /// Casts a ray from the cursor to the world using Physics.Raycast.
     /// If it hits something, it returns the position of the hit, otherwise returns Vector3.negativeInfinitiy;
     /// </summary>
@@ -67,7 +58,6 @@ public class InputController
     }
 
     /// <summary>
-    /// DEPRECATED
     /// Casts a ray from the cursor to the world using Physics.Raycast.
     /// If Physics.Raycast returns true, it returns the position of the hit, otherwise returns Vector3.negativeInfinitiy.
     /// Accepts a RaycastHit as output.
@@ -88,7 +78,6 @@ public class InputController
     }
 
     /// <summary>
-    /// DEPRECATED
     /// Casts a ray from the cursor to the world using Physics.Raycast.
     /// If Physics.Raycast returns true, it returns the position of the hit, otherwise returns Vector3.negativeInfinitiy.
     /// Only casts the ray on a specific layermask
@@ -102,7 +91,6 @@ public class InputController
     }
 
     /// <summary>
-    /// DEPRECATED
     /// Casts a ray from the cursor to the world using Physics.Raycast.
     /// If Physics.Raycast returns true, it returns the position of the hit, otherwise returns Vector3.negativeInfinitiy.
     /// Accepts a RaycastHit as output.
@@ -125,11 +113,10 @@ public class InputController
     }
 
     /// <summary>
-    /// DEPRECATED
     /// Returns true when the cursor changes position.
     /// </summary>
     /// <returns>bool</returns>
-    public static bool GetHasCursorMoved()
+    public static bool GetHasMouseMoved()
     {
         if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
             return true;

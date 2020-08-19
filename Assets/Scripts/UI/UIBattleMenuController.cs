@@ -116,6 +116,7 @@ public class UIBattleMenuController : MonoBehaviour
 
     private void DoMove()
     {
+        Debug.Log("Move");
         SelectionManager.Instance.EnableMove(true);
     }
     private void DoAttack()
@@ -125,7 +126,7 @@ public class UIBattleMenuController : MonoBehaviour
     }
     private void DoEndTurn()
     {
-        cEventSystem.Instance.AdvanceCharacterTurn();
+        //cEventSystem.Instance.AdvanceCharacterTurn();
     }
 
 

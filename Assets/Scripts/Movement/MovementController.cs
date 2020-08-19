@@ -32,18 +32,6 @@ public class MovementController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        // If the player inputted to select
-        /*if (InputController.GetSelectPressDown())
-        {
-            Debug.Log("PressedDown");
-            // Get the mouse's raycast world position
-            Vector3 hitPos = CursorController.Instance.GetCursorPosition();
-            if (hitPos != Vector3.negativeInfinity)
-            {
-                DoMovement(hitPos);
-            }
-        }*/
-
         if (_agentThinking && _agent.hasPath)
         {
             _isMoving = true;
@@ -67,8 +55,8 @@ public class MovementController : MonoBehaviour
         {
             Debug.Log("DoMovement");
             // Move our agent
-            _agent.SetDestination(_pos_);
-            _agentThinking = true;
+            //_agent.SetDestination(_pos_);
+            //_agentThinking = true;
         }
     }
 

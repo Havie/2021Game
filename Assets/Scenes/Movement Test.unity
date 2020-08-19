@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -289,7 +289,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f5e452cc1c1ec49a284a8a4c38f153, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _startTrans: {fileID: 1275091436}
   _endTrans: {fileID: 980737968}
   _dotPref: {fileID: 1194622560550187157, guid: 848cce45a1753d74b8d2493321388b66,
     type: 3}
