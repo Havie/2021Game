@@ -2,6 +2,10 @@
 
 public class Playable : MonoBehaviour
 {
+    // SpriteRenderer for this Playable
+    [SerializeField]
+    private SpriteRenderer _sprRend = null;
+
     public bool _isActive;
     public bool _isSelected;
     private TurnManager _turnManager;
@@ -61,6 +65,15 @@ public class Playable : MonoBehaviour
     {
         if (_battleMenu)
             _battleMenu.SetActive(cond);
+    }
+
+    /// <summary>
+    /// Returns the SpriteRenderer of this playable.
+    /// </summary>
+    /// <returns>SpriteRenderer</returns>
+    public SpriteRenderer GetSpriteRenderer()
+    {
+        return _sprRend;
     }
 
 }

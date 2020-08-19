@@ -16,7 +16,6 @@ public class CreateMovementLine : MonoBehaviour
         }
     }
 
-    private Transform _startTrans;
     // The transform of the end positions (the cursor)
     [SerializeField]
     private Transform _endTrans = null;
@@ -70,7 +69,6 @@ public class CreateMovementLine : MonoBehaviour
     public void EnablePathPreview(MovementController _charToMove_)
     {
         _curCharaMove = _charToMove_;
-        _startTrans = _charToMove_.transform;
         _previewEnabled = true;
     }
 
@@ -80,7 +78,6 @@ public class CreateMovementLine : MonoBehaviour
     public void DisablePathPreview()
     {
         _curCharaMove = null;
-        _startTrans = null;
         _previewEnabled = false;
     }
 
@@ -97,12 +94,14 @@ public class CreateMovementLine : MonoBehaviour
         _dotLines.Clear();
 
         // Get the start and end positions
-        Vector3 startPos = _startTrans.transform.position;
+        Vector3 startPos = _curCharaMove.transform.position;
         Vector3 endPos = _endTrans.transform.position;
 
+        
         // Fake path with these positions to create a path
         NavMeshPath path = _curCharaMove.GetPotentialPath(endPos);
 
+        
         // Iterate over the corners and create a dotted line between subsequent corners
         Vector3 curPos = startPos;
         float leftover = 0;
@@ -116,7 +115,8 @@ public class CreateMovementLine : MonoBehaviour
             lineStart.y = 0;
             Vector3 lineEnd = corner;
             lineEnd.y = 0;
-            _dotLines.Add(new DottedLine(_dotPref, _size, _delta, lineStart, lineEnd));
+            DottedLine dl = new DottedLine(_dotPref, _size, _delta, lineStart, lineEnd);
+            _dotLines.Add(dl);
 
             float dist = sub.magnitude;
             float amDots = dist / _delta;
