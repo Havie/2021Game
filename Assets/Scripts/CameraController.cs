@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    // Singleton
+    public static CameraController Instance { get; private set; }
+
     // Reference to the camera's center of rotation
     [SerializeField]
     private Transform _camRotCenterTrans;
@@ -16,7 +19,20 @@ public class CameraController : MonoBehaviour
     // How fast the camera should move (per sec)
     private const float MOVE_SPEED = 0.07f;
 
+    // The distance away to snap from
     private const float SNAP_DIST = 0f;
+
+    // Called 0th
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+        {
+            Debug.LogError("There should never be two CameraControllers in the scene");
+            Destroy(this.gameObject);
+        }
+    }
 
     // Update is called once per frame
     private void Update()
@@ -129,7 +145,7 @@ public class CameraController : MonoBehaviour
     /// </summary>
     public void StopFollowingCharacter()
     {
-        StopCoroutine(FollowCharacter(null));
+        StopAllCoroutines();
     }
 
     /// <summary>

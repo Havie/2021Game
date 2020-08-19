@@ -152,6 +152,7 @@ public class SelectionManager : MonoBehaviour
     }
     public void EnableMove(bool cond)
     {
+        Debug.Log("EnableMove");
         _selectionState = eSelectionState.MOVE;
         //Turn off the Menu
         _activeChar.ShowBattleMenu(false);
@@ -216,6 +217,7 @@ public class SelectionManager : MonoBehaviour
     private void MoveClick(Vector3 mousePos)
     {
         Debug.Log("MoveClick");
+        /*
         if (_activeChar && false)
         {
             Ray ray = Camera.main.ScreenPointToRay(mousePos);
@@ -229,7 +231,7 @@ public class SelectionManager : MonoBehaviour
                     {
                         var mc = _activeChar.GetComponent<MovementController>();
                         if (mc)
-                            mc.DoMovement(CursorController.Instance.GetCursorPosition());
+                            mc.DoMovement(CursorController.Instance.transform.position);
 
                         //mc.DoMovement(InputController.GetCursorRayWorldPosition());
 
@@ -239,11 +241,12 @@ public class SelectionManager : MonoBehaviour
            // Camera.WorldToScreenPoint;
            
         }
+        */
         if(_activeChar)
         {
-            var mc = _activeChar.GetComponent<MovementController>();
+            MovementController mc = _activeChar.GetComponent<MovementController>();
             if (mc)
-                mc.DoMovement(CursorController.Instance.GetCursorPosition());
+                mc.DoMovement(CursorController.Instance.transform.position);
 
         }
     }
