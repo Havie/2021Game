@@ -1,4 +1,5 @@
 ﻿using Animancer.Examples.Events;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -76,7 +77,15 @@ public class Officer : MonoBehaviour
 
     }
 
+    internal int GetMorale()
+    {
+        Debug.LogWarning("Need to base this off of skills -- Used by TurnManager");
+        return UnityEngine.Random.Range(9, 19);
+    }
 
-
-
+    internal Sprite GetPortrait()
+    {
+        Debug.LogWarning("Need to clean this up from calling ref");
+       return  GetArtSet()._portrait;
+    }
 }

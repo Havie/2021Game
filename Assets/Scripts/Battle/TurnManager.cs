@@ -80,7 +80,7 @@ public class TurnManager
                 Debug.Log(go);
                 if (!newOrder.Contains(go))
                 {
-                    cGeneral general = go.GetComponent<cGeneral>();
+                    Officer general = go.GetComponent<Officer>();
                     if (general)
                     {
                         if (general.GetMorale() > highestMorale)

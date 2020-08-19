@@ -23,7 +23,7 @@ public class Playable : MonoBehaviour
                 child.gameObject.SetActive(false);
                 _battleMenu = child.gameObject;
                 _isCharacter = true;
-                cGeneral general= this.GetComponent<cGeneral>();
+                Officer general = this.GetComponent<Officer>();
                 UIBattleMenuController uibmc = _battleMenu.GetComponent<UIBattleMenuController>();
                 if (general && uibmc)
                     uibmc.SetName(general.GetName());

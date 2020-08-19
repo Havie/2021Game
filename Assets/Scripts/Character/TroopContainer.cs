@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TroopContainer : MonoBehaviour
@@ -14,6 +15,11 @@ public class TroopContainer : MonoBehaviour
     private int _hp;
 
     public bool test;
+
+    internal void Init()
+    {
+        Debug.Log("Todo Init");
+    }
 
     #region animations 
     // Might only use these for *juice* death anims on field
@@ -37,7 +43,7 @@ public class TroopContainer : MonoBehaviour
     public int GetHPMAX() => _hpMAX;
     public eTroopType GetType() => _type;
 
-    public void AssignArmy(Army a) { Debug.Log("TODO"); }
+    public void AssignArmy(Army a) { Debug.Log("TODO AssignArmy"); }
     public int SetType(eTroopType t)
     {
         _type = t;
@@ -108,10 +114,7 @@ public class TroopContainer : MonoBehaviour
 
 
     }
-    private int RNG()
-    {
-        return Random.Range(1, 90);
-    }
+    private int RNG() => UnityEngine.Random.Range(1, 90);
 
 
 }

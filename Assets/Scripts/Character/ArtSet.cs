@@ -7,7 +7,6 @@ using UnityEngine;
 public class ArtSet : MonoBehaviour
 {
 
-    private TroopDetails _troops;
     public Sprite _portrait;
 
 
