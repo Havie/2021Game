@@ -34,7 +34,7 @@ public class TroopDetails : MonoBehaviour
     public int GetDefense() { return _unitStats != null ? (_unitStats.GetDefense()) : 0; }
     public int GetWill() { return _unitStats != null ? (_unitStats.GetWill()) : 0; }
     public int GetMoveSpeed() { return _unitStats != null ? (_unitStats.GetMoveSpeed()) : 0; }
-    public int GetAP() { return _unitStats != null ? (_unitStats.GetAP()) : 0; }
+    public int GetAP() { return _unitStats != null ? (0) : 0; }
     public int GetHP() => _hp;
     public int GetHPMAX() => _hpMAX;
 
@@ -43,10 +43,7 @@ public class TroopDetails : MonoBehaviour
 
     public void Init()
     {
-
-        _unitStats = new UnitStats(RNG(), RNG(), RNG(), RNG(), RNG(), RNG());
-        if (test)
-            _unitStats.setMorale(100);
+        //OLD VERSION USE TROOPCONTAINER
     }
     private int RNG()
     {

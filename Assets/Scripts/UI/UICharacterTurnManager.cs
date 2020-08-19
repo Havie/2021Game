@@ -135,9 +135,7 @@ public class UICharacterTurnManager : MonoBehaviour
                 //Debug.LogWarning(ch._portrait.name);
             }
         }
-        //_currentChar = _newTurns[0];
-        // _newTurns.Remove(_currentChar);
-        // SetPortrait(2, _currentChar);
+
         AdvanceTurn();
         ResetBothSides();
     }

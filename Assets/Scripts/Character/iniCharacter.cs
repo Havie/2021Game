@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(TroopDetails))]
 [RequireComponent(typeof(Faction))]
-[RequireComponent(typeof(cGeneral))]
+[RequireComponent(typeof(Officer))]
 [RequireComponent(typeof(Playable))]
 public class iniCharacter : MonoBehaviour
 {
@@ -12,12 +12,12 @@ public class iniCharacter : MonoBehaviour
     {
         TroopDetails troopDet = this.GetComponent<TroopDetails>();
         Faction fact = this.GetComponent<Faction>();
-        cGeneral general = this.GetComponent<cGeneral>();
+        Officer officer = this.GetComponent<Officer>();
         Playable play = this.GetComponent<Playable>();
 
         troopDet.Init();
         fact.Init();
-        general.Init();
+        officer.Init();
         play.Init();
     }
 }
