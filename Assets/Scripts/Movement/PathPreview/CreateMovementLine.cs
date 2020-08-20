@@ -77,6 +77,7 @@ public class CreateMovementLine : MonoBehaviour
     /// </summary>
     public void DisablePathPreview()
     {
+        ClearDottedLines();
         _curCharaMove = null;
         _previewEnabled = false;
         //TODO
@@ -88,12 +89,8 @@ public class CreateMovementLine : MonoBehaviour
     /// </summary>
     private void CreatePathPreview()
     {
-        // Destroy all the current dotted lines
-        foreach (DottedLine dLine in _dotLines)
-        {
-            dLine.DestroyDots();
-        }
-        _dotLines.Clear();
+        // Clear the last lines
+        ClearDottedLines();
 
         // Get the start and end positions
         Vector3 startPos = _curCharaMove.transform.position;
@@ -128,5 +125,18 @@ public class CreateMovementLine : MonoBehaviour
 
             curPos = corner;
         }
+    }
+
+    /// <summary>
+    /// Gets rid of all the dots and clears the list of lines.
+    /// </summary>
+    private void ClearDottedLines()
+    {
+        // Destroy all the current dotted lines
+        foreach (DottedLine dLine in _dotLines)
+        {
+            dLine.DestroyDots();
+        }
+        _dotLines.Clear();
     }
 }

@@ -200,9 +200,22 @@ public class SelectionManager : MonoBehaviour
         Debug.Log("MoveClick");
         if(_activeChar)
         {
+            
             MovementController mc = _activeChar.GetComponent<MovementController>();
             if (mc)
+            {
+                // Hide the cursor and stop drawing a path
+                CreateMovementLine.Instance.DisablePathPreview();
+                CursorController.Instance.ToggleCursosr(false);
+
+                // Follow the character who will move
+                CameraController.Instance.BeginFollowingCharacter(mc.transform);
                 mc.DoMovement(CursorController.Instance.transform.position);
+            }
+            else
+            {
+                Debug.LogError("Character did no have a Movement Controller");
+            }
 
         }
     }
