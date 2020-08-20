@@ -127,7 +127,7 @@ public class UICharacterTurnManager : MonoBehaviour
         foreach (GameObject g in characters)
         {
             //Get the Portrait, the transform and faction from characters
-            cGeneral general = g.GetComponent<cGeneral>();
+            Officer general = g.GetComponent<Officer>();
             if (general)
             {
                 CharacterHolder ch = new CharacterHolder(general.GetPortrait(), g.transform, general.GetFaction().IsHuman(), general.GetName());
@@ -135,9 +135,7 @@ public class UICharacterTurnManager : MonoBehaviour
                 //Debug.LogWarning(ch._portrait.name);
             }
         }
-        //_currentChar = _newTurns[0];
-        // _newTurns.Remove(_currentChar);
-        // SetPortrait(2, _currentChar);
+
         AdvanceTurn();
         ResetBothSides();
     }

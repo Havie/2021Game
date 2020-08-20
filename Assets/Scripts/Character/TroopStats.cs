@@ -2,7 +2,7 @@
 using UnityEngine;
 
 //Used by Generals and Troops
-public class UnitStats
+public class TroopStats
 {
 
     #region statsMAX	
@@ -23,7 +23,7 @@ public class UnitStats
     private int _ap;
     #endregion
 
-    public UnitStats(int m, int a, int d, int w, int ms, int ap)
+    public TroopStats(int m, int a, int d, int w, int ms, int ap)
     {
         _morale = m;
         _attack = a;

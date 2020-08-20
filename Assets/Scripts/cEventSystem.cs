@@ -16,7 +16,7 @@ public class cEventSystem : MonoBehaviour
     public event CharacterTurnEnd ACT;
 
 
-    public delegate void characterDied(cGeneral general);
+    public delegate void characterDied(Officer officer);
     public event characterDied characterDead; 
 
                                        

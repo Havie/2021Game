@@ -9,7 +9,7 @@ using UnityEngine;
 public class Army : MonoBehaviour
 {
     Faction _faction;
-    [SerializeField] cGeneral[] _generals = new cGeneral[5];
+    [SerializeField] Officer[] _generals = new Officer[5];
     int _movementPoints;
 
 
@@ -18,7 +18,7 @@ public class Army : MonoBehaviour
         //Show our commanders avatar on the campaign map
         for (int i = 0; i < _generals.Length; ++i)
         {
-            cGeneral general = _generals[i];
+            Officer general = _generals[i];
             if (general != null)
             {
                 cAnimator animator= general.GetComponent<cAnimator>();
@@ -36,10 +36,11 @@ public class Army : MonoBehaviour
         int count = 0;
         for (int i = 0; i < _generals.Length; ++i)
         {
-            cGeneral general = _generals[i];
+            Officer general = _generals[i];
             if (general != null)
             {
-                totalMovement += general.GetAP();
+                //totalMovement += general.GetAP();
+                //Find New Solution
                 ++count;
             }
         }

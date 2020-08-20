@@ -71,15 +71,16 @@ public class TurnManager
         //Sort List based on character Morale. 
         List<GameObject> newOrder = new List<GameObject>(); //okay to create new or better to cache and clear?
         int iterations = _allPossible.Count;
-        int highestMorale = 0;
+        int highestMorale = -1;
         GameObject lastGo = null;
         while (iterations != 0)
         {
             foreach (GameObject go in _allPossible)
             {
+                Debug.Log(go);
                 if (!newOrder.Contains(go))
                 {
-                    cGeneral general = go.GetComponent<cGeneral>();
+                    Officer general = go.GetComponent<Officer>();
                     if (general)
                     {
                         if (general.GetMorale() > highestMorale)
@@ -92,7 +93,7 @@ public class TurnManager
                         Debug.LogError("passed in Character doesnt have a General");
                 }
             }
-            highestMorale = 0; //reset
+            highestMorale = -1; //reset
             newOrder.Add(lastGo);
             --iterations;
 

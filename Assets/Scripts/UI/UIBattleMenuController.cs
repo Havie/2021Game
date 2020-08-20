@@ -126,7 +126,7 @@ public class UIBattleMenuController : MonoBehaviour
     }
     private void DoEndTurn()
     {
-        //cEventSystem.Instance.AdvanceCharacterTurn();
+        cEventSystem.Instance.AdvanceCharacterTurn();
     }
 
 
