@@ -22,18 +22,23 @@ public class Playable : MonoBehaviour
         Transform child = this.transform.GetChild(0);
         if(child)
         {
+            Debug.LogWarning("This will have to change when Menu goes to screen space");
             if (child.gameObject.name.Equals("BattleMenu"))
             {
                 child.gameObject.SetActive(false);
                 _battleMenu = child.gameObject;
                 _isCharacter = true;
-                cGeneral general= this.GetComponent<cGeneral>();
+                Officer general = this.GetComponent<Officer>();
                 UIBattleMenuController uibmc = _battleMenu.GetComponent<UIBattleMenuController>();
                 if (general && uibmc)
                     uibmc.SetName(general.GetName());
             }
             
         }
+
+        //Used by selection manager frequently, so cache this
+        if (_sprRend == null)
+            _sprRend = this.GetComponentInChildren<SpriteRenderer>();
     }
     public bool IsActive() => _isActive;
     public bool IsSelected() => _isSelected;

@@ -19,7 +19,8 @@ namespace Animancer.Examples.Events
 
         //https://www.youtube.com/watch?v=nnrOhb5UdRc for state machine logic
         private int _lastId;
-        private EightDir.eDirection _direction= EightDir.eDirection.DOWN;
+        private EightDir.eDirection _direction = EightDir.eDirection.DOWN;
+        private ArtSet _artset;
 
         /************************************************************************************************************************/
         #region AnimancerProperties
@@ -65,6 +66,12 @@ namespace Animancer.Examples.Events
             // On startup, play the idle animation.
             _Animancer.Play(_idle[0]).Speed = 1f;
         }
+        public void SetArtSet(ArtSet a)
+        {
+            _artset = a;
+            //TODO use this in any meaningful way to cache the animations?
+            //Or store them here to make more efficient? Find a solution
+        }
         private void Update()
         {
             // Every update, check if the user has clicked the left mouse button (mouse button 0).
@@ -99,7 +106,7 @@ namespace Animancer.Examples.Events
 
         public void PlayAnim(int id)
         {
-           // Debug.Log("PlayAnim" + id);
+            // Debug.Log("PlayAnim" + id);
             switch (id)
             {
                 case 0:
@@ -112,7 +119,7 @@ namespace Animancer.Examples.Events
                     break;
                 case 2:
                     lastKnown.Clip = _S[(int)_direction].Clip;
-                   _Animancer.Play(lastKnown.Clip, 0.3f).Speed = 1f;
+                    _Animancer.Play(lastKnown.Clip, 0.3f).Speed = 1f;
                     // Time.timeScale = 0.5f;
                     break;
             }

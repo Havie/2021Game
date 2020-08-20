@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(TroopDetails))]
+[RequireComponent(typeof(TroopContainer))]
 [RequireComponent(typeof(Faction))]
-[RequireComponent(typeof(cGeneral))]
+[RequireComponent(typeof(Officer))]
 [RequireComponent(typeof(Playable))]
 public class iniCharacter : MonoBehaviour
 {
     public void Init()
     {
-        TroopDetails troopDet = this.GetComponent<TroopDetails>();
+        TroopContainer troopDet = this.GetComponent<TroopContainer>();
         Faction fact = this.GetComponent<Faction>();
-        cGeneral general = this.GetComponent<cGeneral>();
+        Officer officer = this.GetComponent<Officer>();
         Playable play = this.GetComponent<Playable>();
 
         troopDet.Init();
         fact.Init();
-        general.Init();
+        officer.Init();
         play.Init();
     }
 }
