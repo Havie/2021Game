@@ -39,10 +39,12 @@ public class MovementController : MonoBehaviour
         }
         else if(_isMoving && !_agent.hasPath)
         {
-            Debug.Log("Agent stopped");
+           // Debug.Log("Agent stopped");
             _isMoving = false;
             //TODO going to need more specific if as in if its this playables current turn etc
+            SelectionManager.Instance.EnableMove(false);
             SelectionManager.Instance.ShowBattleMenu();
+           
         }
     }
     /// <summary>
@@ -53,7 +55,7 @@ public class MovementController : MonoBehaviour
     {
         if (_pos_ != Vector3.negativeInfinity)
         {
-            Debug.Log("DoMovement");
+           // Debug.Log("DoMovement");
             // Move our agent
             _agent.SetDestination(_pos_);
             _agentThinking = true;

@@ -7,6 +7,9 @@ using Button = UnityEngine.UI.Button;
 
 public class UIBattleMenuController : MonoBehaviour
 {
+
+    public static UIBattleMenuController Instance { get; private set; }
+
     public Canvas _canvas;
 
     public TextMeshProUGUI _name;
@@ -22,6 +25,8 @@ public class UIBattleMenuController : MonoBehaviour
     delegate void DefaultActions();
     List<DefaultActions> defaultActions;
 
+    [SerializeField] Vector3 _offsetFromCharacter = new Vector3(75, -75, 0);
+
     private void CreateDefaultList()
     {
         defaultActions = new List<DefaultActions>();
@@ -31,8 +36,13 @@ public class UIBattleMenuController : MonoBehaviour
     }
     private void Awake()
     {
+        if (Instance == null)
+            Instance = this;
+        else
+            Debug.LogWarning("Multiple UIBattleMenuController in scene, should be a singleton");
+
         if (_canvas == null)
-            _canvas = this.transform.GetComponent<Canvas>();
+            _canvas = this.transform.GetComponentInParent<Canvas>();
         _canvas.worldCamera = Camera.main;
     }
 
@@ -40,28 +50,40 @@ public class UIBattleMenuController : MonoBehaviour
     void Start()
     {
         CreateDefaultList();
+        ShowMenu(false,Vector3.zero);
     }
     private void OnEnable()
     {
-        ShowMenu(true,null);
+       ShowMenu(true, Vector3.zero);
     }
+
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.O))
-            ShowMenu(true, null);
+            ShowMenu(true, Vector3.zero);
         if (Input.GetKeyDown(KeyCode.C))
-            ShowMenu(false, null);
-
- 
+            ShowMenu(false, Vector3.zero);
     }
     public void SetName(string name)  { _name.text = name;}
 
-    public void ShowMenu(bool cond, Transform t)
+
+    public void ShowMenu(bool cond, Vector3 worldPos, string name)
     {
-        if (t)
-            this.transform.position = t.position;
+        SetName(name);
+        ShowMenu(cond, worldPos);
+    }
+    public void ShowMenu(bool cond, Vector3 worldPos)
+    {
+        //I need to tie this Into the animations
+        if (!cond)
+            _subpanel.gameObject.SetActive(false);
+        else
+            _subpanel.gameObject.SetActive(true);
+
+        if (worldPos != Vector3.zero)
+            this.transform.position = ConvertToScreenSpace(worldPos);
 
         _subpanelAnimator.SetBool("Open", cond);
        for(int i=0; i<_menuButtons.Length; ++i)
@@ -72,6 +94,13 @@ public class UIBattleMenuController : MonoBehaviour
             if(cond)
                 SetButtonText(_menuButtons[i].GetComponentInChildren<TextMeshProUGUI>(), i );
         }
+
+
+
+    }
+    private Vector3 ConvertToScreenSpace(Vector3 pos)
+    {
+        return Camera.main.WorldToScreenPoint(pos) + _offsetFromCharacter;
     }
     private void SetButtonText(TextMeshProUGUI text, int index)
     {
@@ -126,6 +155,7 @@ public class UIBattleMenuController : MonoBehaviour
     }
     private void DoEndTurn()
     {
+        ShowMenu(false, Vector3.zero);
         cEventSystem.Instance.AdvanceCharacterTurn();
     }
 

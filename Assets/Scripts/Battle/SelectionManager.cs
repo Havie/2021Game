@@ -47,11 +47,12 @@ public class SelectionManager : MonoBehaviour
             _enemy = Resources.Load<Material>("Sprites/SelectionOutline_Enemy");
 
         if (_camera == null)
-            _camera = Camera.main.GetComponent<CameraController>();
+            _camera = Camera.main.GetComponentInParent<CameraController>();
     }
     void Start()
     {
-        
+        if (_camera == null)
+            Debug.LogWarning("camera is null, May have gotten moved from parent back to camera");
     }
 
     // Update is called once per frame
@@ -116,13 +117,12 @@ public class SelectionManager : MonoBehaviour
         {
             if(_selectionState == eSelectionState.MOVE)
             {
-                // Turn off cursor mode 
-                CursorController.Instance.ToggleCursosr(false);
                 CreateMovementLine.Instance.DisablePathPreview();
+                //this method doesnt disable the last known path Preview (TODO)
             }
 
             _selectionState = eSelectionState.MENU;
-            _activeChar.ShowBattleMenu(true);
+            UIBattleMenuController.Instance.ShowMenu(true, _activeChar.transform.position, _activeChar.name);
         }
     }
     private void SetSelected(Playable p, bool cond)
@@ -149,43 +149,25 @@ public class SelectionManager : MonoBehaviour
         //Tell the camera where to look
         if (_camera && cond)
             _camera.MoveCameraToPos(p.transform.position);
+
+       
     }
     public void EnableMove(bool cond)
     {
         _selectionState = eSelectionState.MOVE;
-        //Turn off the Menu
-        _activeChar.ShowBattleMenu(false);
-        //ToDo enable the cursor mode 
-        CursorController.Instance.ToggleCursosr(true);
-        CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>());
-    }
-
-    //UI - TMP Debugging
-    private void TellMyUIClick(Vector3 mousePos)
-    {
+        CursorController.Instance.ToggleCursor(cond);
+        //Turn on/off the Menu
         if (_activeChar)
         {
-            GraphicRaycaster raycaster = _activeChar.transform.GetComponentInChildren<GraphicRaycaster>();
-            if (raycaster)
-            {
-                //Set up the new Pointer Event
-                PointerEventData pointerData = new PointerEventData(EventSystem.current);
-                List<RaycastResult> results = new List<RaycastResult>();
-
-                //Raycast using the Graphics Raycaster and mouse click position
-                pointerData.position = Input.mousePosition;
-                raycaster.Raycast(pointerData, results);
-
-                //For every result returned, output the name of the GameObject on the Canvas hit by the Ray
-                foreach (RaycastResult result in results)
-                {
-                    Debug.Log("Hit " + result.gameObject.name);
-                }
-            }
+            UIBattleMenuController.Instance.ShowMenu(false, _activeChar.transform.position);
+            CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>());
+            _camera.SetFollowTarget(cond, _activeChar.transform);
 
         }
 
-    }
+       }
+
+
     /**
      * Not sure what this method will do 
      * Currently not used 
@@ -266,5 +248,38 @@ public class SelectionManager : MonoBehaviour
             _selectionState = eSelectionState.MOVE;
         else
             _selectionState = eSelectionState.FREE; // might need diff logic
+    }
+
+
+
+
+
+
+    //DEBUGGING TMP STUFF 
+    //UI - TMP Debugging
+    private void TellMyUIClick(Vector3 mousePos)
+    {
+        if (_activeChar)
+        {
+            GraphicRaycaster raycaster = _activeChar.transform.GetComponentInChildren<GraphicRaycaster>();
+            if (raycaster)
+            {
+                //Set up the new Pointer Event
+                PointerEventData pointerData = new PointerEventData(EventSystem.current);
+                List<RaycastResult> results = new List<RaycastResult>();
+
+                //Raycast using the Graphics Raycaster and mouse click position
+                pointerData.position = Input.mousePosition;
+                raycaster.Raycast(pointerData, results);
+
+                //For every result returned, output the name of the GameObject on the Canvas hit by the Ray
+                foreach (RaycastResult result in results)
+                {
+                    Debug.Log("Hit " + result.gameObject.name);
+                }
+            }
+
+        }
+
     }
 }

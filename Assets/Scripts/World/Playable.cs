@@ -19,23 +19,10 @@ public class Playable : MonoBehaviour
     }
     public void Init()
     {
-        Transform child = this.transform.GetChild(0);
-        if(child)
-        {
-            Debug.LogWarning("This will have to change when Menu goes to screen space");
-            if (child.gameObject.name.Equals("BattleMenu"))
-            {
-                child.gameObject.SetActive(false);
-                _battleMenu = child.gameObject;
-                _isCharacter = true;
-                Officer general = this.GetComponent<Officer>();
-                UIBattleMenuController uibmc = _battleMenu.GetComponent<UIBattleMenuController>();
-                if (general && uibmc)
-                    uibmc.SetName(general.GetName());
-            }
+        //TMP
+        _isCharacter = true;
             
-        }
-
+        
         //Used by selection manager frequently, so cache this
         if (_sprRend == null)
             _sprRend = this.GetComponentInChildren<SpriteRenderer>();
@@ -62,15 +49,10 @@ public class Playable : MonoBehaviour
     public void EndTurn()
     {
         _isActive = false;
-        ShowBattleMenu(false); //awkward because the SelectionManager turns it on
         //unsubscribe from event system 
         cEventSystem.Instance.ACT -= EndTurn;
     }
-    public void ShowBattleMenu(bool cond)
-    {
-        if (_battleMenu)
-            _battleMenu.SetActive(cond);
-    }
+
 
     /// <summary>
     /// Returns the SpriteRenderer of this playable.

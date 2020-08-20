@@ -6,10 +6,20 @@ using UnityEngine;
 public class CursorController : MonoBehaviour
 {
     // Instance of the game object
-    public static CursorController Instance { get; private set; }
+    private static CursorController _instance;
+    public static CursorController Instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = GameObject.FindObjectOfType<CursorController>();
+            return _instance;
+        }
+
+    }
 
     // Reference to the sprite renderer
-    private SpriteRenderer _sprRenderer;
+    [SerializeField] SpriteRenderer _sprRenderer;
 
     // If the cursor is enabled
     private bool _cursorOn;
@@ -22,11 +32,11 @@ public class CursorController : MonoBehaviour
     // Called 0th
     private void Awake()
     {
-        if (Instance == null)
+        if (_instance == null)
         {
-            Instance = this;
+            _instance = this;
         }
-        else
+        else if (_instance!=this)
         {
             Debug.LogError("There should never be more than 1 CursorController. Found another on " + this.name);
             Destroy(this.gameObject);
@@ -37,9 +47,9 @@ public class CursorController : MonoBehaviour
     // Called when this gameObject is destroyed.
     private void OnDestroy()
     {
-        if (Instance == this)
+        if (_instance == this)
         {
-            Instance = null;
+            _instance = null;
         }
     }
     // Called 1st
@@ -100,9 +110,12 @@ public class CursorController : MonoBehaviour
     /// Turns the cursors on or off.
     /// </summary>
     /// <param name="_onOff_">Whether the cursor should be on or off</param>
-    public void ToggleCursosr(bool _onOff_)
+    public void ToggleCursor(bool _onOff_)
     {
-        _sprRenderer.enabled = _onOff_;
+        if(_sprRenderer)
+            _sprRenderer.enabled = _onOff_;
         _cursorOn = _onOff_;
+
+        Debug.Log("Set Spr render to = " + _cursorOn);
     }
 }

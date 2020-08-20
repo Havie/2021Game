@@ -77,7 +77,6 @@ public class TurnManager
         {
             foreach (GameObject go in _allPossible)
             {
-                Debug.Log(go);
                 if (!newOrder.Contains(go))
                 {
                     Officer general = go.GetComponent<Officer>();
