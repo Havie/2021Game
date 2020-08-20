@@ -116,8 +116,8 @@ public class SelectionManager : MonoBehaviour
         {
             if(_selectionState == eSelectionState.MOVE)
             {
-                // Turn on cursor mode 
-                CursorController.Instance.ToggleCursosr(true);
+                // Turn off cursor mode 
+                CursorController.Instance.ToggleCursosr(false);
                 CreateMovementLine.Instance.DisablePathPreview();
             }
 
@@ -216,36 +216,24 @@ public class SelectionManager : MonoBehaviour
     private void MoveClick(Vector3 mousePos)
     {
         Debug.Log("MoveClick");
-        /*
-        if (_activeChar && false)
-        {
-            Ray ray = Camera.main.ScreenPointToRay(mousePos);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-               Debug.DrawRay(Camera.main.transform.position, ray.direction * 10, Color.red, 10);
-               if(!CheckPlayable(hit))
-                {
-                    if (hit.transform.gameObject.tag.Equals("Ground"))
-                    {
-                        var mc = _activeChar.GetComponent<MovementController>();
-                        if (mc)
-                            mc.DoMovement(CursorController.Instance.transform.position);
-
-                        //mc.DoMovement(InputController.GetCursorRayWorldPosition());
-
-                    }
-                }
-            }
-           // Camera.WorldToScreenPoint;
-           
-        }
-        */
         if(_activeChar)
         {
+            
             MovementController mc = _activeChar.GetComponent<MovementController>();
             if (mc)
+            {
+                // Hide the cursor and stop drawing a path
+                CreateMovementLine.Instance.DisablePathPreview();
+                CursorController.Instance.ToggleCursosr(false);
+
+                // Follow the character who will move
+                CameraController.Instance.BeginFollowingCharacter(mc.transform);
                 mc.DoMovement(CursorController.Instance.transform.position);
+            }
+            else
+            {
+                Debug.LogError("Character did no have a Movement Controller");
+            }
 
         }
     }
