@@ -22,6 +22,7 @@ public class Playable : MonoBehaviour
         Transform child = this.transform.GetChild(0);
         if(child)
         {
+            Debug.LogWarning("This will have to change when Menu goes to screen space");
             if (child.gameObject.name.Equals("BattleMenu"))
             {
                 child.gameObject.SetActive(false);
@@ -34,6 +35,10 @@ public class Playable : MonoBehaviour
             }
             
         }
+
+        //Used by selection manager frequently, so cache this
+        if (_sprRend == null)
+            _sprRend = this.GetComponentInChildren<SpriteRenderer>();
     }
     public bool IsActive() => _isActive;
     public bool IsSelected() => _isSelected;

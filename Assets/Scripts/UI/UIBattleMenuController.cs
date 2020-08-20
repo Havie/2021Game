@@ -92,7 +92,7 @@ public class UIBattleMenuController : MonoBehaviour
 
     public void ImClicked(GameObject button)
     {
-        Debug.Log("IMCLICKED" +button);
+        //Debug.Log("IMCLICKED" +button);
 
         switch (_menuState)
         {
