@@ -206,7 +206,7 @@ public class SelectionManager : MonoBehaviour
             {
                 // Hide the cursor and stop drawing a path
                 CreateMovementLine.Instance.DisablePathPreview();
-                CursorController.Instance.ToggleCursosr(false);
+                CursorController.Instance.ToggleCursor(false);
 
                 // Follow the character who will move
                 CameraController.Instance.BeginFollowingCharacter(mc.transform);
