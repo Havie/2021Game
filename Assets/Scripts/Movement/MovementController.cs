@@ -55,8 +55,8 @@ public class MovementController : MonoBehaviour
         {
             Debug.Log("DoMovement");
             // Move our agent
-            //_agent.SetDestination(_pos_);
-            //_agentThinking = true;
+            _agent.SetDestination(_pos_);
+            _agentThinking = true;
         }
     }
 
