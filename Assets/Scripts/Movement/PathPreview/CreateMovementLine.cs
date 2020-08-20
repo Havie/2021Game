@@ -79,6 +79,8 @@ public class CreateMovementLine : MonoBehaviour
     {
         _curCharaMove = null;
         _previewEnabled = false;
+        //TODO
+        //This method doesnt disable the last known path preview, only stops future previews
     }
 
     /// <summary>

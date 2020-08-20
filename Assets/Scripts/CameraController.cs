@@ -22,6 +22,10 @@ public class CameraController : MonoBehaviour
     // The distance away to snap from
     private const float SNAP_DIST = 0f;
 
+    private bool _followMode;
+    private Transform _followTarget;
+    private Vector3 _offset;
+
     // Called 0th
     private void Awake()
     {
@@ -52,6 +56,11 @@ public class CameraController : MonoBehaviour
         {
             RecenterOnCursor();
         }
+
+        if(_followMode)
+        {
+            this.transform.position = _followTarget.position +_offset;
+        }
     }
 
     /// <summary>
@@ -76,7 +85,6 @@ public class CameraController : MonoBehaviour
     /// <param name="_newPos_">New position for the camera view's center.</param>
     public void MoveCameraToPos(Vector3 _newPos_)
     {
-        Debug.Log("CALLED");
         if (_newPos_.x != float.NegativeInfinity &&
             _newPos_.y != float.NegativeInfinity &&
             _newPos_.z != float.NegativeInfinity)
@@ -84,6 +92,16 @@ public class CameraController : MonoBehaviour
             StopAllCoroutines();
             StartCoroutine(MoveCamera(_newPos_));
         }
+    }
+
+    public void SetFollowTarget(bool cond, Transform t)
+    {
+        if (t)
+        {
+            _followTarget = t;
+            _offset = this.transform.position - t.position;
+        }
+        _followMode =cond;
     }
 
     /// <summary>
