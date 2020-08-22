@@ -149,8 +149,6 @@ public class SelectionManager : MonoBehaviour
         //Tell the camera where to look
         if (_camera && cond)
             _camera.MoveCameraToPos(p.transform.position);
-
-       
     }
     public void EnableMove(bool cond)
     {
@@ -197,7 +195,7 @@ public class SelectionManager : MonoBehaviour
      * */
     private void MoveClick(Vector3 mousePos)
     {
-        Debug.Log("MoveClick");
+       // Debug.Log("MoveClick");
         if(_activeChar)
         {
             

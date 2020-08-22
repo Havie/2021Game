@@ -27,6 +27,9 @@ public class UIBattleMenuController : MonoBehaviour
 
     [SerializeField] Vector3 _offsetFromCharacter = new Vector3(75, -75, 0);
 
+    public bool _isOn;
+    public Vector3 _lastPos;
+
     private void CreateDefaultList()
     {
         defaultActions = new List<DefaultActions>();
@@ -68,7 +71,10 @@ public class UIBattleMenuController : MonoBehaviour
     }
     public void SetName(string name)  { _name.text = name;}
 
-
+    public void ResetMenu()
+    {
+        this.transform.position = ConvertToScreenSpace(_lastPos);
+    }
     public void ShowMenu(bool cond, Vector3 worldPos, string name)
     {
         SetName(name);
@@ -95,7 +101,8 @@ public class UIBattleMenuController : MonoBehaviour
                 SetButtonText(_menuButtons[i].GetComponentInChildren<TextMeshProUGUI>(), i );
         }
 
-
+        _isOn = cond;
+        _lastPos = worldPos;
 
     }
     private Vector3 ConvertToScreenSpace(Vector3 pos)

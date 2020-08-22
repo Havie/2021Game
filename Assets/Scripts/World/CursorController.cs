@@ -116,6 +116,5 @@ public class CursorController : MonoBehaviour
             _sprRenderer.enabled = _onOff_;
         _cursorOn = _onOff_;
 
-        Debug.Log("Set Spr render to = " + _cursorOn);
     }
 }
