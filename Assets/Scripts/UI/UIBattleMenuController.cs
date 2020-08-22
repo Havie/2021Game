@@ -152,7 +152,6 @@ public class UIBattleMenuController : MonoBehaviour
 
     private void DoMove()
     {
-        Debug.Log("Move");
         SelectionManager.Instance.EnableMove(true);
     }
     private void DoAttack()

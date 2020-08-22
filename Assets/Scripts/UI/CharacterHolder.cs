@@ -9,6 +9,13 @@ public class CharacterHolder
     public bool _isFriendly;
     public string _name;
 
+    /// <summary>
+    /// Used by UICharacterTurnManager to store data 
+    /// </summary>
+    /// <param name="sprite portrait"></param>
+    /// <param name="transform loc"></param>
+    /// <param name="friendly"></param>
+    /// <param name="name"></param>
     public CharacterHolder(Sprite s, Transform t, bool friendly, string name)
     {
         _portrait = s;

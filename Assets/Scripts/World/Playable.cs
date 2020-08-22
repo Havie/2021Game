@@ -21,11 +21,20 @@ public class Playable : MonoBehaviour
     {
         //TMP
         _isCharacter = true;
-            
-        
+
+
         //Used by selection manager frequently, so cache this
         if (_sprRend == null)
-            _sprRend = this.GetComponentInChildren<SpriteRenderer>();
+        {
+            try
+            {
+                _sprRend = this.GetComponentInChildren<ArtSet>().GetComponent<SpriteRenderer>();
+            }
+            catch
+            {
+                Debug.LogError("Could not find Sprite rendender or art set for " + gameObject);
+            }
+        }
     }
     public bool IsActive() => _isActive;
     public bool IsSelected() => _isSelected;

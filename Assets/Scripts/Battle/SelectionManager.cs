@@ -138,6 +138,7 @@ public class SelectionManager : MonoBehaviour
         if (sp)
         {
             p.SetSelected(cond);
+            Debug.Log("enter:" +sp);
             if (cond)
                 sp.material = _selected;
             else
