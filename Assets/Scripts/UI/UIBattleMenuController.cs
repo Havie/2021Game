@@ -16,7 +16,7 @@ public class UIBattleMenuController : MonoBehaviour
     public GameObject _subpanel;
 
     public Animator _subpanelAnimator;
-    public Button[] _menuButtons;
+    public UIButton[] _menuButtons;
 
     public  enum eMenuState { DEFAULT, MOVE, ATTACK,BASICATTACK, SKILL, BURST}
     public eMenuState _menuState = eMenuState.DEFAULT;
@@ -91,39 +91,37 @@ public class UIBattleMenuController : MonoBehaviour
         if (worldPos != Vector3.zero)
             this.transform.position = ConvertToScreenSpace(worldPos);
 
-        _subpanelAnimator.SetBool("Open", cond);
-       for(int i=0; i<_menuButtons.Length; ++i)
+        for (int i = 0; i < _menuButtons.Length; ++i)
         {
-            Animator a = _menuButtons[i].GetComponent<Animator>();
-            if (a)
-                a.SetBool("Show", cond);
-            if(cond)
-                SetButtonText(_menuButtons[i].GetComponentInChildren<TextMeshProUGUI>(), i );
+            //need a way to keep track of if the text is valid or not
+            _menuButtons[i].SetText(DetermineButtonText(i));
         }
+
 
         _isOn = cond;
         _lastPos = worldPos;
 
     }
+
+
     private Vector3 ConvertToScreenSpace(Vector3 pos)
     {
         return Camera.main.WorldToScreenPoint(pos) + _offsetFromCharacter;
     }
-    private void SetButtonText(TextMeshProUGUI text, int index)
+    private string DetermineButtonText(int index)
     {
-        if (text == null)
-            return;
-
         switch(_menuState)
         {
             case eMenuState.DEFAULT:
                 {
                     if(index>-1 && index<_defaultText.Length)
-                        text.text = _defaultText[index];
+                        return _defaultText[index];
                     break;
                 }
 
         }
+
+        return null;
     }
 
     public void ImClicked(GameObject button)

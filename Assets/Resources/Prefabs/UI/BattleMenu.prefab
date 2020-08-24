@@ -292,6 +292,8 @@ MonoBehaviour:
   - {fileID: 8260177742690043029}
   _menuState: 0
   _offsetFromCharacter: {x: 75, y: -75, z: 0}
+  _isOn: 0
+  _lastPos: {x: 0, y: 0, z: 0}
 --- !u!1 &8260177743497707622
 GameObject:
   m_ObjectHideFlags: 0
