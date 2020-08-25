@@ -34,8 +34,8 @@ public class UIButton : MonoBehaviour
     void LateUpdate()
     {
         //Test
-        SetInteractable(_test);
-        SetSelected(_interactable);
+       // SetInteractable(_test);
+       // SetSelected(_interactable);
     }
 
     public void SetText(string text, bool interactable)
@@ -111,5 +111,7 @@ public class UIButton : MonoBehaviour
             Debug.LogWarning("Cant find Button components for " + this.gameObject.name);
 
     }
+
+
 
 }

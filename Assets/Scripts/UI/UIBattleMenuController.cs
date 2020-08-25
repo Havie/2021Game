@@ -9,7 +9,7 @@ public class UIBattleMenuController : MonoBehaviour
 {
 
     public static UIBattleMenuController Instance { get; private set; }
-
+    #region Variables
     public Canvas _canvas;
 
     public TextMeshProUGUI _name;
@@ -29,6 +29,10 @@ public class UIBattleMenuController : MonoBehaviour
 
     public bool _isOn;
     public Vector3 _lastPos;
+
+    private int _currIndex;
+
+    #endregion
 
     private void CreateDefaultList()
     {
@@ -82,11 +86,7 @@ public class UIBattleMenuController : MonoBehaviour
     }
     public void ShowMenu(bool cond, Vector3 worldPos)
     {
-        //I need to tie this Into the animations
-        if (!cond)
-            _subpanel.gameObject.SetActive(false);
-        else
-            _subpanel.gameObject.SetActive(true);
+
 
         if (worldPos != Vector3.zero)
             this.transform.position = ConvertToScreenSpace(worldPos);
@@ -96,7 +96,16 @@ public class UIBattleMenuController : MonoBehaviour
             //need a way to keep track of if the text is valid or not
             _menuButtons[i].SetText(DetermineButtonText(i));
         }
+        //Turn off and on the old and new 
+        SetSelected(false);
+        _currIndex = 0;
+        SetSelected(true);
 
+        _subpanel.gameObject.SetActive(cond);
+        _name.gameObject.SetActive(cond);
+        //It feels like this shouldn't work for SetSelected when they are turned back on, but it does
+        foreach (UIButton b in _menuButtons)
+            b.gameObject.SetActive(cond);
 
         _isOn = cond;
         _lastPos = worldPos;
@@ -122,6 +131,43 @@ public class UIBattleMenuController : MonoBehaviour
         }
 
         return null;
+    }
+
+    public void ChangeSelection(int incrementAmount)
+    {
+
+        //Turn off our old selection
+        SetSelected(false);
+
+        _currIndex -= incrementAmount;
+        if (_currIndex > _menuButtons.Length-1)
+            _currIndex = 0;
+        else if (_currIndex < 0)
+            _currIndex = _menuButtons.Length-1;
+
+        //Turn on our new selection
+        SetSelected(true);
+    }
+    public void ChangeSelection(GameObject button)
+    {
+        for (int i = 0; i < _menuButtons.Length; ++i)
+        {
+            if (button == _menuButtons[i].gameObject)
+            {
+                SetSelected(false);
+                _currIndex = i;
+                SetSelected(true);
+                return;
+            }
+        }
+    }
+    private void SetSelected(bool cond)
+    {
+        _menuButtons[_currIndex].SetSelected(cond);
+    }
+    public void ClickSelected()
+    {
+        ImClicked(_menuButtons[_currIndex].gameObject);
     }
 
     public void ImClicked(GameObject button)
