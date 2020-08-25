@@ -58,6 +58,11 @@ public class SelectionManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
+         * Ideally this all needs to move out of update and the InputManager Tells
+         * Selection Manager somethins occurred 
+         */
+
         //I need some type of enum or control logic from the InputController
         if (InputController.GetSelectPressDown())
             HandleInput();
@@ -142,8 +147,35 @@ public class SelectionManager : MonoBehaviour
             }
 
             _selectionState = eSelectionState.MENU;
-            UIBattleMenuController.Instance.ShowMenu(true, _activeChar.transform.position, _activeChar.name);
+
+            bool canMove = true; //ToDo figure out AP 
+            bool canAttack = DetermineValidAttack(); 
+            //When we show the menu we should tell the battlemenu if attack or move is an option
+            UIBattleMenuController.Instance.ShowMenu(
+                true, _activeChar.transform.position,
+                _activeChar.name, canMove, canAttack);
+
+            ShowCollidersInRange();
         }
+    }
+    private bool DetermineValidAttack()
+    {
+        bool inrange = false;
+        //TODO AP check
+        bool enoughAp = true;
+
+
+        if (_activeChar.EnemiesInRange() != null)
+            inrange = _activeChar.EnemiesInRange().Count > 0;
+
+        return inrange&&enoughAp;
+    }
+    private void ShowCollidersInRange()
+    {
+        foreach (Playable p in _activeChar.EnemiesInRange())
+            p.SetSpriteOutline(Playable.eSpriteColor.ENEMY);
+        foreach (Playable p in _activeChar.EnemiesNotInRange())
+            p.SetSpriteOutline(Playable.eSpriteColor.NEUTRAL);
     }
     private void SetSelected(Playable p, bool cond)
     {
@@ -267,6 +299,10 @@ public class SelectionManager : MonoBehaviour
         else
             _selectionState = eSelectionState.FREE; // might need diff logic
     }
+
+
+
+
 
 
 

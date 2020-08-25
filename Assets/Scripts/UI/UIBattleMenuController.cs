@@ -79,14 +79,16 @@ public class UIBattleMenuController : MonoBehaviour
     {
         this.transform.position = ConvertToScreenSpace(_lastPos);
     }
-    public void ShowMenu(bool cond, Vector3 worldPos, string name)
+    public void ShowMenu(bool cond, Vector3 worldPos, string name, bool canMove, bool canAttack)
     {
         SetName(name);
         ShowMenu(cond, worldPos);
+        //Might want to contain this/null checks?
+        _menuButtons[0].SetInteractable(canMove);
+        _menuButtons[1].SetInteractable(canAttack);
     }
     public void ShowMenu(bool cond, Vector3 worldPos)
     {
-
 
         if (worldPos != Vector3.zero)
             this.transform.position = ConvertToScreenSpace(worldPos);
@@ -111,8 +113,6 @@ public class UIBattleMenuController : MonoBehaviour
         _lastPos = worldPos;
 
     }
-
-
     private Vector3 ConvertToScreenSpace(Vector3 pos)
     {
         return Camera.main.WorldToScreenPoint(pos) + _offsetFromCharacter;
@@ -167,6 +167,7 @@ public class UIBattleMenuController : MonoBehaviour
     }
     public void ClickSelected()
     {
+        //There is a bug in here, when ending turn going between MouseClickHovers vs ArrowKeyEnter
         ImClicked(_menuButtons[_currIndex].gameObject);
     }
 
@@ -202,6 +203,7 @@ public class UIBattleMenuController : MonoBehaviour
     {
         Debug.Log("Attack");
         //Change the Menu to say "Basic , Skills, Burst"
+
     }
     private void DoEndTurn()
     {

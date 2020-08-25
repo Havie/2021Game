@@ -5,15 +5,15 @@ using UnityEngine;
 public class AttackRadius : MonoBehaviour
 {
 
-    public bool _isOn=true; // not used
-    private bool _coroutineOn; // not used
+    //public bool _isOn=true; // not used
+    //private bool _coroutineOn; // not used
 
     public float _radius; //kinda used 
-    public Vector3 _direction; //notused
     public float _maxDis; //kinda used
-    public LayerMask _layermask; //notused
+    // public Vector3 _direction; //notused
+    //public LayerMask _layermask; //notused
 
-    private float _currentHitDistance; //not used
+    //private float _currentHitDistance; //not used
 
 
     public bool _ImHuman;
@@ -21,46 +21,65 @@ public class AttackRadius : MonoBehaviour
     private void Start()
     {
         _radius = this.transform.localScale.x/2;
-        _maxDis = _radius;
+        _maxDis = _radius *2; // *2 for testing
     }
 
 
     void LateUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.R))
-            DetectEnemies();
-
-
+        //Might want to do something, where if enabled (while moving)
+        //We DetectEnemies in radius and turn on or off their outlines?
 
         //CircleCast();
         //if(!_coroutineOn)
         // StartCoroutine(RadiusSweep());
     }
 
-    public void DetectEnemies()
+    public void AlterRadius()
     {
+        //TODO
+    }
+
+    /// <summary>
+    /// There is a problem here where When the battle starts, DetectEnemies is called before Start,
+    /// Therefore the radius is 0, and attack will be greyed out on the menu. However, this wont be an issue
+    /// once characters start on opposite sides of eachother, can never attack on first turn anyway.
+    /// </summary>
+    /// <returns> a Dictonary with the Keys  for Lists [INRANGE] and [NOTINRANGE]</returns>
+    public Dictionary<string, List<Playable>> DetectEnemies()
+    {
+        List<Playable> _inRange = new List<Playable>();
+        List<Playable> _notInRange = new List<Playable>();
+
 
         foreach (GameObject g in BattleManager.Instance.GetForceList(!_ImHuman))
         {
             if (Vector3.Distance(this.transform.position, g.transform.position) < _maxDis)
             {
-                Debug.Log(" In range: " + g);
+                //Debug.Log(" In range: (" + _maxDis+") " + g);
                 try
-                { g.GetComponent<Playable>().GetSpriteRenderer().material = SelectionManager.Instance._enemy; }
+                { _inRange.Add(g.GetComponent<Playable>()); }
                 catch
                 { Debug.LogWarning("Missing SpriteRender for " + gameObject.name); }
             }
             else
             {
 
-                Debug.Log("Not in range: " + g + "  dis=" + Vector3.Distance(this.transform.position, g.transform.position));
+               // Debug.Log("Not in range:(" + _maxDis+") " + g + "  dis=" + Vector3.Distance(this.transform.position, g.transform.position));
                 try
-                    { g.GetComponent<Playable>().GetSpriteRenderer().material = SelectionManager.Instance._normal; }
+                { _notInRange.Add(g.GetComponent<Playable>()); }
                 catch
                     { Debug.LogWarning("Missing SpriteRender for " + gameObject.name); }
 
             }
         }
+
+        //Could use an INT but will be easier to read in other scripts and only taking up 2 spots
+        Dictionary<string, List<Playable>> _detection = new Dictionary<string, List<Playable>>();
+        _detection.Add("INRANGE", _inRange);
+        _detection.Add("NOTINRANGE", _notInRange);
+
+        return _detection;
 
     }
 
@@ -69,7 +88,7 @@ public class AttackRadius : MonoBehaviour
 
     /*
     * None of these below work proper cant figure out how to detect anything in a radius
-    */
+    
 
 
 
@@ -127,4 +146,5 @@ public class AttackRadius : MonoBehaviour
         //Gizmos.DrawWireSphere(this.transform.position + _direction * _currentHitDistance, _sphereRadius);
 
     }
+    */
 }

@@ -1,16 +1,24 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Playable : MonoBehaviour
 {
+
+    public enum eSpriteColor { ENEMY, ALLY, NEUTRAL};
+
     // SpriteRenderer for this Playable
     [SerializeField]
-    private SpriteRenderer _sprRend = null;
+    private SpriteRenderer _sprRend;
+    [SerializeField]
+    private AttackRadius _attackRadius;
 
     public bool _isActive;
     public bool _isSelected;
     private TurnManager _turnManager;
     private bool _isCharacter;
     private GameObject _battleMenu;
+
+    #region SetupMethods
 
     private void Awake()
     {
@@ -35,12 +43,37 @@ public class Playable : MonoBehaviour
                 Debug.LogError("Could not find Sprite rendender or art set for " + gameObject);
             }
         }
+        if (_attackRadius == null)
+        {
+            try
+            {
+                _attackRadius = this.GetComponentInChildren<AttackRadius>();
+            }
+            catch
+            {
+                Debug.LogError("Could not find AttackRadius for " + gameObject);
+            }
+        }
     }
+    #endregion
+
     public bool IsActive() => _isActive;
     public bool IsSelected() => _isSelected;
+    public SpriteRenderer GetSpriteRenderer() => _sprRend;
 
     public void SetActive(bool cond) { _isActive = cond; }
     public void SetSelected(bool cond) { _isSelected = cond; }
+
+
+    public void SetSpriteOutline(eSpriteColor color)
+    {
+        if (color == eSpriteColor.ALLY)
+            _sprRend.material = SelectionManager.Instance._allied;
+        else if (color == eSpriteColor.ENEMY)
+            _sprRend.material = SelectionManager.Instance._enemy;
+        else if (color == eSpriteColor.NEUTRAL)
+            _sprRend.material = SelectionManager.Instance._normal;
+    }
 
     public void YourTurn(TurnManager t)
     {
@@ -62,14 +95,23 @@ public class Playable : MonoBehaviour
         cEventSystem.Instance.ACT -= EndTurn;
     }
 
-
-    /// <summary>
-    /// Returns the SpriteRenderer of this playable.
-    /// </summary>
-    /// <returns>SpriteRenderer</returns>
-    public SpriteRenderer GetSpriteRenderer()
+    public List<Playable> EnemiesInRange()
     {
-        return _sprRend;
+        if (_attackRadius == null)
+            return null;
+
+        return _attackRadius.DetectEnemies()["INRANGE"];
+
     }
+    public List<Playable> EnemiesNotInRange()
+    {
+        if (_attackRadius == null)
+            return null;
+
+        return _attackRadius.DetectEnemies()["NOTINRANGE"];
+
+    }
+
+
 
 }
