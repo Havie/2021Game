@@ -10,6 +10,11 @@ public class ColorManager : MonoBehaviour
     public Color _red;
     public Color _white;
 
+    public Color _menuValid;
+    public Color _menuInvalid;
+    public Color _buttonHighlighed;
+    public Color _buttonNormal;
+
     public static ColorManager Instance
     {
         get

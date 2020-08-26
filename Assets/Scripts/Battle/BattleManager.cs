@@ -19,6 +19,9 @@ public class BattleManager : MonoBehaviour
     #region Variables
     TurnManager _turnManager;
 
+    //Change these to a smaller obj type once we know use
+    private List<GameObject> _darkelves;
+    private List<GameObject> _orcs;
 
 
     #endregion
@@ -40,6 +43,8 @@ public class BattleManager : MonoBehaviour
     
     void Start()
     {
+        _darkelves = new List<GameObject>();
+        _orcs = new List<GameObject>();
         foreach (GameObject go in _chars)
         {
             if (go)
@@ -49,6 +54,15 @@ public class BattleManager : MonoBehaviour
                     initChar.Init();
                 else
                     Debug.LogError("Could not find iniCharacter attached to " + go.name);
+
+                Faction f = go.GetComponent<Faction>();
+                if(f)
+                {
+                    if (f.IsHuman())
+                        _darkelves.Add(go);
+                    else
+                        _orcs.Add(go);
+                }
             }
             else
                 Debug.LogError("Null GameObject in BattleManager");
@@ -83,5 +97,13 @@ public class BattleManager : MonoBehaviour
      void OnDestroy()
     {
         _turnManager.Subscribe(false);
+    }
+
+    public List<GameObject> GetForceList(bool isHuman)
+    {
+        if (isHuman)
+            return _darkelves;
+        else
+            return _orcs;
     }
 }

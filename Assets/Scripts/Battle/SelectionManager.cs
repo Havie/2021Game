@@ -58,10 +58,22 @@ public class SelectionManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (InputController.GetSelectPressDown())
-            HandleClick(InputController.GetCursorPosition());
+        /*
+         * Ideally this all needs to move out of update and the InputManager Tells
+         * Selection Manager somethins occurred 
+         */
 
-        if(Input.GetKeyDown(KeyCode.Escape))
+        //I need some type of enum or control logic from the InputController
+        if (InputController.GetSelectPressDown())
+            HandleInput();
+
+        //TMP fix
+        if (Input.GetKeyDown(KeyCode.DownArrow) ||
+            Input.GetKeyDown(KeyCode.UpArrow) ||
+            Input.GetKeyDown(KeyCode.Return))
+                HandleInput();
+
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             if(_selectionState==eSelectionState.MOVE)
             {
@@ -69,20 +81,22 @@ public class SelectionManager : MonoBehaviour
             }
         }
     }
-    private void HandleClick(Vector3 mousePos)
+    private void HandleInput()
     {
-
+        //Debug.Log("SelectionState=" + _selectionState);
         //TellMyUIClick(mousePos);
         switch (_selectionState)
         {
             case eSelectionState.FREE:
                 {
-                    FreeClick(mousePos);
+                    //TMP- Need control logic from inputcontroller
+                    FreeClick(InputController.GetCursorPosition());
                     break;
                 }
             case eSelectionState.MOVE:
                 {
-                    MoveClick(mousePos);
+                    //TMP- Need control logic from inputcontroller
+                    MoveClick(InputController.GetCursorPosition());
                     break;
                 }
             case eSelectionState.ATTACK:
@@ -91,6 +105,17 @@ public class SelectionManager : MonoBehaviour
                 }
             case eSelectionState.MENU:
                 {
+                    //Will need to break apart later
+
+                    //ToDo Read from InputManager
+                    if (Input.GetKeyDown(KeyCode.DownArrow))
+                        UIBattleMenuController.Instance.ChangeSelection(-1);
+                    else if (Input.GetKeyDown(KeyCode.UpArrow))
+                        UIBattleMenuController.Instance.ChangeSelection(1);
+                   else if (Input.GetKeyDown(KeyCode.Return))
+                        UIBattleMenuController.Instance.ClickSelected();
+
+
                     break;
                 }
             default:
@@ -122,8 +147,35 @@ public class SelectionManager : MonoBehaviour
             }
 
             _selectionState = eSelectionState.MENU;
-            UIBattleMenuController.Instance.ShowMenu(true, _activeChar.transform.position, _activeChar.name);
+
+            bool canMove = true; //ToDo figure out AP 
+            bool canAttack = DetermineValidAttack(); 
+            //When we show the menu we should tell the battlemenu if attack or move is an option
+            UIBattleMenuController.Instance.ShowMenu(
+                true, _activeChar.transform.position,
+                _activeChar.name, canMove, canAttack);
+
+            ShowCollidersInRange();
         }
+    }
+    private bool DetermineValidAttack()
+    {
+        bool inrange = false;
+        //TODO AP check
+        bool enoughAp = true;
+
+
+        if (_activeChar.EnemiesInRange() != null)
+            inrange = _activeChar.EnemiesInRange().Count > 0;
+
+        return inrange&&enoughAp;
+    }
+    private void ShowCollidersInRange()
+    {
+        foreach (Playable p in _activeChar.EnemiesInRange())
+            p.SetSpriteOutline(Playable.eSpriteColor.ENEMY);
+        foreach (Playable p in _activeChar.EnemiesNotInRange())
+            p.SetSpriteOutline(Playable.eSpriteColor.NEUTRAL);
     }
     private void SetSelected(Playable p, bool cond)
     {
@@ -149,8 +201,6 @@ public class SelectionManager : MonoBehaviour
         //Tell the camera where to look
         if (_camera && cond)
             _camera.MoveCameraToPos(p.transform.position);
-
-       
     }
     public void EnableMove(bool cond)
     {
@@ -197,7 +247,7 @@ public class SelectionManager : MonoBehaviour
      * */
     private void MoveClick(Vector3 mousePos)
     {
-        Debug.Log("MoveClick");
+       // Debug.Log("MoveClick");
         if(_activeChar)
         {
             
@@ -249,6 +299,7 @@ public class SelectionManager : MonoBehaviour
         else
             _selectionState = eSelectionState.FREE; // might need diff logic
     }
+
 
 
 

@@ -9,14 +9,14 @@ public class UIBattleMenuController : MonoBehaviour
 {
 
     public static UIBattleMenuController Instance { get; private set; }
-
+    #region Variables
     public Canvas _canvas;
 
     public TextMeshProUGUI _name;
     public GameObject _subpanel;
 
     public Animator _subpanelAnimator;
-    public Button[] _menuButtons;
+    public UIButton[] _menuButtons;
 
     public  enum eMenuState { DEFAULT, MOVE, ATTACK,BASICATTACK, SKILL, BURST}
     public eMenuState _menuState = eMenuState.DEFAULT;
@@ -26,6 +26,13 @@ public class UIBattleMenuController : MonoBehaviour
     List<DefaultActions> defaultActions;
 
     [SerializeField] Vector3 _offsetFromCharacter = new Vector3(75, -75, 0);
+
+    public bool _isOn;
+    public Vector3 _lastPos;
+
+    private int _currIndex;
+
+    #endregion
 
     private void CreateDefaultList()
     {
@@ -68,55 +75,100 @@ public class UIBattleMenuController : MonoBehaviour
     }
     public void SetName(string name)  { _name.text = name;}
 
-
-    public void ShowMenu(bool cond, Vector3 worldPos, string name)
+    public void ResetMenu()
+    {
+        this.transform.position = ConvertToScreenSpace(_lastPos);
+    }
+    public void ShowMenu(bool cond, Vector3 worldPos, string name, bool canMove, bool canAttack)
     {
         SetName(name);
         ShowMenu(cond, worldPos);
+        //Might want to contain this/null checks?
+        _menuButtons[0].SetInteractable(canMove);
+        _menuButtons[1].SetInteractable(canAttack);
     }
     public void ShowMenu(bool cond, Vector3 worldPos)
     {
-        //I need to tie this Into the animations
-        if (!cond)
-            _subpanel.gameObject.SetActive(false);
-        else
-            _subpanel.gameObject.SetActive(true);
 
         if (worldPos != Vector3.zero)
             this.transform.position = ConvertToScreenSpace(worldPos);
 
-        _subpanelAnimator.SetBool("Open", cond);
-       for(int i=0; i<_menuButtons.Length; ++i)
+        for (int i = 0; i < _menuButtons.Length; ++i)
         {
-            Animator a = _menuButtons[i].GetComponent<Animator>();
-            if (a)
-                a.SetBool("Show", cond);
-            if(cond)
-                SetButtonText(_menuButtons[i].GetComponentInChildren<TextMeshProUGUI>(), i );
+            //need a way to keep track of if the text is valid or not
+            _menuButtons[i].SetText(DetermineButtonText(i));
         }
+        //Turn off and on the old and new 
+        SetSelected(false);
+        _currIndex = 0;
+        SetSelected(true);
 
+        _subpanel.gameObject.SetActive(cond);
+        _name.gameObject.SetActive(cond);
+        //It feels like this shouldn't work for SetSelected when they are turned back on, but it does
+        foreach (UIButton b in _menuButtons)
+            b.gameObject.SetActive(cond);
 
+        _isOn = cond;
+        _lastPos = worldPos;
 
     }
     private Vector3 ConvertToScreenSpace(Vector3 pos)
     {
         return Camera.main.WorldToScreenPoint(pos) + _offsetFromCharacter;
     }
-    private void SetButtonText(TextMeshProUGUI text, int index)
+    private string DetermineButtonText(int index)
     {
-        if (text == null)
-            return;
-
         switch(_menuState)
         {
             case eMenuState.DEFAULT:
                 {
                     if(index>-1 && index<_defaultText.Length)
-                        text.text = _defaultText[index];
+                        return _defaultText[index];
                     break;
                 }
 
         }
+
+        return null;
+    }
+
+    public void ChangeSelection(int incrementAmount)
+    {
+
+        //Turn off our old selection
+        SetSelected(false);
+
+        _currIndex -= incrementAmount;
+        if (_currIndex > _menuButtons.Length-1)
+            _currIndex = 0;
+        else if (_currIndex < 0)
+            _currIndex = _menuButtons.Length-1;
+
+        //Turn on our new selection
+        SetSelected(true);
+    }
+    public void ChangeSelection(GameObject button)
+    {
+        for (int i = 0; i < _menuButtons.Length; ++i)
+        {
+            if (button == _menuButtons[i].gameObject)
+            {
+                SetSelected(false);
+                _currIndex = i;
+                SetSelected(true);
+                return;
+            }
+        }
+    }
+    private void SetSelected(bool cond)
+    {
+        _menuButtons[_currIndex].SetSelected(cond);
+    }
+    public void ClickSelected()
+    {
+        //There is a bug in here, when ending turn going between MouseClickHovers vs ArrowKeyEnter
+        ImClicked(_menuButtons[_currIndex].gameObject);
     }
 
     public void ImClicked(GameObject button)
@@ -145,13 +197,13 @@ public class UIBattleMenuController : MonoBehaviour
 
     private void DoMove()
     {
-        Debug.Log("Move");
         SelectionManager.Instance.EnableMove(true);
     }
     private void DoAttack()
     {
         Debug.Log("Attack");
         //Change the Menu to say "Basic , Skills, Burst"
+
     }
     private void DoEndTurn()
     {
