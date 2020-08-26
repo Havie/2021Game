@@ -1,52 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class MovementController : MonoBehaviour
 {
-    // Reference to the camera we are using
-    private Camera _cam;
     // Reference to the nav mesh agent on our character
     private NavMeshAgent _agent;
-
-    private bool _isMoving;
-    private bool _agentThinking;
 
     // Called 0th
     private void Awake()
     {
-        // Set references
-        _cam = Camera.main;
-
-        try
-        {
-            _agent = this.GetComponent<NavMeshAgent>();
-        }
-        catch
-        {
-            Debug.LogError("Could not set references in MovmentController");
-        }
+        _agent = this.GetComponent<NavMeshAgent>();
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
-        if (_agentThinking && _agent.hasPath)
-        {
-            _isMoving = true;
-            _agentThinking = false;
-        }
-        else if(_isMoving && !_agent.hasPath)
-        {
-           // Debug.Log("Agent stopped");
-            _isMoving = false;
-            //TODO going to need more specific if as in if its this playables current turn etc
-            SelectionManager.Instance.EnableMove(false);
-            SelectionManager.Instance.ShowBattleMenu();
-           
-        }
-    }
     /// <summary>
     /// Starts moving this character towards the given point.
     /// </summary>
@@ -55,10 +21,9 @@ public class MovementController : MonoBehaviour
     {
         if (_pos_ != Vector3.negativeInfinity)
         {
-           // Debug.Log("DoMovement");
+            // Debug.Log("DoMovement");
             // Move our agent
             _agent.SetDestination(_pos_);
-            _agentThinking = true;
         }
     }
 

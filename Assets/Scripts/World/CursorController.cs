@@ -1,22 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class CursorController : MonoBehaviour
 {
-    // Instance of the game object
-    private static CursorController _instance;
-    public static CursorController Instance
-    {
-        get
-        {
-            if (_instance == null)
-                _instance = GameObject.FindObjectOfType<CursorController>();
-            return _instance;
-        }
-
-    }
+    // Singleton
+    public static CursorController Instance { get; private set; }
 
     // Reference to the sprite renderer
     [SerializeField] SpriteRenderer _sprRenderer;
@@ -32,11 +20,11 @@ public class CursorController : MonoBehaviour
     // Called 0th
     private void Awake()
     {
-        if (_instance == null)
+        if (Instance == null)
         {
-            _instance = this;
+            Instance = this;
         }
-        else if (_instance!=this)
+        else if (Instance != this)
         {
             Debug.LogError("There should never be more than 1 CursorController. Found another on " + this.name);
             Destroy(this.gameObject);
@@ -44,14 +32,7 @@ public class CursorController : MonoBehaviour
 
         _sprRenderer = this.GetComponent<SpriteRenderer>();
     }
-    // Called when this gameObject is destroyed.
-    private void OnDestroy()
-    {
-        if (_instance == this)
-        {
-            _instance = null;
-        }
-    }
+
     // Called 1st
     private void Start()
     {
@@ -64,45 +45,69 @@ public class CursorController : MonoBehaviour
     {
         if (_cursorOn)
         {
-            // See if the user is using a mouse
-            if (InputController.GetHasMouseMoved())
-            {
-                // If they are using a mouse, put the cursor at the mouse's location
-                // Also, don't move the camera with the cursor.
-                if (_camFollow)
-                {
-                    CameraController.Instance.StopFollowingCharacter();
-                    _camFollow = false;
-                }
+            MoveCursor();
+        }
+    }
 
-                int groundMask = LayerMask.GetMask("Ground");
-                Vector3 mouseWorldPos = InputController.GetCursorRayWorldPosition(groundMask);
-                if (mouseWorldPos.x != float.NegativeInfinity && mouseWorldPos.z != float.NegativeInfinity)
-                {
-                    //mouseWorldPos.y = 0;
-                    this.transform.position = mouseWorldPos;
-                }
-            }
-            // If they aren't using a mouse, use the cursor move axis
-            else
-            {
-                Vector2 cursorMove = InputController.GetCursorMoveAxis();
-                if (cursorMove != Vector2.zero)
-                {
-                    // Also make the camera follow the cursor, if it isn't already
-                    if (!_camFollow)
-                    {
-                        CameraController.Instance.RecenterOnCursor();
-                        _camFollow = true;
-                    }
+    /// <summary>
+    /// Moves the cursor based on the user's input.
+    /// </summary>
+    private void MoveCursor()
+    {
+        // See if the user is using a mouse
+        if (InputController.GetHasMouseMoved())
+        {
+            MouseCursorMove();
+        }
+        // If they aren't using a mouse, use the cursor move axis
+        else
+        {
+            AxisCursorMove();
+        }
+    }
 
-                    Vector3 dir = Camera.main.transform.forward.normalized;
-                    Vector3 perp = Camera.main.transform.right.normalized;
-                    Vector3 incrPos = cursorMove.x * perp + cursorMove.y * dir;
-                    incrPos.y = 0;
-                    this.transform.position += incrPos.normalized * MOVE_SPEED;
-                }
+    /// <summary>
+    /// Moves the cursor based on mouse input.
+    /// </summary>
+    private void MouseCursorMove()
+    {
+        // Put the cursor at the mouse's location
+        // Also, don't move the camera with the cursor.
+        if (_camFollow)
+        {
+            CameraController.Instance.StopFollowingCharacter();
+            _camFollow = false;
+        }
+
+        int groundMask = LayerMask.GetMask("Ground");
+        Vector3 mouseWorldPos = InputController.GetCursorRayWorldPosition(groundMask);
+        if (mouseWorldPos.x != float.NegativeInfinity && mouseWorldPos.z != float.NegativeInfinity)
+        {
+            //mouseWorldPos.y = 0;
+            this.transform.position = mouseWorldPos;
+        }
+    }
+
+    /// <summary>
+    /// Moves the cursor based on axis input.
+    /// </summary>
+    private void AxisCursorMove()
+    {
+        Vector2 cursorMove = InputController.GetCursorMoveAxis();
+        if (cursorMove != Vector2.zero)
+        {
+            // Also make the camera follow the cursor, if it isn't already
+            if (!_camFollow)
+            {
+                CameraController.Instance.RecenterOnCursor();
+                _camFollow = true;
             }
+
+            Vector3 dir = Camera.main.transform.forward.normalized;
+            Vector3 perp = Camera.main.transform.right.normalized;
+            Vector3 incrPos = cursorMove.x * perp + cursorMove.y * dir;
+            incrPos.y = 0;
+            this.transform.position += incrPos.normalized * MOVE_SPEED;
         }
     }
 
@@ -115,6 +120,5 @@ public class CursorController : MonoBehaviour
         if(_sprRenderer)
             _sprRenderer.enabled = _onOff_;
         _cursorOn = _onOff_;
-
     }
 }

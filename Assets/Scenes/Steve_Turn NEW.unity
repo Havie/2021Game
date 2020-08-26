@@ -16160,7 +16160,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c3ab1da26784354c9011040bed37131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _camera: {fileID: 0}
   _normal: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   _selected: {fileID: 2100000, guid: 747835aa75010434ea018dc6d36152c1, type: 2}
   _allied: {fileID: 2100000, guid: d6aac2c0ecfeb1745b996448c70e0588, type: 2}
@@ -22306,7 +22305,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.083333336
   m_BuildHeightMesh: 0
-  m_NavMeshData: {fileID: 23800000, guid: 7d22b36de59f6fc488cf783af47be856, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: d4652379ded9eeb41b40072a3e45094f, type: 2}
 --- !u!4 &1238419450
 Transform:
   m_ObjectHideFlags: 0
