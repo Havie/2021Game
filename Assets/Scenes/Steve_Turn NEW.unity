@@ -653,6 +653,7 @@ GameObject:
   - component: {fileID: 205596243}
   - component: {fileID: 205596245}
   - component: {fileID: 205596244}
+  - component: {fileID: 205596246}
   m_Layer: 0
   m_Name: Radius
   m_TagString: Untagged
@@ -736,6 +737,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &205596246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205596242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dcd3c6d5364e664fad89146ee6ebd8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _radius: 0
+  _maxDis: 0
+  _ImHuman: 0
 --- !u!1 &260379767
 GameObject:
   m_ObjectHideFlags: 0
@@ -11212,6 +11228,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sprRend: {fileID: 0}
+  _attackRadius: {fileID: 0}
   _isActive: 0
   _isSelected: 0
 --- !u!195 &478482320
@@ -22146,6 +22163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sprRend: {fileID: 0}
+  _attackRadius: {fileID: 0}
   _isActive: 0
   _isSelected: 0
 --- !u!114 &1188228297
@@ -23858,13 +23876,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dcd3c6d5364e664fad89146ee6ebd8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isOn: 1
   _radius: 0
-  _direction: {x: 3, y: 0, z: 1}
   _maxDis: 0
-  _layermask:
-    serializedVersion: 2
-    m_Bits: 4294967295
   _ImHuman: 1
 --- !u!1 &1893833114
 GameObject:
