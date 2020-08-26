@@ -4,39 +4,39 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+public enum eSelectionState { FREE, MOVE, ATTACK, MENU };
+
 public class SelectionManager : MonoBehaviour
 {
-    private static SelectionManager _instance;
+    // Singleton
+    public static SelectionManager Instance { get; private set; }
 
-    public CameraController _camera;
+    // Materials
+    [SerializeField]
+    private Material _normal = null;
+    [SerializeField]
+    private Material _selected = null;
+    [SerializeField]
+    private Material _allied = null;
+    [SerializeField]
+    private Material _enemy = null;
 
-    public Material _normal;
-    public Material _selected;
-    public Material _allied;
-    public Material _enemy;
-
-    public enum eSelectionState { FREE, MOVE, ATTACK, MENU};
+    // Current selection state
     private eSelectionState _selectionState = eSelectionState.FREE;
 
-    Playable _activeChar;
+    // The active character
+    private Playable _activeChar;
 
-    public static SelectionManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-                _instance = GameObject.FindObjectOfType<SelectionManager>();
-            return _instance;
-        }
-    }
-
+    // Called 0th
     private void Awake()
     {
-        if (_instance == null)
-            _instance = this;
-        else if (_instance != this)
+        // Singleton check
+        if (Instance == null)
+            Instance = this;
+        else if (Instance != this)
             Destroy(this);
 
+        // Check if the materials are set
         if (_normal == null)
             Debug.LogError("Normal resource is null, No idea how to load from package folder, assign in inspector");
         if(_selected==null)
@@ -45,18 +45,10 @@ public class SelectionManager : MonoBehaviour
             _allied = Resources.Load<Material>("Sprites/SelectionOutline_Allied");
         if (_enemy == null)
             _enemy = Resources.Load<Material>("Sprites/SelectionOutline_Enemy");
-
-        if (_camera == null)
-            _camera = Camera.main.GetComponentInParent<CameraController>();
-    }
-    void Start()
-    {
-        if (_camera == null)
-            Debug.LogWarning("camera is null, May have gotten moved from parent back to camera");
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         /*
          * Ideally this all needs to move out of update and the InputManager Tells
@@ -81,6 +73,10 @@ public class SelectionManager : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// Handles what to do with the input.
+    /// </summary>
     private void HandleInput()
     {
         //Debug.Log("SelectionState=" + _selectionState);
@@ -199,8 +195,8 @@ public class SelectionManager : MonoBehaviour
             Debug.LogWarning("Cant find Sprite Render for " + p.gameObject.name);
 
         //Tell the camera where to look
-        if (_camera && cond)
-            _camera.MoveCameraToPos(p.transform.position);
+        if (cond)
+            CameraController.Instance.MoveCameraToPos(p.transform.position);
     }
     public void EnableMove(bool cond)
     {
@@ -211,7 +207,7 @@ public class SelectionManager : MonoBehaviour
         {
             UIBattleMenuController.Instance.ShowMenu(false, _activeChar.transform.position);
             CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>());
-            _camera.SetFollowTarget(cond, _activeChar.transform);
+            CameraController.Instance.SetFollowTarget(cond, _activeChar.transform);
 
         }
 
@@ -299,6 +295,29 @@ public class SelectionManager : MonoBehaviour
         else
             _selectionState = eSelectionState.FREE; // might need diff logic
     }
+
+
+    // Getters
+    /// <summary>
+    /// Returns the Normal Material.
+    /// </summary>
+    /// <returns>Material</returns>
+    public Material GetNormalMaterial() { return _normal; }
+    /// <summary>
+    /// Returns the Selected Material.
+    /// </summary>
+    /// <returns>Material</returns>
+    public Material GetSelectedMaterial() { return _selected; }
+    /// <summary>
+    /// Returns the Allied Material.
+    /// </summary>
+    /// <returns>Material</returns>
+    public Material GetAlliedMaterial() { return _allied; }
+    /// <summary>
+    /// Returns the Enemy Material.
+    /// </summary>
+    /// <returns>Material</returns>
+    public Material GetEnemyMaterial() { return _enemy; }
 
 
 
