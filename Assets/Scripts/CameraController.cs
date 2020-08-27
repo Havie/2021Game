@@ -119,9 +119,11 @@ public class CameraController : MonoBehaviour
             float t = Mathf.Min(tInc * ++timer, 1);
             _camRotCenterTrans.position = Vector3.Lerp(_camRotCenterTrans.position, _destPos_, t);
 
+            /*
             //Decent solution ?
             if (UIBattleMenuController.Instance._isOn)
                 UIBattleMenuController.Instance.ResetMenu();
+                */
 
             yield return null;
         }
