@@ -75,7 +75,7 @@ public class SelectionManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Handles what to do with the input.
+    /// Handles what to do when the user presses select
     /// </summary>
     private void HandleInput()
     {
