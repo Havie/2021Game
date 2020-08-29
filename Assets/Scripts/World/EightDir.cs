@@ -20,13 +20,15 @@ public class EightDir : Billboard
     private const int SINGLE_ROT = 360 / 8;
 
     private void Awake()
-    {
+    { 
         anim = this.GetComponent<cAnimator>();
     }
 
     // Start is called before the first frame update
-    void Start()
+    private new void Start()
     {
+        base.Start();
+
         currentState = eDirection.DOWN;
         anim.SetState(currentState);
 
