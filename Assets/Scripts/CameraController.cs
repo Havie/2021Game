@@ -7,6 +7,12 @@ public class CameraController : MonoBehaviour
     // Singleton
     public static CameraController Instance { get; private set; }
 
+    // Events for the camera moving and rotating
+    public delegate void CameraMove();
+    public static event CameraMove OnCameraMove;
+    public delegate void CameraRotate();
+    public static event CameraRotate OnCameraRotate;
+
     // Reference to the camera's center of rotation
     [SerializeField]
     private Transform _camRotCenterTrans;
@@ -77,6 +83,9 @@ public class CameraController : MonoBehaviour
 
         Quaternion newRot = Quaternion.Euler(newAngles);
         _camRotCenterTrans.rotation = newRot;
+
+        // Call the event for the camera rotating
+        OnCameraRotate?.Invoke();
     }
 
     /// <summary>
@@ -125,12 +134,19 @@ public class CameraController : MonoBehaviour
                 UIBattleMenuController.Instance.ResetMenu();
                 */
 
+            // Call the event for the camera moving
+            OnCameraMove?.Invoke();
+
             yield return null;
         }
 
         _camRotCenterTrans.position = _destPos_;
         if (UIBattleMenuController.Instance._isOn)
             UIBattleMenuController.Instance.ResetMenu();
+
+        // Call the event for the camera moving
+        OnCameraMove?.Invoke();
+
         yield return null;
     }
 
@@ -148,10 +164,17 @@ public class CameraController : MonoBehaviour
         {
             float t = Mathf.Min(tInc * ++timer, 1);
             _camRotCenterTrans.position = Vector3.Lerp(_camRotCenterTrans.position, _destTrans_.position, t);
+
+            // Call the event for the camera moving
+            OnCameraMove?.Invoke();
+
             yield return null;
         }
 
         _camRotCenterTrans.position = _destTrans_.position;
+
+        // Call the event for the camera moving
+        OnCameraMove?.Invoke();
 
         yield return null;
     }
@@ -185,8 +208,11 @@ public class CameraController : MonoBehaviour
 
         while (true)
         {
-            //StartCoroutine(MoveCamera(_charToFollow_.position));
             _camRotCenterTrans.transform.position = _charToFollow_.position;
+
+            // Call the event for the camera moving
+            OnCameraMove?.Invoke();
+
             yield return null;
         }
     }
