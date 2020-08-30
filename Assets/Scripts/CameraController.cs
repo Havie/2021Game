@@ -103,15 +103,6 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    public void SetFollowTarget(bool cond, Transform t)
-    {
-        if (t)
-        {
-            _followTarget = t;
-            _offset = this.transform.position - t.position;
-        }
-        _followMode =cond;
-    }
 
     /// <summary>
     /// Used with a coroutine to lerp the camera to the given position until it reaches it.
@@ -141,8 +132,9 @@ public class CameraController : MonoBehaviour
         }
 
         _camRotCenterTrans.position = _destPos_;
-        if (UIBattleMenuController.Instance._isOn)
+      /*  if (UIBattleMenuController.Instance._isOn)
             UIBattleMenuController.Instance.ResetMenu();
+            */
 
         // Call the event for the camera moving
         OnCameraMove?.Invoke();
