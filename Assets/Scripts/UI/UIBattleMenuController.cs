@@ -34,6 +34,28 @@ public class UIBattleMenuController : MonoBehaviour
 
     #endregion
 
+
+    // Called when the component is enabled
+    // Subscribe to events
+    private void OnEnable()
+    {
+        CameraController.OnCameraMove += ResetMenu;
+
+        ShowMenu(true, Vector3.zero);
+    }
+    // Called when the component is disabled
+    // Unsubscribe from events
+    private void OnDisable()
+    {
+        CameraController.OnCameraMove -= ResetMenu;
+    }
+    // Called when the gameobject is destroyed
+    // Unsubscribe from ALL events
+    private void OnDestroy()
+    {
+        CameraController.OnCameraMove -= ResetMenu;
+    }
+
     private void CreateDefaultList()
     {
         defaultActions = new List<DefaultActions>();
@@ -58,10 +80,6 @@ public class UIBattleMenuController : MonoBehaviour
     {
         CreateDefaultList();
         //ShowMenu(false,Vector3.zero);
-    }
-    private void OnEnable()
-    {
-       ShowMenu(true, Vector3.zero);
     }
 
 
