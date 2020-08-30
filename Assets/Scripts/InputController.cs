@@ -22,13 +22,13 @@ public class InputController
     {
         Vector2 arrowVect = Vector2.zero;
 
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.A))
             arrowVect.x = -1;
-        else if (Input.GetKey(KeyCode.RightArrow))
+        else if (Input.GetKey(KeyCode.D))
             arrowVect.x = 1;
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.S))
             arrowVect.y = -1;
-        else if (Input.GetKey(KeyCode.UpArrow))
+        else if (Input.GetKey(KeyCode.W))
             arrowVect.y = 1;
 
         return arrowVect;
@@ -130,22 +130,52 @@ public class InputController
     {
         Vector2 rtnVect = Vector2.zero;
 
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.LeftArrow))
         {
             rtnVect.y = 1;
         }
-        else if (Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.RightArrow))
         {
             rtnVect.y = -1;
         }
 
-        if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.DownArrow))
         {
             rtnVect.x = -1;
         }
-        else if (Input.GetKey(KeyCode.W))
+        else if (Input.GetKey(KeyCode.UpArrow))
         {
             rtnVect.x = 1;
+        }
+
+        return rtnVect;
+    }
+
+    /// <summary>
+    /// Returns a Vector2Int that holds input information about how to navigate, up, down, left, and right in a menu.
+    /// X represents left and right. Y represents up and down.
+    /// </summary>
+    /// <returns>Vector2Int</returns>
+    public static Vector2Int GetMenuAxis()
+    {
+        Vector2Int rtnVect = new Vector2Int();
+
+        if (Input.GetKey(KeyCode.A))
+        {
+            rtnVect.x = 1;
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            rtnVect.x = -1;
+        }
+
+        if (Input.GetKey(KeyCode.S))
+        {
+            rtnVect.y = -1;
+        }
+        else if (Input.GetKey(KeyCode.W))
+        {
+            rtnVect.y = 1;
         }
 
         return rtnVect;
