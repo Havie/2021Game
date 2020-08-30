@@ -7,10 +7,32 @@ public class MovementController : MonoBehaviour
     // Reference to the nav mesh agent on our character
     private NavMeshAgent _agent;
 
+    private bool _isMoving;
+    private bool _agentThinking;
+
     // Called 0th
     private void Awake()
     {
         _agent = this.GetComponent<NavMeshAgent>();
+    }
+
+    // Update is called once per frame
+    private void Update()
+    {
+        if (_agentThinking && _agent.hasPath)
+        {
+            _isMoving = true;
+            _agentThinking = false;
+        }
+        else if (_isMoving && !_agent.hasPath)
+        {
+            // Debug.Log("Agent stopped");
+            _isMoving = false;
+            //TODO going to need more specific if as in if its this playables current turn etc
+            SelectionManager.Instance.EnableMove(false);
+            SelectionManager.Instance.ShowBattleMenu();
+
+        }
     }
 
     /// <summary>
@@ -24,6 +46,7 @@ public class MovementController : MonoBehaviour
             // Debug.Log("DoMovement");
             // Move our agent
             _agent.SetDestination(_pos_);
+            _agentThinking = true;
         }
     }
 
