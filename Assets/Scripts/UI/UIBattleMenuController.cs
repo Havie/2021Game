@@ -57,7 +57,7 @@ public class UIBattleMenuController : MonoBehaviour
     void Start()
     {
         CreateDefaultList();
-        ShowMenu(false,Vector3.zero);
+        //ShowMenu(false,Vector3.zero);
     }
     private void OnEnable()
     {
