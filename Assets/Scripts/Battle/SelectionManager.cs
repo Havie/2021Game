@@ -207,7 +207,8 @@ public class SelectionManager : MonoBehaviour
         {
             UIBattleMenuController.Instance.ShowMenu(false, _activeChar.transform.position);
             CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>());
-            CameraController.Instance.SetFollowTarget(cond, _activeChar.transform);
+            // CameraController.Instance.SetFollowTarget(cond, _activeChar.transform);
+            CameraController.Instance.BeginFollowingCharacter(_activeChar.transform);
 
         }
 
