@@ -22,7 +22,7 @@ public class UIBattleMenuController : MonoBehaviour
     public eMenuState _menuState = eMenuState.DEFAULT;
 
     //Why cant i make this const?
-    public static string[] _defaultText = new string[] {"Move", "Attack" , "End Turn" };
+    public static string[] _defaultText = new string[] { "Move", "Attack" , "End Turn" };
     public static string[] _attackText = new string[] { "Basic", "Skills", "Burst" };
 
     delegate void DefaultActions();

@@ -52,7 +52,7 @@ public class SelectionManager : MonoBehaviour
     {
         /*
          * Ideally this all needs to move out of update and the InputManager Tells
-         * Selection Manager somethins occurred 
+         * Selection Manager somethins occurred
          */
 
         //I need some type of enum or control logic from the InputController
@@ -124,7 +124,7 @@ public class SelectionManager : MonoBehaviour
         //Clear the old character
         if(_activeChar)
             SetSelected(_activeChar, false);
-        //Assign the new 
+        //Assign the new
         if(character)
         {
             _activeChar = character;
@@ -144,8 +144,8 @@ public class SelectionManager : MonoBehaviour
 
             _selectionState = eSelectionState.MENU;
 
-            bool canMove = true; //ToDo figure out AP 
-            bool canAttack = DetermineValidAttack(); 
+            bool canMove = true; //ToDo figure out AP
+            bool canAttack = DetermineValidAttack();
             //When we show the menu we should tell the battlemenu if attack or move is an option
             UIBattleMenuController.Instance.ShowMenu(
                 true, _activeChar.transform.position,
@@ -179,7 +179,7 @@ public class SelectionManager : MonoBehaviour
             return;
 
         //It will probably already be off in some cases?
-        //Might want to handle this inside the PLayable script-we'll see 
+        //Might want to handle this inside the PLayable script-we'll see
         //p.ShowBattleMenu(cond);
 
         SpriteRenderer sp = p.GetSpriteRenderer();
@@ -229,8 +229,8 @@ public class SelectionManager : MonoBehaviour
     }
 
     /**
-     * Not sure what this method will do 
-     * Currently not used 
+     * Not sure what this method will do
+     * Currently not used
      */
     private void FreeClick(Vector3 mousePos)
     {
@@ -256,16 +256,14 @@ public class SelectionManager : MonoBehaviour
        // Debug.Log("MoveClick");
         if(_activeChar)
         {
-            
+
             MovementController mc = _activeChar.GetComponent<MovementController>();
             if (mc)
             {
                 if (isAttack)
                 {
-                    //verify no one else is there 
+                    //verify no one else is there
                     //Is there a way to do this from the inputcontroller? Todo?
-                    //RaycastHit hit;
-                    //InputController.GetCursorRayWorldPosition(out hit, LayerMask.NameToLayer("Player")); // need to find layermask name/ID
                     GameObject hit = CursorController.Instance.GetCharacterAtCursor();
                     //Todo Wyatt, how do we get the Laymask? bitwise shift?
                     Debug.Log("FOUND=" + hit);
@@ -278,7 +276,7 @@ public class SelectionManager : MonoBehaviour
 
                     // Follow the character who will move
                     CameraController.Instance.BeginFollowingCharacter(mc.transform);
-                    //Start the movement and pass in a callback function 
+                    //Start the movement and pass in a callback function
                     mc.DoMovement(CursorController.Instance.transform.position, MoveComplete);
                 }
             }
@@ -306,7 +304,7 @@ public class SelectionManager : MonoBehaviour
             {
                 _activeChar = null;
                 _selectionState = eSelectionState.FREE;
-               
+
             }
             return true;
         }
@@ -353,7 +351,7 @@ public class SelectionManager : MonoBehaviour
 
 
 
-    //DEBUGGING TMP STUFF 
+    //DEBUGGING TMP STUFF
     //UI - TMP Debugging
     private void TellMyUIClick(Vector3 mousePos)
     {
