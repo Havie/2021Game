@@ -164,12 +164,12 @@ public class SelectionManager : MonoBehaviour
         if (_activeChar.EnemiesInRange() != null)
             inrange = _activeChar.EnemiesInRange().Count > 0;
 
-        return inrange&&enoughAp;
+        return inrange && enoughAp;
     }
     private void ShowCollidersInRange()
     {
         foreach (Playable p in _activeChar.EnemiesInRange())
-            p.SetSpriteOutline(Playable.eSpriteColor.ENEMY);
+            p.SetSpriteOutline(Playable.eSpriteColor.ENEMY);  //Move to Color manager
         foreach (Playable p in _activeChar.EnemiesNotInRange())
             p.SetSpriteOutline(Playable.eSpriteColor.NEUTRAL);
     }
