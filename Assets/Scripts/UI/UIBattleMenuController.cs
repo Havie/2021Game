@@ -21,9 +21,15 @@ public class UIBattleMenuController : MonoBehaviour
     public  enum eMenuState { DEFAULT, MOVE, ATTACK,BASICATTACK, SKILL, BURST}
     public eMenuState _menuState = eMenuState.DEFAULT;
 
+    //Why cant i make this const?
     public static string[] _defaultText = new string[] {"Move", "Attack" , "End Turn" };
+    public static string[] _attackText = new string[] { "Basic", "Skills", "Burst" };
+
     delegate void DefaultActions();
-    List<DefaultActions> defaultActions;
+    List<DefaultActions> _defaultActions;
+
+    delegate void AttackActions();
+    List<AttackActions> _attackActions;
 
     [SerializeField] Vector3 _offsetFromCharacter = new Vector3(75, -75, 0);
 
@@ -58,10 +64,21 @@ public class UIBattleMenuController : MonoBehaviour
 
     private void CreateDefaultList()
     {
-        defaultActions = new List<DefaultActions>();
-        defaultActions.Add(DoMove);
-        defaultActions.Add(DoAttack);
-        defaultActions.Add(DoEndTurn);
+        _defaultActions = new List<DefaultActions>();
+        _defaultActions.Add(DoMove);
+        _defaultActions.Add(SwitchToAttack);
+        _defaultActions.Add(DoEndTurn);
+    }
+    private void CreateAttackList()
+    {
+        _attackActions = new List<AttackActions>();
+        _attackActions.Add(BasicAttack);
+        _attackActions.Add(SwitchToSkills);
+        _attackActions.Add(DoBurst);
+    }
+    private void CreateSkillList()
+    {
+
     }
     private void Awake()
     {
@@ -79,20 +96,25 @@ public class UIBattleMenuController : MonoBehaviour
     void Start()
     {
         CreateDefaultList();
+        CreateAttackList();
         //ShowMenu(false,Vector3.zero);
     }
 
-
-    // Update is called once per frame
     void Update()
     {
+        //TMP
         if (Input.GetKeyDown(KeyCode.O))
             ShowMenu(true, Vector3.zero);
         if (Input.GetKeyDown(KeyCode.C))
             ShowMenu(false, Vector3.zero);
+
+        //ToDo Get this from InputController
+        if (Input.GetKeyDown(KeyCode.Backspace) && _isOn)
+            GoUpALevel();
     }
     public void SetName(string name)  { _name.text = name;}
 
+    //Used by event system to reposition menu when camera is moved
     public void ResetMenu()
     {
         this.transform.position = ConvertToScreenSpace(_lastPos);
@@ -135,20 +157,32 @@ public class UIBattleMenuController : MonoBehaviour
     {
         return Camera.main.WorldToScreenPoint(pos) + _offsetFromCharacter;
     }
+
+    //returns the string for the button at a index based on menu state
     private string DetermineButtonText(int index)
     {
         switch(_menuState)
         {
             case eMenuState.DEFAULT:
                 {
-                    if(index>-1 && index<_defaultText.Length)
-                        return _defaultText[index];
-                    break;
+                    return GetButtonText(index, _defaultText);
+                }
+            case eMenuState.ATTACK: 
+                {
+                   return  GetButtonText(index, _attackText);
                 }
 
         }
 
         return null;
+    }
+    //Helper method for DetermineButtonText , validates indicies and returns string from array
+    private string GetButtonText(int index, string[] textArr)
+    {
+        if (index > -1 && index < textArr.Length)
+            return textArr[index];
+        else
+            return "Invalid";
     }
 
     public void ChangeSelection(int incrementAmount)
@@ -192,42 +226,130 @@ public class UIBattleMenuController : MonoBehaviour
     public void ImClicked(GameObject button)
     {
         //Debug.Log("IMCLICKED" +button);
+        Button b= button.GetComponentInChildren<Button>();
+        if (b == null)
+            return;
 
-        switch (_menuState)
+        if (b.interactable)
+         {
+
+            switch (_menuState)
+            {
+                case eMenuState.DEFAULT:
+                    {
+                        //Figure out who was clicked and what action to perform
+                        for (int i = 0; i < _menuButtons.Length; ++i)
+                        {
+                            if (button == _menuButtons[i].gameObject)
+                            {
+                                if (i < _defaultActions.Count)
+                                    _defaultActions[i]();
+                                return;
+                            }
+                        }
+                        break;
+                    }
+                case eMenuState.ATTACK:
+                    {
+                        //Figure out who was clicked and what action to perform
+                        for (int i = 0; i < _menuButtons.Length; ++i)
+                        {
+                            if (button == _menuButtons[i].gameObject)
+                            {
+                                if (i < _attackActions.Count)
+                                    _attackActions[i](); //cant make a generic helper method cuz of type?
+                               //possibly reset menu state to default?
+                                return;
+                            }
+                        }
+                        break;
+                    }
+                case eMenuState.SKILL:
+                    {
+                        //Figure out who was clicked and what action to perform
+                        for (int i = 0; i < _menuButtons.Length; ++i)
+                        {
+                            if (button == _menuButtons[i].gameObject)
+                            {
+                                // Get some kind of stored action off the button?
+                                return;
+                            }
+                        }
+                        break;
+                    }
+
+            }
+        }
+    }
+
+    private void SwitchState(eMenuState state)
+    {
+        //If we need to do anything special before switching this be done in switch
+        switch(state)
         {
             case eMenuState.DEFAULT:
-                {   
-                    //Figure out who was clicked and what action to perform
-                    for (int i = 0; i < _menuButtons.Length; ++i)
-                    {
-                        if(button==_menuButtons[i].gameObject)
-                        {
-                            if(i<defaultActions.Count)
-                                defaultActions[i]();
-                            return;
-                        }
-                    }
-                  break;
+                {
+                    break;
                 }
-
         }
+
+        _menuState = state;
+        //Will display the proper button text
+        ShowMenu(true, _lastPos);
     }
 
     private void DoMove()
     {
         SelectionManager.Instance.EnableMove(true);
     }
-    private void DoAttack()
+    private void SwitchToAttack()
     {
-        Debug.Log("Attack");
         //Change the Menu to say "Basic , Skills, Burst"
-
+        SwitchState(eMenuState.ATTACK);
     }
     private void DoEndTurn()
     {
         ShowMenu(false, Vector3.zero);
         cEventSystem.Instance.AdvanceCharacterTurn();
     }
+    private void BasicAttack()
+    {
+        SelectionManager.Instance.EnableAttack(true);
 
+    }
+    private void SwitchToSkills()
+    {
+        //Change the Menu to List Skills"
+        SwitchState(eMenuState.SKILL);
 
+    }
+    private void DoBurst()
+    {
+        Debug.Log("DoBurst");
+
+    }
+    //Returns menu to previous options
+    public void GoUpALevel()
+    {
+        switch (_menuState)
+        {
+            case eMenuState.DEFAULT:
+                {
+                  
+                    break;
+                }
+            case eMenuState.ATTACK:
+                {
+                    SwitchState(eMenuState.DEFAULT);
+                    break;
+                }
+            case eMenuState.SKILL:
+                {
+                    SwitchState(eMenuState.ATTACK);
+                    break;
+                }
+
+        }
+    }
 }
+

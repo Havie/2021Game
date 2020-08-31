@@ -1,5 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.AI;
+
+//Cant store an action?
+//private System.Action<int> _onComplete;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class MovementController : MonoBehaviour
@@ -16,29 +20,56 @@ public class MovementController : MonoBehaviour
         _agent = this.GetComponent<NavMeshAgent>();
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
-        if (_agentThinking && _agent.hasPath)
-        {
-            _isMoving = true;
-            _agentThinking = false;
-        }
-        else if (_isMoving && !_agent.hasPath)
-        {
-            // Debug.Log("Agent stopped");
-            _isMoving = false;
-            //TODO going to need more specific if as in if its this playables current turn etc
-            SelectionManager.Instance.EnableMove(false);
-            SelectionManager.Instance.ShowBattleMenu();
 
+
+                                           
+    /// <summary>
+    /// Tell the Agent to start movement towards a position.
+    /// Start a Coroutine that takes in a callback function to fire when 
+    /// the agent has reached the destination
+    /// This will allow us perform different actions based on different skills
+    /// </summary>
+    /// <param name="_pos_"></param>
+    /// <param name="OnComplete"></param>        
+    public void DoMovement(Vector3 _pos_, System.Action OnComplete) //Action<Type> OnComplete
+    {
+        if (_pos_ != Vector3.negativeInfinity)
+        {
+            _agent.SetDestination(_pos_); //Moves the agent
+            _agentThinking = true; // used by the coroutine to establish a delay
+            StartCoroutine(MoveRoutine(OnComplete));
         }
     }
+    //Helper Coroutine to detect when the agent has reached its destination and fire a callback
+    private IEnumerator MoveRoutine(System.Action OnComplete)
+    {
+        //This sucker takes awhile to get going, so we have to perform this check to figure out when it is ready
+        while (_agentThinking )
+        {
+            if (_agent.hasPath)
+            {
+                _isMoving = true;
+                _agentThinking = false;
+            }
+            yield return new WaitForEndOfFrame();
+        }
+        
+        //Once the agent no longer has a path, we know its reached its destination
+        while(_isMoving)
+        {
+            if (!_agent.hasPath)
+            {
+                _isMoving = false;
+                //Fire our callback function if any
+                OnComplete?.Invoke();
+            }
+            yield return new WaitForEndOfFrame();
+        }
+        yield return null;
+    }
 
-    /// <summary>
-    /// Starts moving this character towards the given point.
-    /// </summary>
-    /// <param name="_pos_">End position of the path.</param>
+
+    /// OBSOLETE
     public void DoMovement(Vector3 _pos_)
     {
         if (_pos_ != Vector3.negativeInfinity)
@@ -49,6 +80,7 @@ public class MovementController : MonoBehaviour
             _agentThinking = true;
         }
     }
+
 
     /// <summary>
     /// Creates a potential path for the character to the given end point.
