@@ -265,7 +265,7 @@ public class SelectionManager : MonoBehaviour
                     //verify no one else is there 
                     //Is there a way to do this from the inputcontroller? Todo?
                     RaycastHit hit;
-                    InputController.GetCursorRayWorldPosition(out hit, 1<< LayerMask.NameToLayer("Player")); // need to find layermask name/ID
+                    InputController.GetCursorRayWorldPosition(out hit, LayerMask.NameToLayer("Player")); // need to find layermask name/ID
                     //Todo Wyatt, how do we get the Laymask? bitwise shift?
                     Debug.Log("FOUND=" + hit.transform.gameObject);
                 }
