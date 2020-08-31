@@ -11140,7 +11140,7 @@ GameObject:
   - component: {fileID: 478482322}
   m_Layer: 8
   m_Name: Character (2)
-  m_TagString: Untagged
+  m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22124,7 +22124,7 @@ GameObject:
   - component: {fileID: 1188228286}
   m_Layer: 8
   m_Name: Character (1)
-  m_TagString: Untagged
+  m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
