@@ -14,6 +14,9 @@ public class CursorController : MonoBehaviour
     // If the camera is currently following the cursor
     private bool _camFollow;
 
+    // The character the cursor is currently over
+    private GameObject _hoverChar;
+
     // How fast the cursor should move
     private const float MOVE_SPEED = 0.2f;
 
@@ -38,6 +41,7 @@ public class CursorController : MonoBehaviour
     {
         _cursorOn = false;
         _camFollow = false;
+        _hoverChar = null;
     }
 
     // Update is called once per frame
@@ -46,6 +50,23 @@ public class CursorController : MonoBehaviour
         if (_cursorOn)
         {
             MoveCursor();
+        }
+    }
+
+    // Called when makes contact with another collider
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Character")
+        {
+            _hoverChar = other.gameObject;
+        }
+    }
+    // Called when exits contact with another collider
+    private void OnTriggerExit(Collider other)
+    {
+        if (_hoverChar == other.gameObject)
+        {
+            _hoverChar = null;
         }
     }
 
@@ -121,4 +142,12 @@ public class CursorController : MonoBehaviour
             _sprRenderer.enabled = _onOff_;
         _cursorOn = _onOff_;
     }
+
+    public GameObject GetCharacterAtCursor()
+    {
+        return _hoverChar;
+    }
+
+
+    
 }
