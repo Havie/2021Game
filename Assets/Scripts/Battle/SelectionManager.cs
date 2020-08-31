@@ -91,12 +91,12 @@ public class SelectionManager : MonoBehaviour
                 }
             case eSelectionState.MOVE:
                 {
-                    //TMP- Need control logic from inputcontroller
-                    MoveClick(InputController.GetCursorPosition());
+                    MoveToClick(false);
                     break;
                 }
             case eSelectionState.ATTACK:
                 {
+                    MoveToClick(true);
                     break;
                 }
             case eSelectionState.MENU:
@@ -164,12 +164,12 @@ public class SelectionManager : MonoBehaviour
         if (_activeChar.EnemiesInRange() != null)
             inrange = _activeChar.EnemiesInRange().Count > 0;
 
-        return inrange&&enoughAp;
+        return inrange && enoughAp;
     }
     private void ShowCollidersInRange()
     {
         foreach (Playable p in _activeChar.EnemiesInRange())
-            p.SetSpriteOutline(Playable.eSpriteColor.ENEMY);
+            p.SetSpriteOutline(Playable.eSpriteColor.ENEMY);  //Move to Color manager
         foreach (Playable p in _activeChar.EnemiesNotInRange())
             p.SetSpriteOutline(Playable.eSpriteColor.NEUTRAL);
     }
@@ -212,8 +212,21 @@ public class SelectionManager : MonoBehaviour
 
         }
 
-       }
+    }
+    public void EnableAttack(bool cond)
+    {
+        _selectionState = eSelectionState.ATTACK;
+        CursorController.Instance.ToggleCursor(cond);
+        //Turn on/off the Menu
+        if (_activeChar)
+        {
+            UIBattleMenuController.Instance.ShowMenu(false, _activeChar.transform.position);
+            CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>());
+            CameraController.Instance.BeginFollowingCharacter(_activeChar.transform);
 
+        }
+
+    }
 
     /**
      * Not sure what this method will do 
@@ -230,19 +243,15 @@ public class SelectionManager : MonoBehaviour
             Playable p = hit.transform.GetComponent<Playable>();
             if(p)
             {
-                //This logics all ghetto going to rewrite from menu system
-                if(p.IsActive() && _activeChar)
-                    SetSelected(_activeChar, _activeChar.IsSelected());
-                else if (p.IsActive() && !_activeChar)
-                    SetSelected(p, true);
+
             }
         }
     }
     /**
-     * Move active character to a location that isnt a playable
+     * Move active character to a location that isnt occupied by a  playable
      * Might have to rework logic if we want characters to move to and attack in 1 command
      * */
-    private void MoveClick(Vector3 mousePos)
+    private void MoveToClick(bool isAttack)
     {
        // Debug.Log("MoveClick");
         if(_activeChar)
@@ -251,20 +260,37 @@ public class SelectionManager : MonoBehaviour
             MovementController mc = _activeChar.GetComponent<MovementController>();
             if (mc)
             {
-                // Hide the cursor and stop drawing a path
-                CreateMovementLine.Instance.DisablePathPreview();
-                CursorController.Instance.ToggleCursor(false);
+                if (isAttack)
+                {
+                    //verify no one else is there 
+                    //Is there a way to do this from the inputcontroller? Todo?
+                    RaycastHit hit;
+                    InputController.GetCursorRayWorldPosition(out hit, 1<< LayerMask.NameToLayer("Player")); // need to find layermask name/ID
+                    //Todo Wyatt, how do we get the Laymask? bitwise shift?
+                    Debug.Log("FOUND=" + hit.transform.gameObject);
+                }
+                else
+                {
+                    // Hide the cursor and stop drawing a path
+                    CreateMovementLine.Instance.DisablePathPreview();
+                    CursorController.Instance.ToggleCursor(false);
 
-                // Follow the character who will move
-                CameraController.Instance.BeginFollowingCharacter(mc.transform);
-                mc.DoMovement(CursorController.Instance.transform.position);
+                    // Follow the character who will move
+                    CameraController.Instance.BeginFollowingCharacter(mc.transform);
+                    //Start the movement and pass in a callback function 
+                    mc.DoMovement(CursorController.Instance.transform.position, MoveComplete);
+                }
             }
             else
-            {
-                Debug.LogError("Character did no have a Movement Controller");
-            }
+                Debug.LogError("Character did not have a Movement Controller");
 
         }
+    }
+    private void MoveComplete()
+    {
+       EnableMove(false);
+       ShowBattleMenu();
+       CameraController.Instance.StopFollowingCharacter();
     }
     /**
      * Check if the Raycast Hit hit a playable object or not
