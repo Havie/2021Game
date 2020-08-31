@@ -2,16 +2,37 @@
 
 public class InputController
 {
+    // Holds the input that has already been asked for so that we do not have to query
+    // for the input multiple times in the same frame.
+    private static InputHolder _inpHolder;
+
+    /// <summary>
+    /// Creates the input holder.
+    /// </summary>
+    public static void Initialize() { _inpHolder = new InputHolder(); }
+    /// <summary>
+    /// Resets the input holder. Should be called every frame.
+    /// </summary>
+    public static void RefreshHolder() { _inpHolder.Reset(); }
+
     /// <summary>
     /// Returns true the frame that the select input was pressed.
     /// </summary>
     /// <returns>bool</returns>
     public static bool GetSelectPressDown()
     {
-        if (Input.GetMouseButtonDown(0))
-            return true;
+        if (_inpHolder.HasSelPress == NullBool.NULL)
+        {
+            if (Input.GetMouseButtonDown(0))
+                _inpHolder.HasSelPress = NullBool.TRUE;
+            else
+                _inpHolder.HasSelPress = NullBool.FALSE;
+        }
 
-        return false;
+        if (_inpHolder.HasSelPress == NullBool.TRUE)
+            return true;
+        else
+            return false;
     }
 
     /// <summary>
@@ -20,18 +41,24 @@ public class InputController
     /// <returns>Vector2</returns>
     public static Vector2 GetCursorMoveAxis()
     {
-        Vector2 arrowVect = Vector2.zero;
+        if (_inpHolder.CursorMoveAxis.x == int.MinValue ||
+            _inpHolder.CursorMoveAxis.y == int.MinValue)
+        {
+            Vector2 arrowVect = Vector2.zero;
 
-        if (Input.GetKey(KeyCode.A))
-            arrowVect.x = -1;
-        else if (Input.GetKey(KeyCode.D))
-            arrowVect.x = 1;
-        if (Input.GetKey(KeyCode.S))
-            arrowVect.y = -1;
-        else if (Input.GetKey(KeyCode.W))
-            arrowVect.y = 1;
+            if (Input.GetKey(KeyCode.A))
+                arrowVect.x = -1;
+            else if (Input.GetKey(KeyCode.D))
+                arrowVect.x = 1;
+            if (Input.GetKey(KeyCode.S))
+                arrowVect.y = -1;
+            else if (Input.GetKey(KeyCode.W))
+                arrowVect.y = 1;
 
-        return arrowVect;
+            _inpHolder.CursorMoveAxis = arrowVect;
+        }
+
+        return _inpHolder.CursorMoveAxis;
     }
 
     /// <summary>
@@ -116,10 +143,18 @@ public class InputController
     /// <returns>bool</returns>
     public static bool GetHasMouseMoved()
     {
-        if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
-            return true;
+        if (_inpHolder.HasMouseMoved == NullBool.NULL)
+        {
+            if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
+                _inpHolder.HasMouseMoved = NullBool.TRUE;
+            else
+                _inpHolder.HasMouseMoved = NullBool.FALSE;
+        }
 
-        return false;
+        if (_inpHolder.HasMouseMoved == NullBool.TRUE)
+            return true;
+        else
+            return false;
     }
 
     /// <summary>
@@ -128,27 +163,33 @@ public class InputController
     /// <returns>Vector2</returns>
     public static Vector2 GetCameraRotateAxis()
     {
-        Vector2 rtnVect = Vector2.zero;
+        if (_inpHolder.CameraRotAxis.x == int.MinValue ||
+            _inpHolder.CameraRotAxis.y == int.MinValue)
+        {
+            Vector2 rtnVect = Vector2.zero;
 
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            rtnVect.y = 1;
-        }
-        else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            rtnVect.y = -1;
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                rtnVect.y = 1;
+            }
+            else if (Input.GetKey(KeyCode.RightArrow))
+            {
+                rtnVect.y = -1;
+            }
+
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                rtnVect.x = -1;
+            }
+            else if (Input.GetKey(KeyCode.UpArrow))
+            {
+                rtnVect.x = 1;
+            }
+
+            _inpHolder.CameraRotAxis = rtnVect;
         }
 
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            rtnVect.x = -1;
-        }
-        else if (Input.GetKey(KeyCode.UpArrow))
-        {
-            rtnVect.x = 1;
-        }
-
-        return rtnVect;
+        return _inpHolder.CameraRotAxis;
     }
 
     /// <summary>
@@ -158,26 +199,32 @@ public class InputController
     /// <returns>Vector2Int</returns>
     public static Vector2Int GetMenuAxis()
     {
-        Vector2Int rtnVect = new Vector2Int();
+        if (_inpHolder.MenuAxis.x == int.MinValue ||
+            _inpHolder.MenuAxis.y == int.MinValue)
+        {
+            Vector2Int rtnVect = new Vector2Int();
 
-        if (Input.GetKey(KeyCode.A))
-        {
-            rtnVect.x = 1;
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            rtnVect.x = -1;
+            if (Input.GetKey(KeyCode.A))
+            {
+                rtnVect.x = 1;
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                rtnVect.x = -1;
+            }
+
+            if (Input.GetKey(KeyCode.S))
+            {
+                rtnVect.y = -1;
+            }
+            else if (Input.GetKey(KeyCode.W))
+            {
+                rtnVect.y = 1;
+            }
+
+            _inpHolder.MenuAxis = rtnVect;
         }
 
-        if (Input.GetKey(KeyCode.S))
-        {
-            rtnVect.y = -1;
-        }
-        else if (Input.GetKey(KeyCode.W))
-        {
-            rtnVect.y = 1;
-        }
-
-        return rtnVect;
+        return _inpHolder.MenuAxis;
     }
 }
