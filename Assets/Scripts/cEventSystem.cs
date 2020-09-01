@@ -67,4 +67,9 @@ public class cEventSystem : MonoBehaviour
          ACT?.Invoke();
     }
 
+    public void StartCoroutine(Coroutine coroutine)
+    {
+        //might want to store last known 
+        StartCoroutine(coroutine);
+    }
 }

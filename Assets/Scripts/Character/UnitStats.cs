@@ -27,6 +27,7 @@ public class UnitStats : MonoBehaviour
     private int _currAPMAX;
     #endregion
 
+    
 
     private void Awake()
     {
@@ -35,6 +36,7 @@ public class UnitStats : MonoBehaviour
             _officer = this.GetComponent<Officer>();
         if (_troops = null)
             _troops = this.GetComponent<TroopContainer>();
+
     }
 
     public void InitBattle()

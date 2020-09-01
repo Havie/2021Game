@@ -40,7 +40,7 @@ public class TroopContainer : MonoBehaviour
 
     #region SimpleGetters
     public Army GetArmy() => this.GetComponent<Army>(); // shouldn't be used often
-    // public Skills _GetSkills() _skills;
+
     public int GetMorale() { return _type != null ? (_type.GetMorale()) : 0; }
     public int GetAttack() { return _type != null ? (_type.GetAttack()) : 0; }
     public int GetDefense() { return _type != null ? (_type.GetDefense()) : 0; }
@@ -50,6 +50,8 @@ public class TroopContainer : MonoBehaviour
     public int GetHP() => GetProperHP();
     public int GetHPMAX() => _hpMAX;
     public TroopType GetTroopType() => _type;
+
+    public Skill[] GetSkills() { return _type != null ? (_type.GetSkills()) : null; }
     #endregion
 
     #region SimpleSetters
@@ -69,6 +71,10 @@ public class TroopContainer : MonoBehaviour
         if (faction==null)
             return;
 
+        if (AllTroops.Instance == null)
+            Debug.LogWarning("ALL TROOPs IS NULL, no idea why");
+
+      
         if (faction.IsHuman())
             _type = AllTroops.Instance._troopsDE[(int)type];
         else

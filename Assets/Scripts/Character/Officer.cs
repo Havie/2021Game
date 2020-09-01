@@ -1,5 +1,4 @@
-﻿using Animancer.Examples.Events;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
