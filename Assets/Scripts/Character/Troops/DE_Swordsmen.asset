@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e8898441d2a97c4b8ce0c185bc64ea3, type: 3}
+  m_Name: DE_Swordsmen
+  m_EditorClassIdentifier: 
+  _morale: 80
+  _attack: 45
+  _defense: 55
+  _will: 75
+  _moveSpeed: 5
+  _ap: 10

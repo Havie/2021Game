@@ -11176,7 +11176,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e908d75708b782e418fde42f8e9f5252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _type: 0
+  _type: {fileID: 0}
+  _hpMAX: 10000
+  _hpSword: 0
+  _hpBow: 0
+  _hpPoleaxe: 0
   test: 0
 --- !u!114 &478482316
 MonoBehaviour:
@@ -22154,7 +22158,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e908d75708b782e418fde42f8e9f5252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _type: 0
+  _type: {fileID: 0}
+  _hpMAX: 10000
+  _hpSword: 0
+  _hpBow: 0
+  _hpPoleaxe: 0
   test: 0
 --- !u!136 &1188228286
 CapsuleCollider:
@@ -24392,7 +24400,7 @@ MonoBehaviour:
   - {fileID: 334663676}
   - {fileID: 136476867}
   _menuState: 0
-  _offsetFromCharacter: {x: 175, y: -375, z: 0}
+  _offsetFromCharacter: {x: 175, y: -80, z: 0}
   _isOn: 0
   _lastPos: {x: 0, y: 0, z: 0}
 --- !u!224 &5642867800872582765
