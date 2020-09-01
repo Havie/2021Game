@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9f201e9cffe7a647b0bf9169e83d039, type: 3}
+  m_Name: All Troops
+  m_EditorClassIdentifier: 
+  _troopsDE:
+  - {fileID: 11400000, guid: 90dd9894da34b594aa5ec8dcc4c956ea, type: 2}
+  - {fileID: 11400000, guid: 8900f2fcd724ca2478ad20ea25d9cfb5, type: 2}
+  - {fileID: 11400000, guid: afaeb1f1125f53e44a335f6dc327382e, type: 2}
+  _troopsORC:
+  - {fileID: 11400000, guid: 9677ae82a22676b41a3e1da37d6ad9a5, type: 2}
+  - {fileID: 11400000, guid: 7b56892d5ba32f94780a34fa9b34e8a2, type: 2}
+  - {fileID: 11400000, guid: eaf194f9b0ef56345ba6904a6db1bbf5, type: 2}
