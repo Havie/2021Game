@@ -9,14 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e8898441d2a97c4b8ce0c185bc64ea3, type: 3}
-  m_Name: DE_Swordsmen
+  m_Script: {fileID: 11500000, guid: a29931cde12c31e49b43217146c5f3a6, type: 3}
+  m_Name: BasicAttack
   m_EditorClassIdentifier: 
-  _morale: 80
-  _attack: 45
-  _defense: 55
-  _will: 75
-  _moveSpeed: 5
-  _ap: 10
-  _skills:
-  - {fileID: 11400000, guid: 990686a99e80b2c44ae67d844d008508, type: 2}
+  _camOffset: {x: 3, y: 3, z: 3}
+  _cameraStarted: 0
+  _cameraDone: 1

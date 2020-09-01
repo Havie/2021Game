@@ -139,6 +139,7 @@ public class SelectionManager : MonoBehaviour
             if(_selectionState == eSelectionState.MOVE)
             {
                 CreateMovementLine.Instance.DisablePathPreview();
+                CursorController.Instance.ToggleCursor(false);
                 //this method doesnt disable the last known path Preview (TODO)
             }
 
@@ -200,17 +201,19 @@ public class SelectionManager : MonoBehaviour
     }
     public void EnableMove(bool cond)
     {
-        _selectionState = eSelectionState.MOVE;
-        CursorController.Instance.ToggleCursor(cond);
         //Turn on/off the Menu
-        if (_activeChar)
+        if (_activeChar && cond)
         {
+            _selectionState = eSelectionState.MOVE;
             UIBattleMenuController.Instance.ShowMenu(false, _activeChar.transform.position);
             CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>());
             // CameraController.Instance.SetFollowTarget(cond, _activeChar.transform);
             CameraController.Instance.BeginFollowingCharacter(_activeChar.transform);
+            CursorController.Instance.ToggleCursor(true);
 
         }
+        else // This feels really goofy 
+            ShowBattleMenu();
 
     }
     public void EnableAttack(bool cond)
@@ -267,6 +270,13 @@ public class SelectionManager : MonoBehaviour
                     GameObject hit = CursorController.Instance.GetCharacterAtCursor();
                     //Todo Wyatt, how do we get the Laymask? bitwise shift?
                     Debug.Log("FOUND=" + hit);
+                   // if(hit.transform!=null)
+                    {
+                        Skill basic = _activeChar.GetComponent<TroopContainer>().GetSkills()[0];
+                        List<GameObject> targets = new List<GameObject>();
+                        targets.Add(hit.transform.gameObject);
+                        StartCoroutine(basic.Perform(_activeChar.transform.gameObject, targets));
+                    }
                 }
                 else
                 {
@@ -287,7 +297,6 @@ public class SelectionManager : MonoBehaviour
     }
     private void MoveComplete()
     {
-       EnableMove(false);
        ShowBattleMenu();
        CameraController.Instance.StopFollowingCharacter();
     }
