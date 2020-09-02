@@ -56,8 +56,8 @@ public class Playable : MonoBehaviour
     }
     #endregion
 
-    public bool IsActive() => _isActive;
-    public bool IsSelected() => _isSelected;
+    public bool IsActive() => _isActive; //Its your turn
+    public bool IsSelected() => _isSelected; //Selected in UI somehow (currently same as Active)
     public SpriteRenderer GetSpriteRenderer() => _sprRend;
 
     public void SetActive(bool cond) { _isActive = cond; }

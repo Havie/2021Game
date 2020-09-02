@@ -166,7 +166,8 @@ public class SelectionManager : MonoBehaviour
     }
     #endregion
 
-    #region StateChangers
+    #region StateChangers 
+    //These Change the State of the SelectionManager
     public void EnableMove(bool cond)
     {
         //Turn on/off the Menu
@@ -326,7 +327,6 @@ public class SelectionManager : MonoBehaviour
         else
             _selectionState = eSelectionState.FREE; // might need diff logic
     }
-
 
 
 
