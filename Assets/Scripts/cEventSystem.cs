@@ -29,15 +29,6 @@ public class cEventSystem
     public static event CameraRotate OnCameraRotate;
     public static void CallOnCameraRotate() { OnCameraRotate?.Invoke(); }
 
-    /// <summary>
-    /// Starts a coroutine for ScriptableObjects.
-    /// </summary>
-    /// <param name="_coroutine_">Corutine to start</param>
-    public static void StartCoroutine(IEnumerator _coroutine_)
-    {
-        //might want to store last known 
-        StartCoroutine(_coroutine_);
-    }
 
 
 }
