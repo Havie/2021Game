@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9f77479180662649842ca5f7d14940c, type: 3}
   m_Name: All Materials
   m_EditorClassIdentifier: 
-  _outlineNormal: {fileID: 0}
-  _outlineSelected: {fileID: 0}
-  _outlineAllied: {fileID: 0}
-  _outlineEnemy: {fileID: 0}
+  _outlineNormal: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  _outlineSelected: {fileID: 2100000, guid: 747835aa75010434ea018dc6d36152c1, type: 2}
+  _outlineAllied: {fileID: 2100000, guid: d6aac2c0ecfeb1745b996448c70e0588, type: 2}
+  _outlineEnemy: {fileID: 2100000, guid: 51d097639066b524babae5375c54ffd8, type: 2}
