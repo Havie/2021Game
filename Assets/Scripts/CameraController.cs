@@ -7,12 +7,6 @@ public class CameraController : MonoBehaviour
     // Singleton
     public static CameraController Instance { get; private set; }
 
-    // Events for the camera moving and rotating
-    public delegate void CameraMove();
-    public static event CameraMove OnCameraMove;
-    public delegate void CameraRotate();
-    public static event CameraRotate OnCameraRotate;
-
     // Reference to the camera's center of rotation
     [SerializeField]
     private Transform _camRotCenterTrans;
@@ -85,7 +79,7 @@ public class CameraController : MonoBehaviour
         _camRotCenterTrans.rotation = newRot;
 
         // Call the event for the camera rotating
-        OnCameraRotate?.Invoke();
+        cEventSystem.CallOnCameraRotate();
     }
 
     /// <summary>
@@ -119,25 +113,25 @@ public class CameraController : MonoBehaviour
             float t = Mathf.Min(tInc * ++timer, 1);
             _camRotCenterTrans.position = Vector3.Lerp(_camRotCenterTrans.position, _destPos_, t);
 
-            /*
+            /* This should now be done by subscribing to the OnCameraMove event
             //Decent solution ?
             if (UIBattleMenuController.Instance._isOn)
                 UIBattleMenuController.Instance.ResetMenu();
                 */
 
             // Call the event for the camera moving
-            OnCameraMove?.Invoke();
+            cEventSystem.CallOnCameraMove();
 
             yield return null;
         }
 
         _camRotCenterTrans.position = _destPos_;
-      /*  if (UIBattleMenuController.Instance._isOn)
-            UIBattleMenuController.Instance.ResetMenu();
-            */
+        /*  if (UIBattleMenuController.Instance._isOn)
+              UIBattleMenuController.Instance.ResetMenu();
+              */
 
         // Call the event for the camera moving
-        OnCameraMove?.Invoke();
+        cEventSystem.CallOnCameraMove();
 
         yield return null;
     }
@@ -158,7 +152,7 @@ public class CameraController : MonoBehaviour
             _camRotCenterTrans.position = Vector3.Lerp(_camRotCenterTrans.position, _destTrans_.position, t);
 
             // Call the event for the camera moving
-            OnCameraMove?.Invoke();
+            cEventSystem.CallOnCameraMove();
 
             yield return null;
         }
@@ -166,7 +160,7 @@ public class CameraController : MonoBehaviour
         _camRotCenterTrans.position = _destTrans_.position;
 
         // Call the event for the camera moving
-        OnCameraMove?.Invoke();
+        cEventSystem.CallOnCameraMove();
 
         yield return null;
     }
@@ -203,7 +197,7 @@ public class CameraController : MonoBehaviour
             _camRotCenterTrans.transform.position = _charToFollow_.position;
 
             // Call the event for the camera moving
-            OnCameraMove?.Invoke();
+            cEventSystem.CallOnCameraMove();
 
             yield return null;
         }

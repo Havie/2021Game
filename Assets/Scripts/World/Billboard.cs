@@ -7,19 +7,19 @@ public class Billboard : MonoBehaviour
     protected void OnEnable()
     {
         // Face the camera when it is rotated
-        CameraController.OnCameraRotate += FaceCamera;
+        cEventSystem.OnCameraRotate += FaceCamera;
     }
     // Called when the behaviour is disabled.
     // Unsubscribe from events.
     protected void OnDisable()
     {
-        CameraController.OnCameraRotate -= FaceCamera;
+        cEventSystem.OnCameraRotate -= FaceCamera;
     }
     // Called when the gameobject is destroyed.
     // Unsubscribe from ALL events.
     protected void OnDestroy()
     {
-        CameraController.OnCameraRotate -= FaceCamera;
+        cEventSystem.OnCameraRotate -= FaceCamera;
     }
 
     // Called 0th

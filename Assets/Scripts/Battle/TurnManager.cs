@@ -23,11 +23,9 @@ public class TurnManager
     public void Subscribe(bool cond)
     {
         if (cond)
-            if (cEventSystem.Instance)
-                cEventSystem.Instance.ACT += Next;
+            cEventSystem.OnCharacterTurnEnd += Next;
        else //Is this Legal? lol seems to work 
-            if (cEventSystem.Instance)
-                cEventSystem.Instance.ABR -= Next;
+            cEventSystem.OnBattleRoundEnd -= Next;
     }
     //Constructor
     public TurnManager(bool isBattle)

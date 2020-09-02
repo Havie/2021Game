@@ -45,7 +45,7 @@ public class UIBattleMenuController : MonoBehaviour
     // Subscribe to events
     private void OnEnable()
     {
-        CameraController.OnCameraMove += ResetMenu;
+        cEventSystem.OnCameraMove += ResetMenu;
 
         ShowMenu(true, Vector3.zero);
     }
@@ -53,13 +53,13 @@ public class UIBattleMenuController : MonoBehaviour
     // Unsubscribe from events
     private void OnDisable()
     {
-        CameraController.OnCameraMove -= ResetMenu;
+        cEventSystem.OnCameraMove -= ResetMenu;
     }
     // Called when the gameobject is destroyed
     // Unsubscribe from ALL events
     private void OnDestroy()
     {
-        CameraController.OnCameraMove -= ResetMenu;
+        cEventSystem.OnCameraMove -= ResetMenu;
     }
 
     private void CreateDefaultList()
@@ -310,7 +310,8 @@ public class UIBattleMenuController : MonoBehaviour
     private void DoEndTurn()
     {
         ShowMenu(false, Vector3.zero);
-        cEventSystem.Instance.AdvanceCharacterTurn();
+        // Advance the character's turn
+        cEventSystem.CallOnCharacterTurnEnd();
     }
     private void BasicAttack()
     {
