@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class cEventSystem
 {
-
     // When the battle round ends.
     public delegate void BattleRoundEnd();
     public static event BattleRoundEnd OnBattleRoundEnd;
@@ -30,11 +29,14 @@ public class cEventSystem
     public static event CameraRotate OnCameraRotate;
     public static void CallOnCameraRotate() { OnCameraRotate?.Invoke(); }
 
-    // What is this?
-    public static void StartCoroutine(Coroutine coroutine)
+    /// <summary>
+    /// Starts a coroutine for ScriptableObjects.
+    /// </summary>
+    /// <param name="_coroutine_">Corutine to start</param>
+    public static void StartCoroutine(IEnumerator _coroutine_)
     {
         //might want to store last known 
-        StartCoroutine(coroutine);
+        StartCoroutine(_coroutine_);
     }
 
 

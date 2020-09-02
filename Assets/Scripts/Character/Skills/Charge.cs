@@ -20,7 +20,7 @@ public class Charge : Skill
         //Save Camera initial position
         Vector3 _cameraStart = Camera.main.transform.position;
         //Play Camera and wait till its done 
-        cEventSystem.Instance.StartCoroutine(CameraMovement(1, targets[0].transform.position));
+        cEventSystem.StartCoroutine(CameraMovement(1, targets[0].transform.position));
         while(!_cameraDone) // on base Skill script
         {
             yield return new WaitForEndOfFrame();
@@ -46,7 +46,7 @@ public class Charge : Skill
 
 
         //Play Closing Camera animation 
-        cEventSystem.Instance.StartCoroutine(CameraMovement(1, _cameraStart));
+        cEventSystem.StartCoroutine(CameraMovement(1, _cameraStart));
 
 
         //Let someone know we're done
