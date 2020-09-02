@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a29931cde12c31e49b43217146c5f3a6, type: 3}
-  m_Name: BasicAttack
+  m_Script: {fileID: 11500000, guid: 40300a8d82a22e94e947e763dd0d8b2f, type: 3}
+  m_Name: Charge
   m_EditorClassIdentifier: 
-  _camOffset: {x: 3, y: 3, z: 3}
+  _camOffset: {x: 0, y: 0, z: 0}
   _cameraStarted: 0
   _cameraDone: 0
-  _skillCost: 1
-  _power: 1
+  _skillCost: 4
+  _power: 1.5

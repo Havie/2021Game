@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public enum eSelectionState { FREE, MOVE, ATTACK, SKILL, MENU };
+public enum eSelectionState { FREE, MOVE, ATTACK, SKILL, MENU , WAITING};
 
 public class SelectionManager : MonoBehaviour
 {
@@ -101,6 +101,10 @@ public class SelectionManager : MonoBehaviour
                         UIBattleMenuController.Instance.ClickSelected();
 
 
+                    break;
+                }
+            case eSelectionState.WAITING:
+                {
                     break;
                 }
             default:
@@ -267,47 +271,21 @@ public class SelectionManager : MonoBehaviour
         // Debug.Log("MoveClick");
         if (_activeChar)
         {
-            //Won't be null because its required
-            MovementController mc = _activeChar.GetComponent<MovementController>();
-
-            //First check if anyone is at location of click:
-
+            //Find Character at location of click:
             GameObject character = CursorController.Instance.GetCharacterAtCursor();
-            if (character != null) //Might want to create a Verify Hit method that returns the gameobject?
-            {
-                //Check if Enemy (or ally depending on skill?)
+            //BM handles nulls
+            bool valid = BattleManager.Instance.ManageAttack(_activeChar, character.GetComponent<Playable>());
 
-                //Check if enough AP (1?)
+            if (valid) //Prevent them from clicking anything else while executing combat
+                _selectionState = eSelectionState.WAITING;
 
-
-                Skill basic = _activeChar.GetComponent<SkillManager>().GetBasicAttack();
-                List<GameObject> targets = new List<GameObject>();
-                targets.Add(character.transform.gameObject);
-                //Check if in Range 
-                if (!_activeChar.EnemiesInRange().Contains(character.transform.gameObject.GetComponent<Playable>()))
-                {
-                    //If not in range move to location then attack?
-                    mc.DoMovement(CursorController.Instance.transform.position, basic.Perform(_activeChar.transform.gameObject, targets));
-
-                    //Subtract AP now?
-                }
-                else
-                {
-
-
-
-                    StartCoroutine(basic.Perform(_activeChar.transform.gameObject, targets));
-                }
-
-            }
-            else
-                Debug.LogError("Character did not have a Movement Controller");
 
         }
     }
     private void ClickToUseSkill()
     {
-
+        //Will have to be handled a bit differently since the click can be on area effect?
+        //Or will you have to target an enemy and its based off that center point?
     }
     private void MoveComplete()
     {

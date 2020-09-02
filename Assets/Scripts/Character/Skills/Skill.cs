@@ -5,11 +5,17 @@ using UnityEngine;
 
 public class Skill : ScriptableObject
 {
-    public Vector3 _camOffset;
+    [SerializeField] protected Vector3 _camOffset;
 
-    public bool _cameraStarted;
-    public bool _cameraDone;
+    [SerializeField] protected bool _cameraStarted;
+    [SerializeField] protected bool _cameraDone;
 
+    [SerializeField] protected int _skillCost;
+    [SerializeField] protected float _power;
+
+
+    public int GetSkillCost() => _skillCost;
+    public float GetSkillPower() => _power;
 
     public virtual  IEnumerator Perform(GameObject self, List<GameObject> targets)
     {

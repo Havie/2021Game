@@ -20,6 +20,7 @@ public class TroopContainer : MonoBehaviour
     internal void Init()
     {
         Debug.Log("Todo Init");
+        SetType(eTroopType.SWORD);
     }
 
     #region animations 
@@ -33,7 +34,6 @@ public class TroopContainer : MonoBehaviour
 
     private void Start()
     {
-        SetType(eTroopType.SWORD);
         //TMP - TURN OFF
         IncrementTroops(1000);
     }
@@ -47,6 +47,7 @@ public class TroopContainer : MonoBehaviour
     public int GetWill() { return _type != null ? (_type.GetWill()) : 0; }
     public int GetMoveSpeed() { return _type != null ? (_type.GetMoveSpeed()) : 0; }
     public int GetAP() { return _type != null ? (_type.GetAP()) : 0; }
+
     public int GetHP() => GetProperHP();
     public int GetHPMAX() => _hpMAX;
     public TroopType GetTroopType() => _type;

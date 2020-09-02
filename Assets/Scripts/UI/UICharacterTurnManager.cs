@@ -168,7 +168,7 @@ public class UICharacterTurnManager : MonoBehaviour
         {
             _currentChar = null;
             //Tell Event Manager round is over;
-            cEventSystem.CallOnCharacterTurnEnd();
+            cEventSystem.CallOnBattleRoundEnd();
         }
     }
     private void ShuffleLeft()

@@ -72,7 +72,9 @@ public class BattleManager : MonoBehaviour
         }
 
         _turnManager = new TurnManager(true);
-        TEST();
+
+        //TMP will have async load start the battle or something in UI 
+        StartBattle();
     }
 
     // Called when the component is destroyed.
@@ -87,14 +89,6 @@ public class BattleManager : MonoBehaviour
         // TEMP for testing
         if (Input.GetKeyDown(KeyCode.N))
             _turnManager.Next();
-    }
-
-    /// <summary>
-    /// Starts the battle as a test
-    /// </summary>
-    private void TEST()
-    {
-        StartBattle();
     }
 
     /// <summary>
@@ -124,5 +118,54 @@ public class BattleManager : MonoBehaviour
             return _darkelves;
         else
             return _orcs;
+    }
+
+    //Underdevelopment subject to change
+    public bool ManageAttack(Playable attacker, Playable defender)
+    {
+
+        if (!attacker || !defender)
+            return false;
+        Skill basic = attacker.GetComponent<SkillManager>().GetBasicAttack();
+
+        //Check if Enemy (or ally depending on skill?)
+        Faction current = attacker.GetComponent<Faction>();
+        Faction target = defender.GetComponent<Faction>();
+
+        if (current.IsHuman() == target.IsHuman())
+            return ErrorManager.Instance.DisplayError("[TODO] Can't target an Ally (for now)");
+
+        //Check if enough AP (1?)
+        if (attacker.GetCurrentAP() < basic.GetSkillCost())
+            return ErrorManager.Instance.DisplayError("Not enough AP to attack : " +attacker.name);
+
+
+        List<GameObject> targets = new List<GameObject>();
+        targets.Add(defender.transform.gameObject);
+        //Check if in Range 
+        if (!attacker.EnemiesInRange().Contains(defender))
+        {
+            //If not in range move to location then attack?
+            MovementController mc = attacker.GetComponent<MovementController>(); //cant be null, required 
+            mc.DoMovement(CursorController.Instance.transform.position, basic.Perform(attacker.transform.gameObject, targets));
+            // TODO Will need to subtract AP Costs of getting there
+            
+        }
+        else
+        {
+            StartCoroutine(basic.Perform(attacker.transform.gameObject, targets));
+        }
+        //Subtract AP now?
+        attacker.SubtractAP(basic.GetSkillCost());
+
+        return true;
+    }
+
+
+
+    //Underdevelopment subject to change
+    public bool ManageSkill(List<Playable> attacker, List<Playable> defenders, Skill skill)
+    {
+        return false;
     }
 }
