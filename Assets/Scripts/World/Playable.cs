@@ -108,13 +108,13 @@ public class Playable : MonoBehaviour
 
         //subscribe to  event system that interacts with an end turn button
         //-- could base WHICH event u sub to based on faction vs char
-        cEventSystem.Instance.OnCharacterTurnEnd += EndTurn;
+        cEventSystem.OnCharacterTurnEnd += EndTurn;
     }
     public void EndTurn()
     {
         _isActive = false;
         //unsubscribe from event system 
-        cEventSystem.Instance.OnCharacterTurnEnd -= EndTurn;
+        cEventSystem.OnCharacterTurnEnd -= EndTurn;
     }
 
     /// <summary>
