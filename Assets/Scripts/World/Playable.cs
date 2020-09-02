@@ -4,19 +4,18 @@ using UnityEngine;
 public class Playable : MonoBehaviour
 {
 
-    public enum eSpriteColor { ENEMY, ALLY, NEUTRAL};
+    public enum eSpriteColor { ENEMY, ALLY, NEUTRAL };
 
-    // SpriteRenderer for this Playable
-    [SerializeField]
-    private SpriteRenderer _sprRend;
-    [SerializeField]
-    private AttackRadius _attackRadius;
+    #region Variables
+    [SerializeField] SpriteRenderer _sprRend;
+    [SerializeField] AttackRadius _attackRadius;
 
     public bool _isActive;
     public bool _isSelected;
     private TurnManager _turnManager;
     private bool _isCharacter;
     private GameObject _battleMenu;
+    #endregion
 
     #region SetupMethods
 
@@ -49,7 +48,7 @@ public class Playable : MonoBehaviour
             {
                 _attackRadius = this.GetComponentInChildren<AttackRadius>();
             }
-            catch
+            catch // won't happen
             {
                 Debug.LogError("Could not find AttackRadius for " + gameObject);
             }
@@ -62,24 +61,47 @@ public class Playable : MonoBehaviour
     public SpriteRenderer GetSpriteRenderer() => _sprRend;
 
     public void SetActive(bool cond) { _isActive = cond; }
-    public void SetSelected(bool cond) { _isSelected = cond; }
+
+    /// <summary>
+    /// Sets the sprite outline, and if active tells the camera to look here now
+    /// </summary>
+    /// <param name="cond"></param>
+    public void SetSelected(bool cond)
+    {
+        _isSelected = cond;
+
+        if (cond)
+            _sprRend.material = AllMaterials.Instance._outlineSelected;
+        else
+            _sprRend.material = AllMaterials.Instance._outlineNormal;
 
 
+        //Tell the camera where to look
+        if (cond)
+            CameraController.Instance.MoveCameraToPos(this.transform.position);
+    }
+
+    /// <summary>
+    /// Sets the Color of the Sprite based on an enum
+    /// </summary>
+    /// <param name="color"></param>
     public void SetSpriteOutline(eSpriteColor color)
     {
         if (color == eSpriteColor.ALLY)
-            _sprRend.material = SelectionManager.Instance.GetAlliedMaterial();
+            _sprRend.material = AllMaterials.Instance._outlineAllied;
         else if (color == eSpriteColor.ENEMY)
-            _sprRend.material = SelectionManager.Instance.GetEnemyMaterial();
+            _sprRend.material = AllMaterials.Instance._outlineEnemy;
         else if (color == eSpriteColor.NEUTRAL)
-            _sprRend.material = SelectionManager.Instance.GetNormalMaterial();
+            _sprRend.material = AllMaterials.Instance._outlineNormal;
     }
+
+
 
     public void YourTurn(TurnManager t)
     {
         _isActive = true;
         //Tell the UI its your turn ??? (Top UI will know from TurnManager)
-        //Maybe we tell the side UI ? 
+        //Maybe we tell the side UI ? --Dont like this UI should tell UI
 
         //Tell the Selection Manager Youre Up
         SelectionManager.Instance.SetActiveCharacter(this);
@@ -93,6 +115,17 @@ public class Playable : MonoBehaviour
         _isActive = false;
         //unsubscribe from event system 
         cEventSystem.Instance.ACT -= EndTurn;
+    }
+
+    /// <summary>
+    /// A UI representation of whos attackable for this character
+    /// </summary>
+    public void ShowCollidersInRange()
+    {
+        foreach (Playable p in EnemiesInRange())
+            p.SetSpriteOutline(eSpriteColor.ENEMY);  
+        foreach (Playable p in EnemiesNotInRange())
+            p.SetSpriteOutline(eSpriteColor.NEUTRAL);
     }
 
     public List<Playable> EnemiesInRange()

@@ -4,28 +4,22 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public enum eSelectionState { FREE, MOVE, ATTACK, MENU };
+public enum eSelectionState { FREE, MOVE, ATTACK, SKILL, MENU };
 
 public class SelectionManager : MonoBehaviour
 {
     // Singleton
     public static SelectionManager Instance { get; private set; }
 
-    // Materials
-    [SerializeField]
-    private Material _normal = null;
-    [SerializeField]
-    private Material _selected = null;
-    [SerializeField]
-    private Material _allied = null;
-    [SerializeField]
-    private Material _enemy = null;
 
     // Current selection state
     private eSelectionState _selectionState = eSelectionState.FREE;
 
     // The active character
     private Playable _activeChar;
+
+    //Skill to use assigned by UIBattleMenu
+    private Skill _SkillToUse;
 
     // Called 0th
     private void Awake()
@@ -36,18 +30,8 @@ public class SelectionManager : MonoBehaviour
         else if (Instance != this)
             Destroy(this);
 
-        // Check if the materials are set
-        if (_normal == null)
-            Debug.LogError("Normal resource is null, No idea how to load from package folder, assign in inspector");
-        if(_selected==null)
-            _selected= Resources.Load<Material>("Sprites/SelectionOutline");
-        if (_allied == null)
-            _allied = Resources.Load<Material>("Sprites/SelectionOutline_Allied");
-        if (_enemy == null)
-            _enemy = Resources.Load<Material>("Sprites/SelectionOutline_Enemy");
     }
 
-    // Update is called once per frame
     private void Update()
     {
         /*
@@ -63,11 +47,11 @@ public class SelectionManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.DownArrow) ||
             Input.GetKeyDown(KeyCode.UpArrow) ||
             Input.GetKeyDown(KeyCode.Return))
-                HandleInput();
+            HandleInput();
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if(_selectionState==eSelectionState.MOVE)
+            if (_selectionState == eSelectionState.MOVE)
             {
                 ShowBattleMenu();
             }
@@ -91,12 +75,17 @@ public class SelectionManager : MonoBehaviour
                 }
             case eSelectionState.MOVE:
                 {
-                    MoveToClick(false);
+                    ClickToMove();
                     break;
                 }
             case eSelectionState.ATTACK:
                 {
-                    MoveToClick(true);
+                    ClickToAttack();
+                    break;
+                }
+            case eSelectionState.SKILL:
+                {
+                    ClickToUseSkill();
                     break;
                 }
             case eSelectionState.MENU:
@@ -108,7 +97,7 @@ public class SelectionManager : MonoBehaviour
                         UIBattleMenuController.Instance.ChangeSelection(-1);
                     else if (Input.GetKeyDown(KeyCode.UpArrow))
                         UIBattleMenuController.Instance.ChangeSelection(1);
-                   else if (Input.GetKeyDown(KeyCode.Return))
+                    else if (Input.GetKeyDown(KeyCode.Return))
                         UIBattleMenuController.Instance.ClickSelected();
 
 
@@ -118,30 +107,35 @@ public class SelectionManager : MonoBehaviour
                 break;
         }
     }
-
+    /// <summary>
+    /// Changes the SelectionManagers knowledge on who's turn it is, then shows its battlemenu
+    /// </summary>
+    /// <param name="character"></param>
     public void SetActiveCharacter(Playable character)
     {
         //Clear the old character
-        if(_activeChar)
-            SetSelected(_activeChar, false);
+        if (_activeChar)
+            _activeChar.SetSelected(false);
         //Assign the new
-        if(character)
-        {
-            _activeChar = character;
-            SetSelected(_activeChar, true);
-        }
+        if (character)
+            character.SetSelected(true); //Updates the camera 
+
+        _activeChar = character;
         ShowBattleMenu();
     }
+
+    /// <summary>
+    /// Shows the BattleMenu for the active character by informing the UIBattleMenu of
+    /// the characters current state
+    /// </summary>
     public void ShowBattleMenu()
     {
         if (_activeChar)
         {
-            if(_selectionState == eSelectionState.MOVE)
-            {
-                CreateMovementLine.Instance.DisablePathPreview();
-                CursorController.Instance.ToggleCursor(false);
-                //this method doesnt disable the last known path Preview (TODO)
-            }
+            //Turn off Cursor/path
+            CreateMovementLine.Instance.DisablePathPreview();
+            CursorController.Instance.ToggleCursor(false);
+
 
             _selectionState = eSelectionState.MENU;
 
@@ -152,9 +146,12 @@ public class SelectionManager : MonoBehaviour
                 true, _activeChar.transform.position,
                 _activeChar.name, canMove, canAttack);
 
-            ShowCollidersInRange();
+            //Give player UI representation of whos attackable
+            _activeChar.ShowCollidersInRange();
         }
     }
+    #region HelpersForShowBattleMenu
+    /**returns true is the character has enemies in range and enough AP */
     private bool DetermineValidAttack()
     {
         bool inrange = false;
@@ -167,38 +164,9 @@ public class SelectionManager : MonoBehaviour
 
         return inrange && enoughAp;
     }
-    private void ShowCollidersInRange()
-    {
-        foreach (Playable p in _activeChar.EnemiesInRange())
-            p.SetSpriteOutline(Playable.eSpriteColor.ENEMY);  //Move to Color manager
-        foreach (Playable p in _activeChar.EnemiesNotInRange())
-            p.SetSpriteOutline(Playable.eSpriteColor.NEUTRAL);
-    }
-    private void SetSelected(Playable p, bool cond)
-    {
-        if (p == null)
-            return;
+    #endregion
 
-        //It will probably already be off in some cases?
-        //Might want to handle this inside the PLayable script-we'll see
-        //p.ShowBattleMenu(cond);
-
-        SpriteRenderer sp = p.GetSpriteRenderer();
-        if (sp)
-        {
-            p.SetSelected(cond);
-            if (cond)
-                sp.material = _selected;
-            else
-                sp.material = _normal;
-        }
-        else
-            Debug.LogWarning("Cant find Sprite Render for " + p.gameObject.name);
-
-        //Tell the camera where to look
-        if (cond)
-            CameraController.Instance.MoveCameraToPos(p.transform.position);
-    }
+    #region StateChangers
     public void EnableMove(bool cond)
     {
         //Turn on/off the Menu
@@ -230,6 +198,23 @@ public class SelectionManager : MonoBehaviour
         }
 
     }
+    public void EnableSkill(bool cond, Skill skill)
+    {
+        _selectionState = eSelectionState.SKILL;
+        _SkillToUse = skill;
+
+        CursorController.Instance.ToggleCursor(cond);
+        //Turn on/off the Menu
+        if (_activeChar)
+        {
+            UIBattleMenuController.Instance.ShowMenu(false, _activeChar.transform.position);
+            CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>());
+            CameraController.Instance.BeginFollowingCharacter(_activeChar.transform);
+
+        }
+
+    }
+    #endregion
 
     /**
      * Not sure what this method will do
@@ -242,126 +227,116 @@ public class SelectionManager : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             Debug.Log("WE HIT: " + hit.transform.gameObject);
-            Debug.DrawRay(Camera.main.transform.position, ray.direction *10, Color.red, 10);
+            Debug.DrawRay(Camera.main.transform.position, ray.direction * 10, Color.red, 10);
             Playable p = hit.transform.GetComponent<Playable>();
-            if(p)
+            if (p)
             {
 
             }
         }
     }
-    /**
-     * Move active character to a location that isnt occupied by a  playable
-     * Might have to rework logic if we want characters to move to and attack in 1 command
-     * */
-    private void MoveToClick(bool isAttack)
+
+
+    /** Move active character to a location that isnt occupied by a  playable */
+    private void ClickToMove()
     {
-       // Debug.Log("MoveClick");
-        if(_activeChar)
+        // Debug.Log("MoveClick");
+        if (_activeChar)
         {
 
+            //Won't be null because its required
             MovementController mc = _activeChar.GetComponent<MovementController>();
-            if (mc)
+
+            //TODO make sure no obstacles are there 
+
+            // Hide the cursor and stop drawing a path
+            CreateMovementLine.Instance.DisablePathPreview();
+            CursorController.Instance.ToggleCursor(false);
+
+            // Follow the character who will move
+            CameraController.Instance.BeginFollowingCharacter(mc.transform);
+            //Start the movement and pass in a callback function
+            mc.DoMovement(CursorController.Instance.transform.position, MoveComplete);
+
+
+        }
+    }
+    private void ClickToAttack()
+    {
+        // Debug.Log("MoveClick");
+        if (_activeChar)
+        {
+            //Won't be null because its required
+            MovementController mc = _activeChar.GetComponent<MovementController>();
+
+            //First check if anyone is at location of click:
+
+            GameObject character = CursorController.Instance.GetCharacterAtCursor();
+            if (character != null) //Might want to create a Verify Hit method that returns the gameobject?
             {
-                if (isAttack)
+                //Check if Enemy (or ally depending on skill?)
+
+                //Check if enough AP (1?)
+
+
+                Skill basic = _activeChar.GetComponent<SkillManager>().GetBasicAttack();
+                List<GameObject> targets = new List<GameObject>();
+                targets.Add(character.transform.gameObject);
+                //Check if in Range 
+                if (!_activeChar.EnemiesInRange().Contains(character.transform.gameObject.GetComponent<Playable>()))
                 {
-                    //verify no one else is there
-                    //Is there a way to do this from the inputcontroller? Todo?
-                    GameObject hit = CursorController.Instance.GetCharacterAtCursor();
-                    //Todo Wyatt, how do we get the Laymask? bitwise shift?
-                    Debug.Log("FOUND=" + hit);
-                   // if(hit.transform!=null)
-                    {
-                        Skill basic = _activeChar.GetComponent<TroopContainer>().GetSkills()[0];
-                        List<GameObject> targets = new List<GameObject>();
-                        targets.Add(hit.transform.gameObject);
-                        StartCoroutine(basic.Perform(_activeChar.transform.gameObject, targets));
-                    }
+                    //If not in range move to location then attack?
+                    mc.DoMovement(CursorController.Instance.transform.position, basic.Perform(_activeChar.transform.gameObject, targets));
+
+                    //Subtract AP now?
                 }
                 else
                 {
-                    // Hide the cursor and stop drawing a path
-                    CreateMovementLine.Instance.DisablePathPreview();
-                    CursorController.Instance.ToggleCursor(false);
 
-                    // Follow the character who will move
-                    CameraController.Instance.BeginFollowingCharacter(mc.transform);
-                    //Start the movement and pass in a callback function
-                    mc.DoMovement(CursorController.Instance.transform.position, MoveComplete);
+
+
+                    StartCoroutine(basic.Perform(_activeChar.transform.gameObject, targets));
                 }
+
             }
             else
                 Debug.LogError("Character did not have a Movement Controller");
 
         }
     }
+    private void ClickToUseSkill()
+    {
+
+    }
     private void MoveComplete()
     {
-       ShowBattleMenu();
-       CameraController.Instance.StopFollowingCharacter();
+        ShowBattleMenu();
+        CameraController.Instance.StopFollowingCharacter();
     }
-    /**
-     * Check if the Raycast Hit hit a playable object or not
-     * Logic is temp and will be reworked
-     * */
-    private bool CheckPlayable(RaycastHit hit)
-    {
-        Playable p = hit.transform.GetComponent<Playable>();
-        if (p)
-        {
-            if (p.IsActive())
-            {
-                _activeChar = null;
-                _selectionState = eSelectionState.FREE;
 
-            }
-            return true;
-        }
-        return false;
-    }
+
 
     private void SetMoveable(bool cond)
     {
-        MovementController mc = _activeChar.GetComponent<MovementController>();
-        if (mc)
-            mc.enabled = cond;
-        if(cond)
+        //Wont be null, required
+        _activeChar.GetComponent<MovementController>().enabled = cond;
+
+        if (cond)
             _selectionState = eSelectionState.MOVE;
         else
             _selectionState = eSelectionState.FREE; // might need diff logic
     }
 
 
-    // Getters
-    /// <summary>
-    /// Returns the Normal Material.
-    /// </summary>
-    /// <returns>Material</returns>
-    public Material GetNormalMaterial() { return _normal; }
-    /// <summary>
-    /// Returns the Selected Material.
-    /// </summary>
-    /// <returns>Material</returns>
-    public Material GetSelectedMaterial() { return _selected; }
-    /// <summary>
-    /// Returns the Allied Material.
-    /// </summary>
-    /// <returns>Material</returns>
-    public Material GetAlliedMaterial() { return _allied; }
-    /// <summary>
-    /// Returns the Enemy Material.
-    /// </summary>
-    /// <returns>Material</returns>
-    public Material GetEnemyMaterial() { return _enemy; }
 
 
 
-
-
-
-
-    //DEBUGGING TMP STUFF
+    ///---------------------------------------------------------------------///
+    ///
+    //DEBUGGING TMP STUFF // UNUSED 
     //UI - TMP Debugging
+    ///
+    ///---------------------------------------------------------------------///
     private void TellMyUIClick(Vector3 mousePos)
     {
         if (_activeChar)
@@ -387,4 +362,13 @@ public class SelectionManager : MonoBehaviour
         }
 
     }
+
+    /** Check if the Raycast Hit hit a playable object or not */
+    private bool CheckPlayable(RaycastHit hit)
+    {
+        Playable p = hit.transform.GetComponent<Playable>();
+        return p != null;
+    }
+
+
 }

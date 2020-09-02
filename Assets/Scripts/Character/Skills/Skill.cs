@@ -32,4 +32,9 @@ public class Skill : ScriptableObject
         _cameraDone = true;
 
     }
+
+    protected void PushBack() //Might need to be an Ienumerator 
+    {
+
+    }
 }

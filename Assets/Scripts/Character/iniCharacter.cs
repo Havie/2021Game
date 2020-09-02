@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(Faction))]
 [RequireComponent(typeof(Officer))]
 [RequireComponent(typeof(Playable))]
+[RequireComponent(typeof(SkillManager))] // No Init but should be required
+[RequireComponent(typeof(MovementController))] // No Init but should be required
 public class iniCharacter : MonoBehaviour
 {
     public void Init()
