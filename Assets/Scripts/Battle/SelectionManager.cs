@@ -11,15 +11,6 @@ public class SelectionManager : MonoBehaviour
     // Singleton
     public static SelectionManager Instance { get; private set; }
 
-    // Materials
-    [SerializeField]
-    private Material _normal = null;
-    [SerializeField]
-    private Material _selected = null;
-    [SerializeField]
-    private Material _allied = null;
-    [SerializeField]
-    private Material _enemy = null;
 
     // Current selection state
     private eSelectionState _selectionState = eSelectionState.FREE;
@@ -36,15 +27,6 @@ public class SelectionManager : MonoBehaviour
         else if (Instance != this)
             Destroy(this);
 
-        // Check if the materials are set
-        if (_normal == null)
-            Debug.LogError("Normal resource is null, No idea how to load from package folder, assign in inspector");
-        if(_selected==null)
-            _selected= Resources.Load<Material>("Sprites/SelectionOutline");
-        if (_allied == null)
-            _allied = Resources.Load<Material>("Sprites/SelectionOutline_Allied");
-        if (_enemy == null)
-            _enemy = Resources.Load<Material>("Sprites/SelectionOutline_Enemy");
     }
 
     // Update is called once per frame
@@ -63,11 +45,11 @@ public class SelectionManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.DownArrow) ||
             Input.GetKeyDown(KeyCode.UpArrow) ||
             Input.GetKeyDown(KeyCode.Return))
-                HandleInput();
+            HandleInput();
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if(_selectionState==eSelectionState.MOVE)
+            if (_selectionState == eSelectionState.MOVE)
             {
                 ShowBattleMenu();
             }
@@ -91,12 +73,12 @@ public class SelectionManager : MonoBehaviour
                 }
             case eSelectionState.MOVE:
                 {
-                    MoveToClick(false);
+                    ClickToMove();
                     break;
                 }
             case eSelectionState.ATTACK:
                 {
-                    MoveToClick(true);
+                    ClickToAttack();
                     break;
                 }
             case eSelectionState.MENU:
@@ -108,7 +90,7 @@ public class SelectionManager : MonoBehaviour
                         UIBattleMenuController.Instance.ChangeSelection(-1);
                     else if (Input.GetKeyDown(KeyCode.UpArrow))
                         UIBattleMenuController.Instance.ChangeSelection(1);
-                   else if (Input.GetKeyDown(KeyCode.Return))
+                    else if (Input.GetKeyDown(KeyCode.Return))
                         UIBattleMenuController.Instance.ClickSelected();
 
 
@@ -122,10 +104,10 @@ public class SelectionManager : MonoBehaviour
     public void SetActiveCharacter(Playable character)
     {
         //Clear the old character
-        if(_activeChar)
+        if (_activeChar)
             SetSelected(_activeChar, false);
         //Assign the new
-        if(character)
+        if (character)
         {
             _activeChar = character;
             SetSelected(_activeChar, true);
@@ -136,7 +118,7 @@ public class SelectionManager : MonoBehaviour
     {
         if (_activeChar)
         {
-            if(_selectionState == eSelectionState.MOVE)
+            if (_selectionState == eSelectionState.MOVE)
             {
                 CreateMovementLine.Instance.DisablePathPreview();
                 CursorController.Instance.ToggleCursor(false);
@@ -188,9 +170,9 @@ public class SelectionManager : MonoBehaviour
         {
             p.SetSelected(cond);
             if (cond)
-                sp.material = _selected;
+                sp.material = AllMaterials.Instance._outlineSelected;
             else
-                sp.material = _normal;
+                sp.material = AllMaterials.Instance._outlineNormal;
         }
         else
             Debug.LogWarning("Cant find Sprite Render for " + p.gameObject.name);
@@ -242,53 +224,74 @@ public class SelectionManager : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             Debug.Log("WE HIT: " + hit.transform.gameObject);
-            Debug.DrawRay(Camera.main.transform.position, ray.direction *10, Color.red, 10);
+            Debug.DrawRay(Camera.main.transform.position, ray.direction * 10, Color.red, 10);
             Playable p = hit.transform.GetComponent<Playable>();
-            if(p)
+            if (p)
             {
 
             }
         }
     }
-    /**
-     * Move active character to a location that isnt occupied by a  playable
-     * Might have to rework logic if we want characters to move to and attack in 1 command
-     * */
-    private void MoveToClick(bool isAttack)
+
+
+    /** Move active character to a location that isnt occupied by a  playable */
+    private void ClickToMove()
     {
-       // Debug.Log("MoveClick");
-        if(_activeChar)
+        // Debug.Log("MoveClick");
+        if (_activeChar)
         {
 
+            //Won't be null because its required
             MovementController mc = _activeChar.GetComponent<MovementController>();
-            if (mc)
+
+            //TODO make sure no obstacles are there 
+
+            // Hide the cursor and stop drawing a path
+            CreateMovementLine.Instance.DisablePathPreview();
+            CursorController.Instance.ToggleCursor(false);
+
+            // Follow the character who will move
+            CameraController.Instance.BeginFollowingCharacter(mc.transform);
+            //Start the movement and pass in a callback function
+            mc.DoMovement(CursorController.Instance.transform.position, MoveComplete);
+
+
+        }
+    }
+    private void ClickToAttack()
+    {
+        // Debug.Log("MoveClick");
+        if (_activeChar)
+        {
+            //Won't be null because its required
+            MovementController mc = _activeChar.GetComponent<MovementController>();
+
+            //First check if anyone is at location of click:
+
+            GameObject hit = CursorController.Instance.GetCharacterAtCursor();
+            Debug.Log("FOUND=" + hit);
+            if (hit != null) //Might want to create a Verify Hit method that returns the gameobject?
             {
-                if (isAttack)
+                Skill basic = _activeChar.GetComponent<SkillManager>().GetBasicAttack();
+                List<GameObject> targets = new List<GameObject>();
+                targets.Add(hit.transform.gameObject);
+                //Check if in Range 
+                if (!_activeChar.EnemiesInRange().Contains(hit.transform.gameObject.GetComponent<Playable>()))
                 {
-                    //verify no one else is there
-                    //Is there a way to do this from the inputcontroller? Todo?
-                    GameObject hit = CursorController.Instance.GetCharacterAtCursor();
-                    //Todo Wyatt, how do we get the Laymask? bitwise shift?
-                    Debug.Log("FOUND=" + hit);
-                   // if(hit.transform!=null)
-                    {
-                        Skill basic = _activeChar.GetComponent<TroopContainer>().GetSkills()[0];
-                        List<GameObject> targets = new List<GameObject>();
-                        targets.Add(hit.transform.gameObject);
-                        StartCoroutine(basic.Perform(_activeChar.transform.gameObject, targets));
-                    }
+                    //If not in range move to location then attack?
+                    mc.DoMovement(CursorController.Instance.transform.position, basic.Perform(_activeChar.transform.gameObject, targets));
                 }
                 else
                 {
-                    // Hide the cursor and stop drawing a path
-                    CreateMovementLine.Instance.DisablePathPreview();
-                    CursorController.Instance.ToggleCursor(false);
 
-                    // Follow the character who will move
-                    CameraController.Instance.BeginFollowingCharacter(mc.transform);
-                    //Start the movement and pass in a callback function
-                    mc.DoMovement(CursorController.Instance.transform.position, MoveComplete);
+
+                    //Check if Enemy (or ally depending on skill?)
+
+                    //Check if enough AP (1?)
+
+                    StartCoroutine(basic.Perform(_activeChar.transform.gameObject, targets));
                 }
+
             }
             else
                 Debug.LogError("Character did not have a Movement Controller");
@@ -297,8 +300,8 @@ public class SelectionManager : MonoBehaviour
     }
     private void MoveComplete()
     {
-       ShowBattleMenu();
-       CameraController.Instance.StopFollowingCharacter();
+        ShowBattleMenu();
+        CameraController.Instance.StopFollowingCharacter();
     }
     /**
      * Check if the Raycast Hit hit a playable object or not
@@ -322,40 +325,14 @@ public class SelectionManager : MonoBehaviour
 
     private void SetMoveable(bool cond)
     {
-        MovementController mc = _activeChar.GetComponent<MovementController>();
-        if (mc)
-            mc.enabled = cond;
-        if(cond)
+        //Wont be null, required
+        _activeChar.GetComponent<MovementController>().enabled = cond;
+
+        if (cond)
             _selectionState = eSelectionState.MOVE;
         else
             _selectionState = eSelectionState.FREE; // might need diff logic
     }
-
-
-    // Getters
-    /// <summary>
-    /// Returns the Normal Material.
-    /// </summary>
-    /// <returns>Material</returns>
-    public Material GetNormalMaterial() { return _normal; }
-    /// <summary>
-    /// Returns the Selected Material.
-    /// </summary>
-    /// <returns>Material</returns>
-    public Material GetSelectedMaterial() { return _selected; }
-    /// <summary>
-    /// Returns the Allied Material.
-    /// </summary>
-    /// <returns>Material</returns>
-    public Material GetAlliedMaterial() { return _allied; }
-    /// <summary>
-    /// Returns the Enemy Material.
-    /// </summary>
-    /// <returns>Material</returns>
-    public Material GetEnemyMaterial() { return _enemy; }
-
-
-
 
 
 

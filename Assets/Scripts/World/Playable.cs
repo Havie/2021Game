@@ -68,11 +68,11 @@ public class Playable : MonoBehaviour
     public void SetSpriteOutline(eSpriteColor color)
     {
         if (color == eSpriteColor.ALLY)
-            _sprRend.material = SelectionManager.Instance.GetAlliedMaterial();
+            _sprRend.material = AllMaterials.Instance._outlineAllied;
         else if (color == eSpriteColor.ENEMY)
-            _sprRend.material = SelectionManager.Instance.GetEnemyMaterial();
+            _sprRend.material = AllMaterials.Instance._outlineEnemy;
         else if (color == eSpriteColor.NEUTRAL)
-            _sprRend.material = SelectionManager.Instance.GetNormalMaterial();
+            _sprRend.material = AllMaterials.Instance._outlineNormal;
     }
 
     public void YourTurn(TurnManager t)

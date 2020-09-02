@@ -40,6 +40,18 @@ public class MovementController : MonoBehaviour
             StartCoroutine(MoveRoutine(OnComplete));
         }
     }
+    public void DoMovement(Vector3 _pos_, IEnumerator OnComplete)
+    {
+        if (_pos_ != Vector3.negativeInfinity)
+        {
+            // Debug.Log("DoMovement");
+            // Move our agent
+            _agent.SetDestination(_pos_);
+            _agentThinking = true;
+            StartCoroutine(MoveRoutine(OnComplete));
+        }
+    }
+
     //Helper Coroutine to detect when the agent has reached its destination and fire a callback
     private IEnumerator MoveRoutine(System.Action OnComplete)
     {
@@ -67,19 +79,34 @@ public class MovementController : MonoBehaviour
         }
         yield return null;
     }
-
-
-    /// OBSOLETE
-    public void DoMovement(Vector3 _pos_)
+    //Helper Coroutine to detect when the agent has reached its destination and will start a courtine as its callback
+    private IEnumerator MoveRoutine(IEnumerator OnComplete)
     {
-        if (_pos_ != Vector3.negativeInfinity)
+        //This sucker takes awhile to get going, so we have to perform this check to figure out when it is ready
+        while (_agentThinking)
         {
-            // Debug.Log("DoMovement");
-            // Move our agent
-            _agent.SetDestination(_pos_);
-            _agentThinking = true;
+            if (_agent.hasPath)
+            {
+                _isMoving = true;
+                _agentThinking = false;
+            }
+            yield return new WaitForEndOfFrame();
         }
+
+        //Once the agent no longer has a path, we know its reached its destination
+        while (_isMoving)
+        {
+            if (!_agent.hasPath)
+            {
+                _isMoving = false;
+                if(OnComplete!=null) //can a coroutine be null?
+                    StartCoroutine(OnComplete);
+            }
+            yield return new WaitForEndOfFrame();
+        }
+        yield return null;
     }
+
 
 
     /// <summary>
