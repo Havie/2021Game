@@ -24,10 +24,10 @@ public class TurnManager
     {
         if (cond)
             if (cEventSystem.Instance)
-                cEventSystem.Instance.ACT += Next;
+                cEventSystem.Instance.OnCharacterTurnEnd += Next;
        else //Is this Legal? lol seems to work 
             if (cEventSystem.Instance)
-                cEventSystem.Instance.ABR -= Next;
+                cEventSystem.Instance.OnBattleRoundEnd -= Next;
     }
     //Constructor
     public TurnManager(bool isBattle)

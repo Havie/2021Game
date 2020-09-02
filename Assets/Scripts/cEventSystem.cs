@@ -1,73 +1,37 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
-public class cEventSystem : MonoBehaviour
+public class cEventSystem
 {
-   private static cEventSystem _instance;
 
-
-
+    // When the battle round ends.
     public delegate void BattleRoundEnd();
-    public event BattleRoundEnd ABR;
+    public static event BattleRoundEnd OnBattleRoundEnd;
+    public static void CallOnBattleRoundEnd() { OnBattleRoundEnd?.Invoke(); }
 
+    // When a character's turn ends. Tells the next character to go.
     public delegate void CharacterTurnEnd();
-    public event CharacterTurnEnd ACT;
+    public static event CharacterTurnEnd OnCharacterTurnEnd;
+    public static void CallOnCharacterTurnEnd() { OnCharacterTurnEnd?.Invoke(); }
 
+    // When a character dies. Takes in the character that died as a parameter.
+    public delegate void CharacterDeath(Officer officer);
+    public static event CharacterDeath OnCharacterDeath;
+    public static void CallOnCharacterDeath(Officer _corpse_) { OnCharacterDeath?.Invoke(_corpse_); }
 
-    public delegate void characterDied(Officer officer);
-    public event characterDied characterDead; 
+    // When the camera moves
+    public delegate void CameraMove();
+    public static event CameraMove OnCameraMove;
+    public static void CallOnCameraMove() { OnCameraMove?.Invoke(); }
 
-                                       
-	#region Singleton
-    public static cEventSystem Instance
-    {
-        get
-        {
-            if (_instance == null)
-                _instance = GameObject.FindObjectOfType<cEventSystem>();
-            return _instance;
-        }
-    }
+    // When the camera rotates
+    public delegate void CameraRotate();
+    public static event CameraRotate OnCameraRotate;
+    public static void CallOnCameraRotate() { OnCameraRotate?.Invoke(); }
 
-    private void Awake()
-    {
-        if (_instance == null)
-        {
-            _instance = this;
-        }
-        else if (_instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-    }
-	#endregion
-
-    void Start()
-    {
-       //this.transform.parent = GameManager.Instance.transform;
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            AdvanceCharacterTurn();
-        }
-    }
-	public void AdvanceBattleRound()
-    {
-         ABR?.Invoke();
-    }
-    public void AdvanceCharacterTurn()
-    {
-         ACT?.Invoke();
-    }
-
-    public void StartCoroutine(Coroutine coroutine)
+    // What is this?
+    public static void StartCoroutine(Coroutine coroutine)
     {
         //might want to store last known 
         StartCoroutine(coroutine);

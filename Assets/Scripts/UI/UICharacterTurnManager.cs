@@ -64,17 +64,17 @@ public class UICharacterTurnManager : MonoBehaviour
         _oldTurns = new List<CharacterHolder>();
         _newTurns = new List<CharacterHolder>();
     }
-    void OnEnable()
+    // Called when the component is enabled.
+    // Subscribe to events.
+    private void OnEnable()
     {
-        //Subscribe AdvanceTurn() 
-        if (cEventSystem.Instance)
-            cEventSystem.Instance.ACT += AdvanceTurn;
+        cEventSystem.OnCharacterTurnEnd += AdvanceTurn;
     }
-    void OnDisable() //does fire on destroy
+    // Called when the component is disabled.
+    // Unsubscribe from events (does fire on destroy).
+    private void OnDisable()
     {
-        //UnSubscribe AdvanceTurn() 
-        if(cEventSystem.Instance)
-            cEventSystem.Instance.ACT -= AdvanceTurn;
+        cEventSystem.OnCharacterTurnEnd -= AdvanceTurn;
     }
     #endregion
 
@@ -168,7 +168,7 @@ public class UICharacterTurnManager : MonoBehaviour
         {
             _currentChar = null;
             //Tell Event Manager round is over;
-            cEventSystem.Instance.AdvanceBattleRound();
+            cEventSystem.CallOnCharacterTurnEnd();
         }
     }
     private void ShuffleLeft()
