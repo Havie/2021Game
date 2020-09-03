@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: All Skills
   m_EditorClassIdentifier: 
   _basicAttack: {fileID: 11400000, guid: 990686a99e80b2c44ae67d844d008508, type: 2}
-  _charge: {fileID: 0}
+  _charge: {fileID: 11400000, guid: 59d0c75e937fb064c81f4ad2ed86c1d4, type: 2}
   _repel: {fileID: 0}
