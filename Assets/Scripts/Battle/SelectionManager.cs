@@ -31,7 +31,7 @@ public class SelectionManager : MonoBehaviour
             Destroy(this);
 
     }
-
+    //Ideally get rid of this update 
     private void Update()
     {
         /*
@@ -48,6 +48,10 @@ public class SelectionManager : MonoBehaviour
             Input.GetKeyDown(KeyCode.UpArrow) ||
             Input.GetKeyDown(KeyCode.Return))
             HandleInput();
+
+        //Ideal:
+        //if (InputController.HasMenuInput())
+        //   HandleInput();
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -99,6 +103,12 @@ public class SelectionManager : MonoBehaviour
                         UIBattleMenuController.Instance.ChangeSelection(1);
                     else if (Input.GetKeyDown(KeyCode.Return))
                         UIBattleMenuController.Instance.ClickSelected();
+
+                    // int axis = InputController.GetMenuAxis()
+                    // if (axis!=0)
+                    //  UIBattleMenuController.Instance.ChangeSelection(axis);
+                    // else if(InputContoller.GetMenuSelect())
+                    //   UIBattleMenuController.Instance.ClickSelected();
 
 
                     break;
@@ -284,8 +294,42 @@ public class SelectionManager : MonoBehaviour
     }
     private void ClickToUseSkill()
     {
-        //Will have to be handled a bit differently since the click can be on area effect?
-        //Or will you have to target an enemy and its based off that center point?
+        if (!_SkillToUse || !_activeChar)
+            return;
+
+        bool valid = false;  //Let the battleManager Verify the passed in data is valid for the skill
+       
+        //This logic may need to change when we get/add to this list.
+        List<Playable> _skillUsers = new List<Playable>();
+        _skillUsers.Add(_activeChar);
+
+        //if needs target
+        if (_SkillToUse.GetRequiresTarget())
+        {
+            //See if theres a character at selection
+            GameObject character = CursorController.Instance.GetCharacterAtCursor();
+            //BM will handle nulls 
+            valid = BattleManager.Instance.ManageSkill(_skillUsers, character.GetComponent<Playable>(), _SkillToUse);
+
+        }
+        else
+        {
+            Vector3 location;
+            if (_SkillToUse.GetRange()==0) //Melee
+                location= _activeChar.transform.position; //self loc
+            else //Ranged
+                location = CursorController.Instance.transform.position; // cursor loc
+            valid = BattleManager.Instance.ManageSkill(_skillUsers, location, _SkillToUse);
+        }
+
+       
+
+        if (valid) //Prevent them from clicking anything else while executing combat
+            _selectionState = eSelectionState.WAITING;
+        //else
+            //Display some kind of response to player
+
+
     }
     private void MoveComplete()
     {

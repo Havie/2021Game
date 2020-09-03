@@ -17,3 +17,5 @@ MonoBehaviour:
   _cameraDone: 0
   _skillCost: 4
   _power: 1.5
+  _requiresTarget: 1
+  _numTargets: 1
