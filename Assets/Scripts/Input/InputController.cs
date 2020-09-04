@@ -189,6 +189,23 @@ public class InputController
     }
 
     /// <summary>
+    /// Returns true if there is camera rotation input.
+    /// </summary>
+    /// <returns>bool</returns>
+    public static bool HasCameraRotateInput()
+    {
+        if (_inpHolder.HasCameraRotInput == NullBool.NULL)
+        {
+            if (GetCameraRotateAxis() != Vector2.zero)
+                _inpHolder.HasCameraRotInput = NullBool.TRUE;
+            else
+                _inpHolder.HasCameraRotInput = NullBool.FALSE;
+        }
+
+        return _inpHolder.HasCameraRotInput == NullBool.TRUE;
+    }
+
+    /// <summary>
     /// Returns a Vector2Int that holds input information about how to navigate, up, down, left, and right in a menu.
     /// X represents left and right. Y represents up and down.
     /// </summary>
