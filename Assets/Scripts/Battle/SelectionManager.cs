@@ -21,6 +21,26 @@ public class SelectionManager : MonoBehaviour
     //Skill to use assigned by UIBattleMenu
     private Skill _SkillToUse;
 
+
+    // Called when the component is enabled.
+    // Subscribe to events.
+    private void OnEnable()
+    {
+        cEventSystem.OnHasMenuInput += HandleInput;
+    }
+    // Called when the component is disabled.
+    // Unsubscribe from events.
+    private void OnDisable()
+    {
+        cEventSystem.OnHasMenuInput -= HandleInput;
+    }
+    // Called when the gameobject is destroyed.
+    // Unsubscribe from ALL events.
+    private void OnDestroy()
+    {
+        cEventSystem.OnHasMenuInput -= HandleInput;
+    }
+
     // Called 0th
     private void Awake()
     {
@@ -29,13 +49,14 @@ public class SelectionManager : MonoBehaviour
             Instance = this;
         else if (Instance != this)
             Destroy(this);
-
     }
     //Ideally get rid of this update 
     private void Update()
     {
+        /*
         if (InputController.HasMenuInput())
            HandleInput();
+           */
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
