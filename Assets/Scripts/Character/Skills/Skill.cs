@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class Skill : ScriptableObject
 {
-    
+    [SerializeField] protected string _name;
+
     [SerializeField] protected Vector3 _camOffset; //Half implemented, might need different views for different skills 
 
     [SerializeField] protected bool _cameraStarted;
@@ -20,7 +21,12 @@ public class Skill : ScriptableObject
     [SerializeField] protected int _radius=1; //area of effect 
 
     [SerializeField] protected bool _isFriendly;
+    [SerializeField] protected bool _useImmediate;
 
+    public enum eSkillEffect { NONE, PUSHBACK ,SWITCH, PRESS };
+    [SerializeField] protected eSkillEffect[] _effects;
+
+    public string GetName() => _name;
     public int GetAPCost() => _apCost;
     public float GetSkillPower() => _power;
     public bool GetRequiresTarget() => _requiresTarget;
@@ -33,14 +39,20 @@ public class Skill : ScriptableObject
     /// <summary>
     /// The area of effect, Should be 1 by default.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>int </returns>
     public int GetRadius() => _radius;
 
     /// <summary>
     /// Whether the skill targets allies or enemies?
     /// </summary>
-    /// <returns></returns>
+    /// <returns>bool </returns>
     public bool GetIsFriendly() => _isFriendly;
+
+    /// <summary>
+    /// Tells the selection manager is the skill requires further input
+    /// </summary>
+    /// <returns>bool</returns>
+    public bool GetIsUseImmediate() => _useImmediate;
 
     public virtual  IEnumerator Perform(GameObject self, List<GameObject> targets)
     {
@@ -64,8 +76,34 @@ public class Skill : ScriptableObject
 
     }
 
-    protected void PushBack() //Might need to be an Ienumerator 
+    protected void HandleEffects(GameObject self, GameObject target)
     {
+        if (_effects == null)
+            return;
+        foreach (eSkillEffect effect in _effects)
+        {
+            switch(effect)
+            {
+                case eSkillEffect.PRESS:
+                    {
+                        break;
+                    }
+                case eSkillEffect.PUSHBACK:
+                    {
+                        CoroutineManager.Instance.StartThread(PushBack(target, self.transform));
+                        break;
+                    }
+                case eSkillEffect.SWITCH:
+                    {
+                        break;
+                    }
+            }
+        }
+    }
 
+    protected IEnumerator PushBack(GameObject targetToPush, Transform LocationFrom) //Might need to be an Ienumerator 
+    {
+        yield return null;
+        Debug.LogWarning("DEFAULT implementation");
     }
 }

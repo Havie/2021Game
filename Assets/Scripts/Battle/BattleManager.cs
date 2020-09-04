@@ -167,6 +167,7 @@ public class BattleManager : MonoBehaviour
     //Underdevelopment subject to change
     public bool ManageSkill(List<Playable> attackers, Playable target, Skill skill)
     {
+        Debug.Log("Manage1");
         if (attackers == null || target == null || skill == null)
             return ErrorManager.Instance.DisplayError("ManageSkill: somethings null");
         if (attackers.Count == 0)
@@ -183,6 +184,7 @@ public class BattleManager : MonoBehaviour
     //Underdevelopment subject to change
     public bool ManageSkill(List<Playable> attackers, Vector3 location, Skill skill)
     {
+        Debug.Log("Manage2");
         if (attackers == null || location == null || skill == null)
             return ErrorManager.Instance.DisplayError("ManageSkill: somethings null");
         if (attackers.Count == 0)

@@ -38,6 +38,8 @@ public class UIBattleMenuController : MonoBehaviour
 
     private int _currIndex;
 
+    private Skill[] _skills;
+
     #endregion
 
 
@@ -114,41 +116,65 @@ public class UIBattleMenuController : MonoBehaviour
     }
     public void SetName(string name)  { _name.text = name;}
 
-    //Used by event system to reposition menu when camera is moved
+    ///Used by event system to reposition menu when camera is moved
     public void ResetMenu()
     {
         this.transform.position = ConvertToScreenSpace(_lastPos);
     }
-    public void ShowMenu(bool cond, Vector3 worldPos, string name, bool canMove, bool canAttack)
+    /// <summary>
+    /// Shows the Battle Menu at character location with parameters
+    /// </summary>
+    /// <param name="cond"></param>
+    /// <param name="worldPos"></param>
+    /// <param name="name"></param>
+    /// <param name="canMove"></param>
+    /// <param name="canAttack"></param>
+    /// <param name="skills"></param>
+    public void ShowMenu(bool cond, Vector3 worldPos, string name, bool canMove, bool canAttack, Skill[] skills)
     {
         SetName(name);
         ShowMenu(cond, worldPos);
         //Might want to contain this/null checks?
         _menuButtons[0].SetInteractable(canMove);
         _menuButtons[1].SetInteractable(canAttack);
+        _skills = skills;
     }
     public void ShowMenu(bool cond, Vector3 worldPos)
     {
-
         if (worldPos != Vector3.zero)
             this.transform.position = ConvertToScreenSpace(worldPos);
 
+        //Update our buttons
         for (int i = 0; i < _menuButtons.Length; ++i)
         {
-            //need a way to keep track of if the text is valid or not
-            _menuButtons[i].SetText(DetermineButtonText(i));
+            //tmp cache to keep track of if the text is valid or not
+            string bText = DetermineButtonText(i);
+
+            if (bText.Equals("") || cond==false)
+                _menuButtons[i].gameObject.SetActive(false);
+            else
+            {
+                _menuButtons[i].SetText(bText);
+                _menuButtons[i].gameObject.SetActive(true);
+            }
+
+            if(_menuState== eMenuState.SKILL && _skills!=null)
+            {
+                if (_skills.Length > i)
+                    _menuButtons[i].AssignSkill(_skills[i]); /// this might need fixing 
+            }
         }
+
         //Turn off and on the old and new 
         SetSelected(false);
         _currIndex = 0;
         SetSelected(true);
 
+        //Turn on or off the Background components
         _subpanel.gameObject.SetActive(cond);
         _name.gameObject.SetActive(cond);
-        //It feels like this shouldn't work for SetSelected when they are turned back on, but it does
-        foreach (UIButton b in _menuButtons)
-            b.gameObject.SetActive(cond);
 
+        //Update state
         _isOn = cond;
         _lastPos = worldPos;
 
@@ -171,18 +197,34 @@ public class UIBattleMenuController : MonoBehaviour
                 {
                    return  GetButtonText(index, _attackText);
                 }
+            case eMenuState.SKILL:
+                {
+                    return GetSkillText(index);
+                }
 
         }
 
         return null;
     }
-    //Helper method for DetermineButtonText , validates indicies and returns string from array
+    ///Helper method for DetermineButtonText , validates indicies and returns string from array
     private string GetButtonText(int index, string[] textArr)
     {
         if (index > -1 && index < textArr.Length)
             return textArr[index];
         else
             return "Invalid";
+    }
+
+    //going to need to change
+    private string GetSkillText(int index)
+    {
+        if (_skills == null)
+            return "";
+        if (_skills.Length <= index)
+            return "";
+
+        //TODO make skills change with>3 index
+        return _skills[index].GetName();
     }
 
     public void ChangeSelection(int incrementAmount)
@@ -267,11 +309,15 @@ public class UIBattleMenuController : MonoBehaviour
                 case eMenuState.SKILL:
                     {
                         //Figure out who was clicked and what action to perform
+                        ///this will have to change 
                         for (int i = 0; i < _menuButtons.Length; ++i)
                         {
                             if (button == _menuButtons[i].gameObject)
                             {
                                 // Get some kind of stored action off the button?
+                                Skill sk = _menuButtons[i].GetSkill();
+                                if (sk)
+                                    SelectionManager.Instance.EnableSkill(true, sk);
                                 return;
                             }
                         }
@@ -294,6 +340,8 @@ public class UIBattleMenuController : MonoBehaviour
         }
 
         _menuState = state;
+
+
         //Will display the proper button text
         ShowMenu(true, _lastPos);
     }

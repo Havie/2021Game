@@ -12,10 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40300a8d82a22e94e947e763dd0d8b2f, type: 3}
   m_Name: Charge
   m_EditorClassIdentifier: 
+  _name: Charge
   _camOffset: {x: 0, y: 0, z: 0}
   _cameraStarted: 0
-  _cameraDone: 0
-  _skillCost: 4
+  _cameraDone: 1
+  _apCost: 4
   _power: 1.5
   _requiresTarget: 1
   _numTargets: 1
+  _range: 0
+  _radius: 1
+  _isFriendly: 0
+  _useImmediate: 0
+  _effects: 03000000

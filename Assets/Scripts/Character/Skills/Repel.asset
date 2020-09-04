@@ -12,10 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e6011ef19afc374592e51f199917385, type: 3}
   m_Name: Repel
   m_EditorClassIdentifier: 
+  _name: Repel
   _camOffset: {x: 0, y: 0, z: 0}
   _cameraStarted: 0
-  _cameraDone: 0
-  _skillCost: 5
+  _cameraDone: 1
+  _apCost: 5
   _power: 1.1
   _requiresTarget: 0
   _numTargets: 4
+  _range: 0
+  _radius: 1
+  _isFriendly: 0
+  _useImmediate: 0
+  _effects: 01000000

@@ -39,7 +39,7 @@ public class Charge : Skill
                 if (tc)
                     tc.IncrementTroops(-10);
 
-                PushBack();
+                HandleEffects(self, g);
             }
             sAnimator.ReturnToIdle();
         }

@@ -16,6 +16,8 @@ public class UIButton : MonoBehaviour
 
     public bool _interactable;
 
+    [SerializeField] private Skill _skill;
+
     public bool _test;
 
     private void Awake()
@@ -37,6 +39,9 @@ public class UIButton : MonoBehaviour
        // SetInteractable(_test);
        // SetSelected(_interactable);
     }
+
+    public Skill GetSkill() => _skill;
+    public void AssignSkill(Skill skill) { _skill = skill; }
 
     public void SetText(string text, bool interactable)
     {

@@ -12,10 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a29931cde12c31e49b43217146c5f3a6, type: 3}
   m_Name: BasicAttack
   m_EditorClassIdentifier: 
+  _name: Basic Attack
   _camOffset: {x: 3, y: 3, z: 3}
   _cameraStarted: 0
   _cameraDone: 1
-  _skillCost: 1
+  _apCost: 1
   _power: 1
   _requiresTarget: 1
   _numTargets: 1
+  _range: 0
+  _radius: 1
+  _isFriendly: 0
+  _useImmediate: 0
+  _effects: 

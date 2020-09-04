@@ -19,4 +19,4 @@ MonoBehaviour:
   _moveSpeed: 2
   _ap: 8
   _skills:
-  - {fileID: 11400000, guid: 990686a99e80b2c44ae67d844d008508, type: 2}
+  - {fileID: 11400000, guid: 59d0c75e937fb064c81f4ad2ed86c1d4, type: 2}
