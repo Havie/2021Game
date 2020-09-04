@@ -6,6 +6,10 @@ public enum NullBool { NULL, FALSE, TRUE };
 
 public class InputHolder
 {
+    // Default settings
+    public readonly static Vector2 DEFAULT_VECTOR2 = new Vector2(float.MinValue, float.MinValue);
+    public readonly static Vector2Int DEFAULT_VECTOR2INT = new Vector2Int(int.MinValue, int.MinValue);
+
     // If select has been pressed
     public NullBool HasSelPress { set; get; }
     // Axis for how to move the cursor
@@ -16,6 +20,8 @@ public class InputHolder
     public Vector2 CameraRotAxis { set; get; }
     // Axis for how to navigate the menu
     public Vector2Int MenuAxis { set; get; }
+    // If select in a menu has been pressed
+    public NullBool HasMenuSelPress { set; get; }
 
     /// <summary>
     /// Constructs an InputHolder
@@ -31,10 +37,11 @@ public class InputHolder
     public void Reset()
     {
         HasSelPress = NullBool.NULL;
-        CursorMoveAxis = new Vector2(int.MinValue, int.MinValue);
+        CursorMoveAxis = DEFAULT_VECTOR2;
         HasMouseMoved = NullBool.NULL;
-        CameraRotAxis = new Vector2(int.MinValue, int.MinValue);
-        MenuAxis = new Vector2Int(int.MinValue, int.MinValue);
+        CameraRotAxis = DEFAULT_VECTOR2;
+        MenuAxis = DEFAULT_VECTOR2INT;
+        HasMenuSelPress = NullBool.NULL;
     }
 
 }
