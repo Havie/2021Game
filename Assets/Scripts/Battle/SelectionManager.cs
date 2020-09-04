@@ -34,24 +34,8 @@ public class SelectionManager : MonoBehaviour
     //Ideally get rid of this update 
     private void Update()
     {
-        /*
-         * Ideally this all needs to move out of update and the InputManager Tells
-         * Selection Manager somethins occurred
-         */
-
-        //I need some type of enum or control logic from the InputController
-        if (InputController.GetSelectPressDown())
-            HandleInput();
-
-        //TMP fix
-        if (Input.GetKeyDown(KeyCode.DownArrow) ||
-            Input.GetKeyDown(KeyCode.UpArrow) ||
-            Input.GetKeyDown(KeyCode.Return))
-            HandleInput();
-
-        //Ideal:
-        //if (InputController.HasMenuInput())
-        //   HandleInput();
+        if (InputController.HasMenuInput())
+           HandleInput();
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -74,7 +58,7 @@ public class SelectionManager : MonoBehaviour
             case eSelectionState.FREE:
                 {
                     //TMP- Need control logic from inputcontroller
-                    FreeClick(InputController.GetCursorPosition());
+                    FreeClick(Input.mousePosition);
                     break;
                 }
             case eSelectionState.MOVE:
@@ -96,19 +80,13 @@ public class SelectionManager : MonoBehaviour
                 {
                     //Will need to break apart later
 
-                    //ToDo Read from InputManager
-                    if (Input.GetKeyDown(KeyCode.DownArrow))
-                        UIBattleMenuController.Instance.ChangeSelection(-1);
-                    else if (Input.GetKeyDown(KeyCode.UpArrow))
-                        UIBattleMenuController.Instance.ChangeSelection(1);
-                    else if (Input.GetKeyDown(KeyCode.Return))
+                    Vector2Int menuAxis = InputController.GetMenuAxis();
+                    // If the user inputted to navigate up or down.
+                    if (menuAxis.y != 0)
+                        UIBattleMenuController.Instance.ChangeSelection(menuAxis.y);
+                    // If the user inputted a selection
+                    else if (InputController.GetMenuSelectDown())
                         UIBattleMenuController.Instance.ClickSelected();
-
-                    // int axis = InputController.GetMenuAxis()
-                    // if (axis!=0)
-                    //  UIBattleMenuController.Instance.ChangeSelection(axis);
-                    // else if(InputContoller.GetMenuSelect())
-                    //   UIBattleMenuController.Instance.ClickSelected();
 
 
                     break;
