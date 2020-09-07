@@ -265,7 +265,7 @@ public class CameraController : MonoBehaviour
     /// <param name="_longWayRound_">If the camrea should take the long path or the shortest path.
     /// Basically changes if the camera spins left or right.</param>
     /// <returns>IEnumerator</returns>
-    private IEnumerator RevolveCoroutine(Vector3 _targetRot_, bool _longWayRound_)
+    public IEnumerator RevolveCoroutine(Vector3 _targetRot_, bool _longWayRound_)
     {
         // The direction the camera will rotation.
         Vector3 moveDir = new Vector3();

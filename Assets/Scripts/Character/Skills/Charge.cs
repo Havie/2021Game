@@ -13,5 +13,27 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Skills", menuName = "Skills/Charge")]
 public class Charge : Skill
 {
-    //Skill is left blank to use default implementation 
+    public override IEnumerator Perform(GameObject self, List<GameObject> targets)
+    {
+        Debug.Log("Perform Charge");
+
+        //Save Camera initial position
+        Vector3 _cameraStart = Camera.main.transform.rotation.eulerAngles;
+        //Play Camera and wait till its done 
+        CoroutineManager.Instance.StartThread(
+            CameraController.Instance.RevolveCoroutine(new Vector3(15, 90), false)
+            );
+
+        //Do other logic 
+        yield return new WaitForSeconds(1.5f);
+
+        //Play Closing Camera animation 
+        CoroutineManager.Instance.StartThread(
+          CameraController.Instance.RevolveCoroutine(_cameraStart, false)
+          );
+
+
+        //Let someone know we're done
+        SelectionManager.Instance.EnableMove(false);
+    }
 }
