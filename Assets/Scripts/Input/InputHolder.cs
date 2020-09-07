@@ -23,10 +23,6 @@ public class InputHolder
     // If select in a menu has been pressed
     public NullBool HasMenuSelPress { set; get; }
 
-    // Default Vectors
-    public static Vector2 DEFAULT_VECTOR2 = new Vector2(float.MinValue, int.MinValue);
-    public static Vector2Int DEFAULT_VECTOR2INT = new Vector2Int(int.MinValue, int.MinValue);
-
     /// <summary>
     /// Constructs an InputHolder
     /// </summary>
