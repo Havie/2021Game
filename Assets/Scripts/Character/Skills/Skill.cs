@@ -56,20 +56,82 @@ public class Skill : ScriptableObject
 
     public virtual  IEnumerator Perform(GameObject self, List<GameObject> targets)
     {
-        yield return null;
-        Debug.LogWarning("DEFAULT implementation");
+        Debug.Log("Perform " + _name);
+
+
+        if (targets == null)
+            Debug.LogWarning("targets null");
+
+        if (targets[0] == null)
+            Debug.LogWarning("targets[0] null");
+
+
+        //Save Camera initial position
+        Vector3 _cameraStart = Camera.main.transform.position;
+        //Play Camera and wait till its done 
+        CoroutineManager.Instance.StartThread(CameraMovement(1, targets[0].transform.position));
+        while (!_cameraDone) 
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        //Play Animations and wait till they are ready for damage
+        cAnimator sAnimator = self.GetComponentInChildren<cAnimator>();
+        if (sAnimator)
+        {
+            yield return new WaitForSeconds
+                (sAnimator.PlayAnim(cAnimator.AnimationID.BASICATTACK) * 0.75f);
+            //Apply Damage and any effects
+            UnitStats attacker = self.GetComponent<UnitStats>();
+            foreach (GameObject g in targets)
+            {
+                UnitStats defender = g.GetComponent<UnitStats>();
+
+                if (defender && attacker)
+                    defender.IncrementTroops(CalculateDamage(attacker, defender));
+                else
+                    Debug.Log("Missing");
+
+                HandleEffects(self, g);
+            }
+            sAnimator.ReturnToIdle();
+        }
+
+        //Play Closing Camera animation 
+        CoroutineManager.Instance.StartThread(CameraMovement(1, _cameraStart));
+
+
+        //Let someone know we're done
+        SelectionManager.Instance.EnableMove(false);
+    }
+    protected int CalculateDamage(UnitStats attacker, UnitStats defender)
+    {
+        float dmg = attacker.GetAttack();
+        float def = defender.GetDefense();
+
+
+        int atkWeight = attacker.GetTroopStrength();
+        int defWeight = defender.GetTroopStrength();
+
+        //TMP idk 
+        float result = Mathf.Max(((_power * dmg) + atkWeight) - (def + defWeight), 0);
+
+        Debug.Log("DAMGE= " + result);
+        return (int)result;
     }
 
     protected IEnumerator CameraMovement(int option, Vector3 location)
     {
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
      
         //Save starting position somewhere? to return to it?
 
         //Write own lerp and manually move Camera in this coroutine
         //To Do Wyatt? <3
         CameraController.Instance.MoveCameraToPos(location);
+
+        yield return new WaitForSeconds(0.5f);
 
         //Let whatever is waiting on us know were done
         _cameraDone = true;

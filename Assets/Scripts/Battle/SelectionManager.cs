@@ -321,8 +321,8 @@ public class SelectionManager : MonoBehaviour
         {
             //See if theres a character at selection
             GameObject character = CursorController.Instance.GetCharacterAtCursor();
-            //BM will handle nulls 
-            valid = BattleManager.Instance.ManageSkill(_skillUsers, character.GetComponent<Playable>(), _SkillToUse);
+            if(character) //BM will handle other nulls 
+                valid = BattleManager.Instance.ManageSkill(_skillUsers, character.GetComponent<Playable>(), _SkillToUse);
 
         }
         else

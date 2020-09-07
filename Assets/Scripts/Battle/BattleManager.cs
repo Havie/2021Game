@@ -172,13 +172,21 @@ public class BattleManager : MonoBehaviour
             return ErrorManager.Instance.DisplayError("ManageSkill: somethings null");
         if (attackers.Count == 0)
             return ErrorManager.Instance.DisplayError("ManageSkill: Missing Attacker");
+        if (attackers[0].GetCurrentAP() >= skill.GetAPCost())
+        {
 
-        List<GameObject> targets = FindTargets(attackers[0], target.transform.position , skill);
+            List<GameObject> targets = FindTargets(attackers[0], target.transform.position, skill);
 
-        foreach (Playable attacker in attackers)
-            StartCoroutine(skill.Perform(attacker.transform.gameObject, targets));
+            foreach (Playable attacker in attackers)
+                StartCoroutine(skill.Perform(attacker.transform.gameObject, targets));
 
-        return true;
+            //Subtract AP now?
+            attackers[0].SubtractAP(skill.GetAPCost());
+
+            return true;
+        }
+        else
+            return false;
     }
 
     //Underdevelopment subject to change
@@ -190,8 +198,10 @@ public class BattleManager : MonoBehaviour
         if (attackers.Count == 0)
             return ErrorManager.Instance.DisplayError("ManageSkill: Missing Attacker");
 
+        if (attackers[0].GetCurrentAP() >= skill.GetAPCost())
+        {
 
-        List<GameObject> targets = FindTargets(attackers[0], location, skill);
+            List<GameObject> targets = FindTargets(attackers[0], location, skill);
 
 
 
@@ -200,7 +210,10 @@ public class BattleManager : MonoBehaviour
         foreach (Playable attacker in attackers)
             StartCoroutine(skill.Perform(attacker.transform.gameObject, targets));
 
-        return true;
+            return true;
+        }
+        else
+            return false;
     }
 
 
@@ -218,7 +231,8 @@ public class BattleManager : MonoBehaviour
         int i = 0;
         foreach (var hitCollider in hitColliders)
         {
-            Debug.Log("Collider found  " + ++i);
+            //Somehow it isnt being added sometimes and giving an odd error ToDo
+            Debug.Log("Collider found  " + ++i + "  "+ hitCollider.transform.gameObject);
             Playable p = hitCollider.transform.GetComponent<Playable>();
             if ( p && !targets.Contains(hitCollider.transform.gameObject))
             {
@@ -228,16 +242,18 @@ public class BattleManager : MonoBehaviour
 
                 bool sameFaction = current.IsHuman() == target.IsHuman();
 
-                if (!skill.GetIsFriendly() && sameFaction)
+               /* if (!skill.GetIsFriendly() && sameFaction)
                     break;
                 else if (skill.GetIsFriendly() && !sameFaction)
                     break ;
+               */
 
                 //Is this sound logic? Need to test  then can remove above tests 
                 if(skill.GetIsFriendly() == sameFaction)
                 {
-                    Debug.Log("Found: " + hitCollider.transform.gameObject);
+                    Debug.Log("Found and added: " + hitCollider.transform.gameObject);
                     targets.Add(hitCollider.transform.gameObject);
+                  
                 }
 
 

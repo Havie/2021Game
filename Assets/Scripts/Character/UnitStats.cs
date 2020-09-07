@@ -34,7 +34,7 @@ public class UnitStats : MonoBehaviour
         //Can be Null probably ok
         if (_officer == null)
             _officer = this.GetComponent<Officer>();
-        if (_troops = null)
+        if (_troops == null)
             _troops = this.GetComponent<TroopContainer>();
 
     }
@@ -80,6 +80,10 @@ public class UnitStats : MonoBehaviour
             _currAP = 0;
             Debug.LogWarning("Something is trying to set AP below zero, should not happen");
         }
+    }
+    public int GetTroopStrength()
+    {
+        return _troops.GetHP();
     }
 
     public void IncrementTroops(int amnt)
