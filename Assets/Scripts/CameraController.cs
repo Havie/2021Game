@@ -300,6 +300,8 @@ public class CameraController : MonoBehaviour
 
         // Set the camera's rotation to be exactly the target rotation.
         SetCameraRotation(_targetRot_);
+        Debug.Log(this.transform.rotation.eulerAngles);
+
 
         // Call the finish revolving event
         cEventSystem.CallOnCameraFinishRevolution();

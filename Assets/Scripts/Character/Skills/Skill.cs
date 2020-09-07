@@ -57,7 +57,7 @@ public class Skill : ScriptableObject
     public virtual  IEnumerator Perform(GameObject self, List<GameObject> targets)
     {
         Debug.Log("Perform " + _name);
-
+        cEventSystem.OnCameraFinishRevolution += CameraFinished;
 
         if (targets == null)
             Debug.LogWarning("targets null");
@@ -136,6 +136,13 @@ public class Skill : ScriptableObject
         //Let whatever is waiting on us know were done
         _cameraDone = true;
 
+    }
+
+    protected void CameraFinished()
+    {
+        Debug.Log("CALLED Camera Finsihed");
+        _cameraDone = true;
+        cEventSystem.OnCameraFinishRevolution -= CameraFinished;
     }
 
     protected void HandleEffects(GameObject self, GameObject target)

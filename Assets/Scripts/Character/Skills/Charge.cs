@@ -18,14 +18,16 @@ public class Charge : Skill
         Debug.Log("Perform Charge");
 
         //Save Camera initial position
-        Vector3 _cameraStart = Camera.main.transform.rotation.eulerAngles;
+        Vector3 _cameraStart = CameraController.Instance.transform.rotation.eulerAngles;
         //Play Camera and wait till its done 
         CoroutineManager.Instance.StartThread(
             CameraController.Instance.RevolveCoroutine(new Vector3(15, 90), false)
             );
+        Time.timeScale = 1;
 
         //Do other logic 
-        yield return new WaitForSeconds(1.5f);
+
+            yield return new WaitForSeconds(2.4f);
 
         //Play Closing Camera animation 
         CoroutineManager.Instance.StartThread(
@@ -35,5 +37,6 @@ public class Charge : Skill
 
         //Let someone know we're done
         SelectionManager.Instance.EnableMove(false);
+        Time.timeScale = 1f;
     }
 }
