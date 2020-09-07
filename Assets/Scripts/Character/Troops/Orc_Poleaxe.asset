@@ -18,3 +18,5 @@ MonoBehaviour:
   _will: 0
   _moveSpeed: 0
   _ap: 0
+  _skills:
+  - {fileID: 11400000, guid: 7b4dc91e08ad9084c9422f891b97778b, type: 2}

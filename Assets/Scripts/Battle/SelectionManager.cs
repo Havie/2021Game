@@ -157,10 +157,12 @@ public class SelectionManager : MonoBehaviour
 
             bool canMove = true; //ToDo figure out AP
             bool canAttack = DetermineValidAttack();
+            TroopContainer tc = _activeChar.GetComponent<TroopContainer>();
+            Skill[] skills = tc.GetSkills();
             //When we show the menu we should tell the battlemenu if attack or move is an option
             UIBattleMenuController.Instance.ShowMenu(
                 true, _activeChar.transform.position,
-                _activeChar.name, canMove, canAttack);
+                _activeChar.name, canMove, canAttack, skills);
 
             //Give player UI representation of whos attackable
             _activeChar.ShowCollidersInRange();
@@ -201,6 +203,7 @@ public class SelectionManager : MonoBehaviour
             ShowBattleMenu();
 
     }
+    ///UnderDevelopment
     public void EnableAttack(bool cond)
     {
         _selectionState = eSelectionState.ATTACK;
@@ -215,21 +218,31 @@ public class SelectionManager : MonoBehaviour
         }
 
     }
+    ///UnderDevelopment
     public void EnableSkill(bool cond, Skill skill)
     {
         _selectionState = eSelectionState.SKILL;
         _SkillToUse = skill;
 
-        CursorController.Instance.ToggleCursor(cond);
-        //Turn on/off the Menu
-        if (_activeChar)
+        //Check if the skill is use immediate , ToDo not sure if this is sound 
+        if (_SkillToUse.GetIsUseImmediate())
         {
-            UIBattleMenuController.Instance.ShowMenu(false, _activeChar.transform.position);
-            CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>());
-            CameraController.Instance.BeginFollowingCharacter(_activeChar.transform);
-
+            List<Playable> attacker = new List<Playable>();
+            attacker.Add(_activeChar);
+            BattleManager.Instance.ManageSkill(attacker, null, _SkillToUse);
         }
+        else //ToDo not sure if this is sound
+        {
+            CursorController.Instance.ToggleCursor(cond);
+            //Turn on/off the Menu
+            if (_activeChar)
+            {
+                UIBattleMenuController.Instance.ShowMenu(false, _activeChar.transform.position);
+                CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>());
+                CameraController.Instance.BeginFollowingCharacter(_activeChar.transform);
 
+            }
+        }
     }
     #endregion
 
@@ -310,8 +323,8 @@ public class SelectionManager : MonoBehaviour
         {
             //See if theres a character at selection
             GameObject character = CursorController.Instance.GetCharacterAtCursor();
-            //BM will handle nulls 
-            valid = BattleManager.Instance.ManageSkill(_skillUsers, character.GetComponent<Playable>(), _SkillToUse);
+            if(character) //BM will handle other nulls 
+                valid = BattleManager.Instance.ManageSkill(_skillUsers, character.GetComponent<Playable>(), _SkillToUse);
 
         }
         else

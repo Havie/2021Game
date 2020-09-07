@@ -15,9 +15,9 @@ public class Playable : MonoBehaviour
     private TurnManager _turnManager;
     private bool _isCharacter;
     private GameObject _battleMenu;
-    
 
-    private int _AP;
+
+    [SerializeField] private int _AP;
     #endregion
 
     #region SetupMethods

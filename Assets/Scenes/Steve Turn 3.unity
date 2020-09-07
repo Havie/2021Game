@@ -641,6 +641,7 @@ MonoBehaviour:
   _button: {fileID: 0}
   _text: {fileID: 0}
   _interactable: 0
+  _skill: {fileID: 0}
   _test: 0
 --- !u!1 &205596242
 GameObject:
@@ -1096,6 +1097,7 @@ MonoBehaviour:
   _button: {fileID: 0}
   _text: {fileID: 0}
   _interactable: 0
+  _skill: {fileID: 0}
   _test: 0
 --- !u!1 &350659153
 GameObject:
@@ -16121,6 +16123,7 @@ MonoBehaviour:
   _button: {fileID: 1397352371}
   _text: {fileID: 890740853}
   _interactable: 0
+  _skill: {fileID: 0}
   _test: 0
 --- !u!114 &640931134
 MonoBehaviour:
