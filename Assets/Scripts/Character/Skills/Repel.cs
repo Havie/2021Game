@@ -2,14 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Skills", menuName = "Skills/BasicAttack")]
-public class BasicAttack : Skill
+
+/* Implements Skill which is a ScriptableObject
+ * For Info on available methods please see the base class : Skill 
+ * All Skills operate as a Coroutine and must be run by the event system since
+ * ScriptableObjects can not start their own Coroutines.
+ */
+
+
+[CreateAssetMenu(fileName = "Skills", menuName = "Skills/Repel")]
+public class Repel : Skill
 {
-
-
     public override IEnumerator Perform(GameObject self, List<GameObject> targets)
     {
-        Debug.Log("Perform Basic Attack");
+        Debug.Log("Perform Charge");
 
         //Save Camera initial position
         Vector3 _cameraStart = Camera.main.transform.position;
@@ -32,6 +38,8 @@ public class BasicAttack : Skill
                 TroopContainer tc = g.GetComponent<TroopContainer>();
                 if (tc)
                     tc.IncrementTroops(-10);
+
+                PushBack();
             }
             sAnimator.ReturnToIdle();
         }

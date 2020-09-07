@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public enum eSelectionState { FREE, MOVE, ATTACK, SKILL, MENU };
+public enum eSelectionState { FREE, MOVE, ATTACK, SKILL, MENU , WAITING};
 
 public class SelectionManager : MonoBehaviour
 {
@@ -21,6 +21,26 @@ public class SelectionManager : MonoBehaviour
     //Skill to use assigned by UIBattleMenu
     private Skill _SkillToUse;
 
+
+    // Called when the component is enabled.
+    // Subscribe to events.
+    private void OnEnable()
+    {
+        cEventSystem.OnHasMenuInput += HandleInput;
+    }
+    // Called when the component is disabled.
+    // Unsubscribe from events.
+    private void OnDisable()
+    {
+        cEventSystem.OnHasMenuInput -= HandleInput;
+    }
+    // Called when the gameobject is destroyed.
+    // Unsubscribe from ALL events.
+    private void OnDestroy()
+    {
+        cEventSystem.OnHasMenuInput -= HandleInput;
+    }
+
     // Called 0th
     private void Awake()
     {
@@ -29,25 +49,14 @@ public class SelectionManager : MonoBehaviour
             Instance = this;
         else if (Instance != this)
             Destroy(this);
-
     }
-
+    //Ideally get rid of this update 
     private void Update()
     {
         /*
-         * Ideally this all needs to move out of update and the InputManager Tells
-         * Selection Manager somethins occurred
-         */
-
-        //I need some type of enum or control logic from the InputController
-        if (InputController.GetSelectPressDown())
-            HandleInput();
-
-        //TMP fix
-        if (Input.GetKeyDown(KeyCode.DownArrow) ||
-            Input.GetKeyDown(KeyCode.UpArrow) ||
-            Input.GetKeyDown(KeyCode.Return))
-            HandleInput();
+        if (InputController.HasMenuInput())
+           HandleInput();
+           */
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -70,7 +79,7 @@ public class SelectionManager : MonoBehaviour
             case eSelectionState.FREE:
                 {
                     //TMP- Need control logic from inputcontroller
-                    FreeClick(InputController.GetCursorPosition());
+                    FreeClick(Input.mousePosition);
                     break;
                 }
             case eSelectionState.MOVE:
@@ -92,15 +101,19 @@ public class SelectionManager : MonoBehaviour
                 {
                     //Will need to break apart later
 
-                    //ToDo Read from InputManager
-                    if (Input.GetKeyDown(KeyCode.DownArrow))
-                        UIBattleMenuController.Instance.ChangeSelection(-1);
-                    else if (Input.GetKeyDown(KeyCode.UpArrow))
-                        UIBattleMenuController.Instance.ChangeSelection(1);
-                    else if (Input.GetKeyDown(KeyCode.Return))
+                    Vector2Int menuAxis = InputController.GetMenuAxis();
+                    // If the user inputted to navigate up or down.
+                    if (menuAxis.y != 0)
+                        UIBattleMenuController.Instance.ChangeSelection(menuAxis.y);
+                    // If the user inputted a selection
+                    else if (InputController.GetMenuSelectDown())
                         UIBattleMenuController.Instance.ClickSelected();
 
 
+                    break;
+                }
+            case eSelectionState.WAITING:
+                {
                     break;
                 }
             default:
@@ -267,46 +280,54 @@ public class SelectionManager : MonoBehaviour
         // Debug.Log("MoveClick");
         if (_activeChar)
         {
-            //Won't be null because its required
-            MovementController mc = _activeChar.GetComponent<MovementController>();
-
-            //First check if anyone is at location of click:
-
+            //Find Character at location of click:
             GameObject character = CursorController.Instance.GetCharacterAtCursor();
-            if (character != null) //Might want to create a Verify Hit method that returns the gameobject?
-            {
-                //Check if Enemy (or ally depending on skill?)
+            //BM handles nulls
+            bool valid = BattleManager.Instance.ManageAttack(_activeChar, character.GetComponent<Playable>());
 
-                //Check if enough AP (1?)
+            if (valid) //Prevent them from clicking anything else while executing combat
+                _selectionState = eSelectionState.WAITING;
 
-
-                Skill basic = _activeChar.GetComponent<SkillManager>().GetBasicAttack();
-                List<GameObject> targets = new List<GameObject>();
-                targets.Add(character.transform.gameObject);
-                //Check if in Range 
-                if (!_activeChar.EnemiesInRange().Contains(character.transform.gameObject.GetComponent<Playable>()))
-                {
-                    //If not in range move to location then attack?
-                    mc.DoMovement(CursorController.Instance.transform.position, basic.Perform(_activeChar.transform.gameObject, targets));
-
-                    //Subtract AP now?
-                }
-                else
-                {
-
-
-
-                    StartCoroutine(basic.Perform(_activeChar.transform.gameObject, targets));
-                }
-
-            }
-            else
-                Debug.LogError("Character did not have a Movement Controller");
 
         }
     }
     private void ClickToUseSkill()
     {
+        if (!_SkillToUse || !_activeChar)
+            return;
+
+        bool valid = false;  //Let the battleManager Verify the passed in data is valid for the skill
+       
+        //This logic may need to change when we get/add to this list.
+        List<Playable> _skillUsers = new List<Playable>();
+        _skillUsers.Add(_activeChar);
+
+        //if needs target
+        if (_SkillToUse.GetRequiresTarget())
+        {
+            //See if theres a character at selection
+            GameObject character = CursorController.Instance.GetCharacterAtCursor();
+            //BM will handle nulls 
+            valid = BattleManager.Instance.ManageSkill(_skillUsers, character.GetComponent<Playable>(), _SkillToUse);
+
+        }
+        else
+        {
+            Vector3 location;
+            if (_SkillToUse.GetRange()==0) //Melee
+                location= _activeChar.transform.position; //self loc
+            else //Ranged
+                location = CursorController.Instance.transform.position; // cursor loc
+            valid = BattleManager.Instance.ManageSkill(_skillUsers, location, _SkillToUse);
+        }
+
+       
+
+        if (valid) //Prevent them from clicking anything else while executing combat
+            _selectionState = eSelectionState.WAITING;
+        //else
+            //Display some kind of response to player
+
 
     }
     private void MoveComplete()

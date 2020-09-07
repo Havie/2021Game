@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e8898441d2a97c4b8ce0c185bc64ea3, type: 3}
   m_Name: Orc_Swordsmen
   m_EditorClassIdentifier: 
-  _morale: 0
-  _attack: 0
-  _defense: 0
-  _will: 0
-  _moveSpeed: 0
-  _ap: 0
+  _morale: 55
+  _attack: 55
+  _defense: 55
+  _will: 55
+  _moveSpeed: 2
+  _ap: 8
   _skills:
   - {fileID: 11400000, guid: 990686a99e80b2c44ae67d844d008508, type: 2}

@@ -15,6 +15,9 @@ public class Playable : MonoBehaviour
     private TurnManager _turnManager;
     private bool _isCharacter;
     private GameObject _battleMenu;
+    
+
+    private int _AP;
     #endregion
 
     #region SetupMethods
@@ -61,6 +64,13 @@ public class Playable : MonoBehaviour
     public SpriteRenderer GetSpriteRenderer() => _sprRend;
 
     public void SetActive(bool cond) { _isActive = cond; }
+    public int GetCurrentAP() => _AP;
+    public void SubtractAP(int amnt)
+    {
+        _AP -= amnt;
+        if (amnt < 0 || amnt>UnitStats._APMAX)
+            Debug.LogWarning("You've surpassed the AP limit , check what ur doing");
+    }
 
     /// <summary>
     /// Sets the sprite outline, and if active tells the camera to look here now
@@ -99,6 +109,9 @@ public class Playable : MonoBehaviour
 
     public void YourTurn(TurnManager t)
     {
+        //When you start your turn, refresh your AP:
+        RefreshAP();
+
         _isActive = true;
         //Tell the UI its your turn ??? (Top UI will know from TurnManager)
         //Maybe we tell the side UI ? --Dont like this UI should tell UI
@@ -145,6 +158,18 @@ public class Playable : MonoBehaviour
 
     }
 
+
+    private void RefreshAP()
+    {
+        //Will probably want to cache
+        TroopContainer tc = this.GetComponent<TroopContainer>();
+        Officer officer = this.GetComponent<Officer>();
+        if (tc && officer)
+            _AP = (int) (tc.GetAP() * officer.GetAPBoost());
+
+
+        //Debug.Log("AP for " + this.gameObject.name + "  is:" + _AP);
+    }
 
 
 }
