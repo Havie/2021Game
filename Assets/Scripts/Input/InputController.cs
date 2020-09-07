@@ -241,7 +241,7 @@ public class InputController
             }
 
             // Reset for releases
-            if ((Input.GetKeyUp(LEFT_KEYCODE) && rtnVect.x == -1) || 
+            if ((Input.GetKeyUp(LEFT_KEYCODE) && rtnVect.x == -1) ||
                 (Input.GetKeyUp(RIGHT_KEYCODE) && rtnVect.x == 1))
                 rtnVect.x = 0;
             if ((Input.GetKeyUp(UP_KEYCODE) && rtnVect.y == 1) ||

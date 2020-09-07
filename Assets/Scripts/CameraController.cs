@@ -68,7 +68,7 @@ public class CameraController : MonoBehaviour
     }
 
     /// <summary>
-    /// Calls RotateCamera using the input from InputController. 
+    /// Calls RotateCamera using the input from InputController.
     /// </summary>
     private void RotateCameraInputBased()
     {
