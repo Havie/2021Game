@@ -48,6 +48,7 @@ public class CameraController : MonoBehaviour
             RotateCamera(camInp * ROT_SPEED);
         }
 
+        // testing
         if (Input.GetMouseButtonDown(1))
         {
             BeginFollowingCharacter(GameObject.Find("Character").transform);
@@ -55,11 +56,6 @@ public class CameraController : MonoBehaviour
         else if (Input.GetMouseButtonDown(2))
         {
             RecenterOnCursor();
-        }
-
-        if(_followMode)
-        {
-            this.transform.position = _followTarget.position +_offset;
         }
     }
 

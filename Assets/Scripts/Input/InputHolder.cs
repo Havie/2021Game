@@ -17,6 +17,10 @@ public class InputHolder
     // Axis for how to navigate the menu
     public Vector2Int MenuAxis { set; get; }
 
+    // Default Vectors
+    public static Vector2 DEFAULT_VECTOR2 = new Vector2(float.MinValue, int.MinValue);
+    public static Vector2Int DEFAULT_VECTOR2INT = new Vector2Int(int.MinValue, int.MinValue);
+
     /// <summary>
     /// Constructs an InputHolder
     /// </summary>
@@ -31,10 +35,10 @@ public class InputHolder
     public void Reset()
     {
         HasSelPress = NullBool.NULL;
-        CursorMoveAxis = new Vector2(int.MinValue, int.MinValue);
+        CursorMoveAxis = DEFAULT_VECTOR2;
         HasMouseMoved = NullBool.NULL;
-        CameraRotAxis = new Vector2(int.MinValue, int.MinValue);
-        MenuAxis = new Vector2Int(int.MinValue, int.MinValue);
+        CameraRotAxis = DEFAULT_VECTOR2;
+        MenuAxis = DEFAULT_VECTOR2INT;
     }
 
 }

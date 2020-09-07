@@ -188,7 +188,7 @@ PrefabInstance:
     - target: {fileID: 7962503336136908048, guid: 0877902ca402eda4f88849aa3c211bca,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7962503336136908048, guid: 0877902ca402eda4f88849aa3c211bca,
         type: 3}
@@ -258,7 +258,7 @@ PrefabInstance:
     - target: {fileID: 7962503336136908048, guid: 0877902ca402eda4f88849aa3c211bca,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7962503336136908048, guid: 0877902ca402eda4f88849aa3c211bca,
         type: 3}
@@ -1178,7 +1178,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1119433591}
+      - m_Target: {fileID: 0}
         m_MethodName: AdvanceCharacterTurn
         m_Mode: 1
         m_Arguments:
@@ -6205,7 +6205,7 @@ PrefabInstance:
     - target: {fileID: 7962503336136908048, guid: 0877902ca402eda4f88849aa3c211bca,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7962503336136908048, guid: 0877902ca402eda4f88849aa3c211bca,
         type: 3}
@@ -11153,7 +11153,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 478482313}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.34, y: 1.01, z: 0.3}
+  m_LocalPosition: {x: -3.34, y: 0.5, z: 0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 793736761}
@@ -11176,7 +11176,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e908d75708b782e418fde42f8e9f5252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _type: 0
+  _type: {fileID: 0}
+  _hpMAX: 10000
+  _hpSword: 0
+  _hpBow: 0
+  _hpPoleaxe: 0
   test: 0
 --- !u!114 &478482316
 MonoBehaviour:
@@ -16176,10 +16180,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c3ab1da26784354c9011040bed37131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _normal: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
-  _selected: {fileID: 2100000, guid: 747835aa75010434ea018dc6d36152c1, type: 2}
-  _allied: {fileID: 2100000, guid: d6aac2c0ecfeb1745b996448c70e0588, type: 2}
-  _enemy: {fileID: 2100000, guid: 51d097639066b524babae5375c54ffd8, type: 2}
 --- !u!114 &693597938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21203,7 +21203,7 @@ PrefabInstance:
     - target: {fileID: 7962503336136908048, guid: 0877902ca402eda4f88849aa3c211bca,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7962503336136908048, guid: 0877902ca402eda4f88849aa3c211bca,
         type: 3}
@@ -21602,7 +21602,6 @@ GameObject:
   - component: {fileID: 1119433590}
   - component: {fileID: 1119433589}
   - component: {fileID: 1119433588}
-  - component: {fileID: 1119433591}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -21658,18 +21657,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1119433591
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1119433587}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45f1ed1bf8516f14c94bdc0d467c44f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1172816448
 GameObject:
   m_ObjectHideFlags: 0
@@ -21785,7 +21772,7 @@ MonoBehaviour:
     _Speed: 1
     _NormalizedStartTime: NaN
   _walk: []
-  _attack: []
+  _basicAttack: []
   _death: []
   _burst: []
 --- !u!114 &1172816451
@@ -21822,196 +21809,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Animancer: {fileID: 1172816453}
-  _idle:
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: ac0d9fb628dfe41428a99b3111c08554, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: 5fcb220675685fd429b1cc285a1795c3, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: 1a8ef9feefe46244eab71835de7d883a, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: a3b82021e722e224480514f64f8f62cc, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: f5f53ada93babb44f9c04ef3bfadfb34, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: a0adf5eb19d04cd4bbd29720933db66d, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: 52c082ab345c988459c189b9ec677659, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: bae4a0afe541b724ca73f807d63a2122, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  _walk:
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  _S: []
-  _SS: []
-  _SSS: []
-  _SSSS: []
-  _SSSSS: []
-  _SSSSSS: []
-  _T:
-    _FadeDuration: 0.25
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 1
-    _NormalizedStartTime: NaN
-  _ST:
-    _FadeDuration: 0.25
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 1
-    _NormalizedStartTime: NaN
-  _SST:
-    _FadeDuration: 0.25
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 1
-    _NormalizedStartTime: NaN
-  _SSST:
-    _FadeDuration: 0.25
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 1
-    _NormalizedStartTime: NaN
-  _SSSST:
-    _FadeDuration: 0.25
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 1
-    _NormalizedStartTime: NaN
-  _SSSSST:
-    _FadeDuration: 0.25
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 1
-    _NormalizedStartTime: NaN
   lastKnown:
     _FadeDuration: 0.25
     _Events:
@@ -22154,7 +21951,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e908d75708b782e418fde42f8e9f5252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _type: 0
+  _type: {fileID: 0}
+  _hpMAX: 10000
+  _hpSword: 0
+  _hpBow: 0
+  _hpPoleaxe: 0
   test: 0
 --- !u!136 &1188228286
 CapsuleCollider:
@@ -22212,7 +22013,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1188228283}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.01, z: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 386715249}
@@ -22284,7 +22085,7 @@ PrefabInstance:
     - target: {fileID: 7962503336136908048, guid: 0877902ca402eda4f88849aa3c211bca,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7962503336136908048, guid: 0877902ca402eda4f88849aa3c211bca,
         type: 3}
@@ -22379,7 +22180,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.083333336
   m_BuildHeightMesh: 0
-  m_NavMeshData: {fileID: 23800000, guid: d4652379ded9eeb41b40072a3e45094f, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: f9c7049d2c00b1e428343819ec9502e7, type: 2}
 --- !u!4 &1238419450
 Transform:
   m_ObjectHideFlags: 0
@@ -22443,196 +22244,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Animancer: {fileID: 1240870546}
-  _idle:
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: ac0d9fb628dfe41428a99b3111c08554, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: 5fcb220675685fd429b1cc285a1795c3, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: 1a8ef9feefe46244eab71835de7d883a, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: a3b82021e722e224480514f64f8f62cc, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: f5f53ada93babb44f9c04ef3bfadfb34, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: a0adf5eb19d04cd4bbd29720933db66d, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: 52c082ab345c988459c189b9ec677659, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 7400000, guid: bae4a0afe541b724ca73f807d63a2122, type: 2}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  _walk:
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  - _FadeDuration: 0
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 0
-    _NormalizedStartTime: 0
-  _S: []
-  _SS: []
-  _SSS: []
-  _SSSS: []
-  _SSSSS: []
-  _SSSSSS: []
-  _T:
-    _FadeDuration: 0.25
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 1
-    _NormalizedStartTime: NaN
-  _ST:
-    _FadeDuration: 0.25
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 1
-    _NormalizedStartTime: NaN
-  _SST:
-    _FadeDuration: 0.25
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 1
-    _NormalizedStartTime: NaN
-  _SSST:
-    _FadeDuration: 0.25
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 1
-    _NormalizedStartTime: NaN
-  _SSSST:
-    _FadeDuration: 0.25
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 1
-    _NormalizedStartTime: NaN
-  _SSSSST:
-    _FadeDuration: 0.25
-    _Events:
-      _Names: []
-      _NormalizedTimes: []
-      _Callbacks: []
-    _Clip: {fileID: 0}
-    _Speed: 1
-    _NormalizedStartTime: NaN
   lastKnown:
     _FadeDuration: 0.25
     _Events:
@@ -22826,7 +22437,7 @@ MonoBehaviour:
     _Speed: 1
     _NormalizedStartTime: NaN
   _walk: []
-  _attack: []
+  _basicAttack: []
   _death: []
   _burst: []
 --- !u!1 &1259889336
@@ -22943,7 +22554,7 @@ PrefabInstance:
     - target: {fileID: 7962503336136908048, guid: 0877902ca402eda4f88849aa3c211bca,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7962503336136908048, guid: 0877902ca402eda4f88849aa3c211bca,
         type: 3}
@@ -24067,7 +23678,7 @@ PrefabInstance:
     - target: {fileID: 7962503336136908048, guid: 0877902ca402eda4f88849aa3c211bca,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7962503336136908048, guid: 0877902ca402eda4f88849aa3c211bca,
         type: 3}
@@ -24392,7 +24003,7 @@ MonoBehaviour:
   - {fileID: 334663676}
   - {fileID: 136476867}
   _menuState: 0
-  _offsetFromCharacter: {x: 175, y: -375, z: 0}
+  _offsetFromCharacter: {x: 175, y: 0, z: 0}
   _isOn: 0
   _lastPos: {x: 0, y: 0, z: 0}
 --- !u!224 &5642867800872582765
