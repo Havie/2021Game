@@ -18,9 +18,13 @@ public class CameraController : MonoBehaviour
     private const float MIN_X_ROT = 15f;
     // How fast the camera should move (per sec)
     private const float MOVE_SPEED = 0.07f;
+    // How fast the camera should revolve
+    private const float REV_SPEED = 130f;
 
     // The distance away to snap from
     private const float SNAP_DIST = 0f;
+    // The rotation before snapping
+    private const float ROT_SNAP_DIST = 1f;
 
 
     // Called when the component is enabled.
@@ -65,6 +69,13 @@ public class CameraController : MonoBehaviour
             RotateCamera(camInp * ROT_SPEED);
         }
         */
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            RevolveFaceDirection(new Vector3(15, 90), true);
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+            RevolveFaceDirection(new Vector3(15, 90), false);
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+            SetCameraRotation(new Vector2(30, 0));
     }
 
     /// <summary>
@@ -90,8 +101,18 @@ public class CameraController : MonoBehaviour
         else if (newAngles.x > MAX_X_ROT)
             newAngles.x = MAX_X_ROT;
 
-        Quaternion newRot = Quaternion.Euler(newAngles);
-        _camRotCenterTrans.rotation = newRot;
+        // Set the rotation of the camera
+        SetCameraRotation(newAngles);
+    }
+
+    /// <summary>
+    /// Sets the rotation of the camera and calls the rotation event.
+    /// </summary>
+    /// <param name="_newRot_">Rotation to set the camera to in Euler angles.</param>
+    private void SetCameraRotation(Vector2 _newRot_)
+    {
+        Quaternion newRotQuat = Quaternion.Euler(_newRot_);
+        _camRotCenterTrans.rotation = newRotQuat;
 
         // Call the event for the camera rotating
         cEventSystem.CallOnCameraRotate();
@@ -224,5 +245,60 @@ public class CameraController : MonoBehaviour
     public void RecenterOnCursor()
     {
         BeginFollowingCharacter(CursorController.Instance.transform);
+    }
+
+    /// <summary>
+    /// Starts the coroutine to revolve the camera.
+    /// </summary>
+    /// <param name="_targetRot_">The rotation the camera will move to look to.</param>
+    /// <param name="_longRotation_">If the camrea should take the long path or the shortest path.
+    /// Basically changes if the camera spins left or right.</param>
+    public void RevolveFaceDirection(Vector3 _targetRot_, bool _longRotation_)
+    {
+        StartCoroutine(RevolveCoroutine(_targetRot_, _longRotation_));
+    }
+
+    /// <summary>
+    /// Coroutine to revolve the camera until it is facing the given direction.
+    /// </summary>
+    /// <param name="_targetRot_">The rotation the camera will move to look to.</param>
+    /// <param name="_longWayRound_">If the camrea should take the long path or the shortest path.
+    /// Basically changes if the camera spins left or right.</param>
+    /// <returns>IEnumerator</returns>
+    private IEnumerator RevolveCoroutine(Vector3 _targetRot_, bool _longWayRound_)
+    {
+        // The direction the camera will rotation.
+        Vector3 moveDir = new Vector3();
+        // If we are taking the long way around, the camera will rotate in the opposite y direction.
+        if (_longWayRound_)
+        {
+            Vector3 newTarget = _targetRot_ + new Vector3(0, -360, 0);
+            moveDir = (newTarget - this.transform.rotation.eulerAngles).normalized;
+        }
+        // Otherwise, its just normal
+        else
+        {
+            moveDir = (_targetRot_ - this.transform.rotation.eulerAngles).normalized;
+        }
+
+        // Precalculate the amount we will be rotating each time.
+        Vector3 rotDir = moveDir * REV_SPEED;
+        // Rotate the camera until it starts getting farther away.
+        float lastMag = float.MaxValue;
+        float nextMag = lastMag;
+        while (lastMag >= nextMag)
+        {
+            // Rotate the camera a small bit.
+            RotateCamera(rotDir * Time.deltaTime);
+
+            // Update these values to keep track of if the magnitude is increasing or decreasing.
+            lastMag = (_targetRot_ - this.transform.rotation.eulerAngles).magnitude;
+            nextMag = (_targetRot_ - (this.transform.rotation.eulerAngles + rotDir * Time.deltaTime)).magnitude;
+
+            yield return null;
+        }
+
+        // Set the camera's rotation to be exactly the target rotation.
+        SetCameraRotation(_targetRot_);
     }
 }
