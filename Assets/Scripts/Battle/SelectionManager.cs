@@ -27,18 +27,21 @@ public class SelectionManager : MonoBehaviour
     private void OnEnable()
     {
         cEventSystem.OnHasMenuInput += HandleInput;
+        cEventSystem.OnSelectPressDown += HandleInput;
     }
     // Called when the component is disabled.
     // Unsubscribe from events.
     private void OnDisable()
     {
         cEventSystem.OnHasMenuInput -= HandleInput;
+        cEventSystem.OnSelectPressDown -= HandleInput;
     }
     // Called when the gameobject is destroyed.
     // Unsubscribe from ALL events.
     private void OnDestroy()
     {
         cEventSystem.OnHasMenuInput -= HandleInput;
+        cEventSystem.OnSelectPressDown -= HandleInput;
     }
 
     // Called 0th
