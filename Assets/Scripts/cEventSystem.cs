@@ -16,16 +16,6 @@ public class cEventSystem
     public static event CharacterDeath OnCharacterDeath;
     public static void CallOnCharacterDeath(Officer _corpse_) { OnCharacterDeath?.Invoke(_corpse_); }
 
-    // When the camera moves
-    public delegate void CameraMove();
-    public static event CameraMove OnCameraMove;
-    public static void CallOnCameraMove() { OnCameraMove?.Invoke(); }
-
-    // When the camera rotates
-    public delegate void CameraRotate();
-    public static event CameraRotate OnCameraRotate;
-    public static void CallOnCameraRotate() { OnCameraRotate?.Invoke(); }
-
 
     #region InputEvents
 
@@ -50,5 +40,24 @@ public class cEventSystem
     #endregion
 
 
+
+    #region CameraEvents
+
+    // When the camera moves
+    public delegate void CameraMove();
+    public static event CameraMove OnCameraMove;
+    public static void CallOnCameraMove() { OnCameraMove?.Invoke(); }
+
+    // When the camera rotates
+    public delegate void CameraRotate();
+    public static event CameraRotate OnCameraRotate;
+    public static void CallOnCameraRotate() { OnCameraRotate?.Invoke(); }
+
+    // When the camera finishes revolving
+    public delegate void CameraFinishRevolution();
+    public static event CameraFinishRevolution OnCameraFinishRevolution;
+    public static void CallOnCameraFinishRevolution() { OnCameraFinishRevolution?.Invoke(); }
+
+    #endregion
 
 }
