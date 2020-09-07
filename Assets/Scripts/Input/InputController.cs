@@ -6,6 +6,11 @@ public class InputController
     // for the input multiple times in the same frame.
     private static InputHolder _inpHolder;
 
+    // Current menu time
+    private static float _menuActiveTime = 0;
+    // Time to allow for menu input again
+    private static readonly float MENU_INPUT_DELAY = 0.35f;
+
     /// <summary>
     /// Creates the input holder.
     /// </summary>
@@ -29,10 +34,7 @@ public class InputController
                 _inpHolder.HasSelPress = NullBool.FALSE;
         }
 
-        if (_inpHolder.HasSelPress == NullBool.TRUE)
-            return true;
-        else
-            return false;
+        return _inpHolder.HasSelPress == NullBool.TRUE;
     }
 
     /// <summary>
@@ -41,18 +43,17 @@ public class InputController
     /// <returns>Vector2</returns>
     public static Vector2 GetCursorMoveAxis()
     {
-        if (_inpHolder.CursorMoveAxis.x == int.MinValue ||
-            _inpHolder.CursorMoveAxis.y == int.MinValue)
+        if (_inpHolder.CursorMoveAxis == InputHolder.DEFAULT_VECTOR2)
         {
             Vector2 arrowVect = Vector2.zero;
 
-            if (Input.GetKey(KeyCode.A))
+            if (Input.GetKey(KeyCode.LeftArrow))
                 arrowVect.x = -1;
-            else if (Input.GetKey(KeyCode.D))
+            else if (Input.GetKey(KeyCode.RightArrow))
                 arrowVect.x = 1;
-            if (Input.GetKey(KeyCode.S))
+            if (Input.GetKey(KeyCode.DownArrow))
                 arrowVect.y = -1;
-            else if (Input.GetKey(KeyCode.W))
+            else if (Input.GetKey(KeyCode.UpArrow))
                 arrowVect.y = 1;
 
             _inpHolder.CursorMoveAxis = arrowVect;
@@ -62,11 +63,10 @@ public class InputController
     }
 
     /// <summary>
-    /// DEPRECATED
-    /// Returns the cursor's position on the screen.
+    /// Returns the mouse's position on the screen.
     /// </summary>
     /// <returns>Vector3</returns>
-    public static Vector3 GetCursorPosition()
+    private static Vector3 GetMouseScreenPosition()
     {
         return Input.mousePosition;
     }
@@ -92,7 +92,7 @@ public class InputController
     public static Vector3 GetCursorRayWorldPosition(out RaycastHit _hit_)
     {
         // Create a ray
-        Ray ray = Camera.main.ScreenPointToRay(GetCursorPosition());
+        Ray ray = Camera.main.ScreenPointToRay(GetMouseScreenPosition());
 
         if (Physics.Raycast(ray, out _hit_))
         {
@@ -127,7 +127,7 @@ public class InputController
     public static Vector3 GetCursorRayWorldPosition(out RaycastHit _hit_, int _layerMask_)
     {
         // Create a ray
-        Ray ray = Camera.main.ScreenPointToRay(GetCursorPosition());
+        Ray ray = Camera.main.ScreenPointToRay(GetMouseScreenPosition());
 
         if (Physics.Raycast(ray, out _hit_, float.PositiveInfinity, _layerMask_))
         {
@@ -151,10 +151,7 @@ public class InputController
                 _inpHolder.HasMouseMoved = NullBool.FALSE;
         }
 
-        if (_inpHolder.HasMouseMoved == NullBool.TRUE)
-            return true;
-        else
-            return false;
+        return _inpHolder.HasMouseMoved == NullBool.TRUE;
     }
 
     /// <summary>
@@ -163,25 +160,24 @@ public class InputController
     /// <returns>Vector2</returns>
     public static Vector2 GetCameraRotateAxis()
     {
-        if (_inpHolder.CameraRotAxis.x == int.MinValue ||
-            _inpHolder.CameraRotAxis.y == int.MinValue)
+        if (_inpHolder.CameraRotAxis == InputHolder.DEFAULT_VECTOR2)
         {
             Vector2 rtnVect = Vector2.zero;
 
-            if (Input.GetKey(KeyCode.LeftArrow))
+            if (Input.GetKey(KeyCode.A))
             {
                 rtnVect.y = 1;
             }
-            else if (Input.GetKey(KeyCode.RightArrow))
+            else if (Input.GetKey(KeyCode.D))
             {
                 rtnVect.y = -1;
             }
 
-            if (Input.GetKey(KeyCode.DownArrow))
+            if (Input.GetKey(KeyCode.S))
             {
                 rtnVect.x = -1;
             }
-            else if (Input.GetKey(KeyCode.UpArrow))
+            else if (Input.GetKey(KeyCode.W))
             {
                 rtnVect.x = 1;
             }
@@ -193,38 +189,116 @@ public class InputController
     }
 
     /// <summary>
+    /// Returns true if there is camera rotation input.
+    /// </summary>
+    /// <returns>bool</returns>
+    public static bool HasCameraRotateInput()
+    {
+        if (_inpHolder.HasCameraRotInput == NullBool.NULL)
+        {
+            if (GetCameraRotateAxis() != Vector2.zero)
+                _inpHolder.HasCameraRotInput = NullBool.TRUE;
+            else
+                _inpHolder.HasCameraRotInput = NullBool.FALSE;
+        }
+
+        return _inpHolder.HasCameraRotInput == NullBool.TRUE;
+    }
+
+    /// <summary>
     /// Returns a Vector2Int that holds input information about how to navigate, up, down, left, and right in a menu.
     /// X represents left and right. Y represents up and down.
     /// </summary>
     /// <returns>Vector2Int</returns>
     public static Vector2Int GetMenuAxis()
     {
+        // KeyCodes for up, down, left right
+        const KeyCode UP_KEYCODE = KeyCode.UpArrow;
+        const KeyCode DOWN_KEYCODE = KeyCode.DownArrow;
+        const KeyCode LEFT_KEYCODE = KeyCode.LeftArrow;
+        const KeyCode RIGHT_KEYCODE = KeyCode.RightArrow;
+
         if (_inpHolder.MenuAxis.x == int.MinValue ||
             _inpHolder.MenuAxis.y == int.MinValue)
         {
             Vector2Int rtnVect = new Vector2Int();
 
-            if (Input.GetKey(KeyCode.A))
+            /* Can't get this to work yet
+            // For holding input, wait until the delay is over
+            if (_menuActiveTime <= Time.time)
             {
-                rtnVect.x = 1;
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {
-                rtnVect.x = -1;
+                _menuActiveTime = Time.time + MENU_INPUT_DELAY;
+
+                if (Input.GetKey(LEFT_KEYCODE) )
+                    rtnVect.x = 1;
+                else if (Input.GetKey(RIGHT_KEYCODE))
+                    rtnVect.x = -1;
+
+                if (Input.GetKey(DOWN_KEYCODE))
+                    rtnVect.y = -1;
+                else if (Input.GetKey(UP_KEYCODE))
+                    rtnVect.y = 1;
             }
 
-            if (Input.GetKey(KeyCode.S))
-            {
+            // Reset for releases
+            if ((Input.GetKeyUp(LEFT_KEYCODE) && rtnVect.x == -1) ||
+                (Input.GetKeyUp(RIGHT_KEYCODE) && rtnVect.x == 1))
+                rtnVect.x = 0;
+            if ((Input.GetKeyUp(UP_KEYCODE) && rtnVect.y == 1) ||
+                (Input.GetKeyUp(DOWN_KEYCODE) && rtnVect.y == -1))
+                rtnVect.y = 0;
+                */
+
+            // Don't wait for the delay for presses
+            if (Input.GetKeyDown(LEFT_KEYCODE))
+                rtnVect.x = 1;
+            else if (Input.GetKeyDown(RIGHT_KEYCODE))
+                rtnVect.x = -1;
+
+            if (Input.GetKeyDown(DOWN_KEYCODE))
                 rtnVect.y = -1;
-            }
-            else if (Input.GetKey(KeyCode.W))
-            {
+            else if (Input.GetKeyDown(UP_KEYCODE))
                 rtnVect.y = 1;
-            }
+
 
             _inpHolder.MenuAxis = rtnVect;
         }
 
         return _inpHolder.MenuAxis;
+    }
+
+    /// <summary>
+    /// Returns true the frame the user hits menu select input.
+    /// </summary>
+    /// <returns></returns>
+    public static bool GetMenuSelectDown()
+    {
+        if (_inpHolder.HasMenuSelPress == NullBool.NULL)
+        {
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                _inpHolder.HasMenuSelPress = NullBool.TRUE;
+            }
+            else
+            {
+                _inpHolder.HasMenuSelPress = NullBool.FALSE;
+            }
+        }
+
+        return _inpHolder.HasMenuSelPress == NullBool.TRUE;
+    }
+
+    /// <summary>
+    /// Returns true if the user has inputted some menu commands.
+    /// </summary>
+    /// <returns>bool</returns>
+    public static bool HasMenuInput()
+    {
+        if (GetMenuAxis().magnitude != 0 || GetMenuSelectDown())
+        {
+            return true;
+        }
+
+        return false;
     }
 }

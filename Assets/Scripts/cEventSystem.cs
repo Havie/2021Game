@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿
 public class cEventSystem
 {
     // When the battle round ends.
@@ -28,6 +25,29 @@ public class cEventSystem
     public delegate void CameraRotate();
     public static event CameraRotate OnCameraRotate;
     public static void CallOnCameraRotate() { OnCameraRotate?.Invoke(); }
+
+
+    #region InputEvents
+
+    // When InputController.SelectPressDown is true
+    public delegate void SelectPressDownDelegate();
+    public static event SelectPressDownDelegate OnSelectPressDown;
+    public static bool IsOnSelectPressDownUsed() { return OnSelectPressDown != null; }
+    public static void CallOnSelectPressDown() { OnSelectPressDown?.Invoke(); }
+
+    // When InputController.CameraRotAxis is true
+    public delegate void HasCameraRotInputDelegate();
+    public static event HasCameraRotInputDelegate OnHasCameraRotInput;
+    public static bool IsOnHasCameraRotInputUsed() { return OnHasCameraRotInput != null; }
+    public static void CallOnHasCameraRotInput() { OnHasCameraRotInput?.Invoke(); }
+
+    // When InputController.HasMenuInput is true
+    public delegate void HasMenuInputDelegate();
+    public static event HasMenuInputDelegate OnHasMenuInput;
+    public static bool IsOnHasMenuInputUsed() { return OnHasMenuInput != null; }
+    public static void CallOnHasMenuInput() { OnHasMenuInput?.Invoke(); }
+
+    #endregion
 
 
 

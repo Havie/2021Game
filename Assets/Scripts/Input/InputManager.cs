@@ -8,6 +8,25 @@ public class InputManager : MonoBehaviour
         InputController.Initialize();
     }
 
+    // Called every frame
+    private void Update()
+    {
+        // SelectPressDown
+        if (cEventSystem.IsOnSelectPressDownUsed())
+            if (InputController.GetSelectPressDown())
+                cEventSystem.CallOnSelectPressDown();
+
+        // CameraRotAxis
+        if (cEventSystem.IsOnHasCameraRotInputUsed())
+            if (InputController.HasCameraRotateInput())
+                cEventSystem.CallOnHasCameraRotInput();
+
+        // HasMenuInput
+        if (cEventSystem.IsOnHasMenuInputUsed())
+            if (InputController.HasMenuInput())
+                cEventSystem.CallOnHasMenuInput();
+    }
+
     // Called every frame after update
     private void LateUpdate()
     {

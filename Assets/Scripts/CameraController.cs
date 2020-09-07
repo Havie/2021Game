@@ -22,9 +22,25 @@ public class CameraController : MonoBehaviour
     // The distance away to snap from
     private const float SNAP_DIST = 0f;
 
-    private bool _followMode;
-    private Transform _followTarget;
-    private Vector3 _offset;
+
+    // Called when the component is enabled.
+    // Subscribe to events.
+    private void OnEnable()
+    {
+        cEventSystem.OnHasCameraRotInput += RotateCameraInputBased;
+    }
+    // Called when the component is disabled.
+    // Unsubscribe from events.
+    private void OnDisable()
+    {
+        cEventSystem.OnHasCameraRotInput -= RotateCameraInputBased;
+    }
+    // Called when the gameobject is destroyed.
+    // Unsubscribe from ALL events.
+    private void OnDestroy()
+    {
+        cEventSystem.OnHasCameraRotInput -= RotateCameraInputBased;
+    }
 
     // Called 0th
     private void Awake()
@@ -41,26 +57,25 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        /*
         // Read for Camera move input
         Vector2 camInp = InputController.GetCameraRotateAxis();
         if (camInp != Vector2.zero)
         {
             RotateCamera(camInp * ROT_SPEED);
         }
+        */
+    }
 
-        if (Input.GetMouseButtonDown(1))
-        {
-            BeginFollowingCharacter(GameObject.Find("Character").transform);
-        }
-        else if (Input.GetMouseButtonDown(2))
-        {
-            RecenterOnCursor();
-        }
-
-        if(_followMode)
-        {
-            this.transform.position = _followTarget.position +_offset;
-        }
+    /// <summary>
+    /// Calls RotateCamera using the input from InputController.
+    /// </summary>
+    private void RotateCameraInputBased()
+    {
+        // Read for Camera move input
+        Vector2 camInp = InputController.GetCameraRotateAxis();
+        if (camInp != Vector2.zero)
+            RotateCamera(camInp * ROT_SPEED);
     }
 
     /// <summary>
