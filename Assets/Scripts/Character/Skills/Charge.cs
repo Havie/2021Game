@@ -23,10 +23,11 @@ public class Charge : Skill
         CoroutineManager.Instance.StartThread(
             CameraController.Instance.RevolveCoroutine(new Vector3(15, 90), false)
             );
-        Time.timeScale = 0.25f;
+        Time.timeScale = 1;
 
         //Do other logic 
-        yield return new WaitForSeconds(2.5f);
+
+            yield return new WaitForSeconds(2.4f);
 
         //Play Closing Camera animation 
         CoroutineManager.Instance.StartThread(
