@@ -277,8 +277,8 @@ public class CameraController : MonoBehaviour
     /// <returns>IEnumerator</returns>
     public IEnumerator RevolveCoroutine(Vector3 _targetRot_, bool _longWayRound_)
     {
-        Debug.Log("Target Rotation: " + _targetRot_ + ". Current Rotation: " + _camRotCenterTrans.rotation.eulerAngles);
-        Debug.Log("Is Long? " + _longWayRound_);
+        //Debug.Log("Target Rotation: " + _targetRot_ + ". Current Rotation: " + _camRotCenterTrans.rotation.eulerAngles);
+        //Debug.Log("Is Long? " + _longWayRound_);
         // The direction the camera will rotation.
         Vector3 moveDir = new Vector3();
         // If we are taking the long way around, the camera will rotate in the opposite y direction.

@@ -202,12 +202,13 @@ public class BattleManager : MonoBehaviour
         {
 
             List<GameObject> targets = FindTargets(attackers[0], location, skill);
+            if (targets.Count < 1)
+                return ErrorManager.Instance.DisplayError("ManageSkill: Can't find Target (TMP)");
 
 
 
 
-
-        foreach (Playable attacker in attackers)
+            foreach (Playable attacker in attackers)
             StartCoroutine(skill.Perform(attacker.transform.gameObject, targets));
 
             return true;
@@ -241,20 +242,15 @@ public class BattleManager : MonoBehaviour
                 Faction target = p.GetComponent<Faction>();
 
                 bool sameFaction = current.IsHuman() == target.IsHuman();
-
-               /* if (!skill.GetIsFriendly() && sameFaction)
-                    break;
-                else if (skill.GetIsFriendly() && !sameFaction)
-                    break ;
-               */
-
-                //Is this sound logic? Need to test  then can remove above tests 
-                if(skill.GetIsFriendly() == sameFaction)
+                //Validate if skill effects enemies or allies 
+                if (skill.GetIsFriendly() == sameFaction)
                 {
                     Debug.Log("Found and added: " + hitCollider.transform.gameObject);
                     targets.Add(hitCollider.transform.gameObject);
-                  
+
                 }
+                else
+                    Debug.Log("Failed check for IS Friendly (" + skill.GetIsFriendly() + " , " + sameFaction +")");
 
 
 

@@ -23,6 +23,7 @@ public class Skill : ScriptableObject
     [SerializeField] protected bool _isFriendly;
     [SerializeField] protected bool _useImmediate;
 
+    [SerializeField] protected cAnimator.AnimationID _animationID;
     public enum eSkillEffect { NONE, PUSHBACK ,SWITCH, PRESS };
     [SerializeField] protected eSkillEffect[] _effects;
 
@@ -57,7 +58,7 @@ public class Skill : ScriptableObject
     public virtual  IEnumerator Perform(GameObject self, List<GameObject> targets)
     {
         Debug.Log("Perform " + _name);
-        cEventSystem.OnCameraFinishRevolution += CameraFinished;
+        
 
         if (targets == null)
             Debug.LogWarning("targets null");
@@ -67,9 +68,17 @@ public class Skill : ScriptableObject
 
 
         //Save Camera initial position
-        Vector3 _cameraStart = Camera.main.transform.position;
+        Vector3 _cameraStart = CameraController.Instance.transform.rotation.eulerAngles;
         //Play Camera and wait till its done 
-        CoroutineManager.Instance.StartThread(CameraMovement(1, targets[0].transform.position));
+
+        //Make chars face eachother
+        self.GetComponentInChildren<EightDir>().LookAt(targets[0].transform);
+        if(_range==0) //Melee 
+             targets[0].GetComponentInChildren<EightDir>().LookAt(self.transform);
+
+        //Rotate the camera to focal point for combat
+        FacilitateCameraAnimation(1, new Vector3(15, 90));
+
         while (!_cameraDone) 
         {
             yield return new WaitForEndOfFrame();
@@ -80,7 +89,7 @@ public class Skill : ScriptableObject
         if (sAnimator)
         {
             yield return new WaitForSeconds
-                (sAnimator.PlayAnim(cAnimator.AnimationID.BASICATTACK) * 0.75f);
+                (sAnimator.PlayAnim(_animationID) * 0.75f);
             //Apply Damage and any effects
             UnitStats attacker = self.GetComponent<UnitStats>();
             foreach (GameObject g in targets)
@@ -97,11 +106,18 @@ public class Skill : ScriptableObject
             sAnimator.ReturnToIdle();
         }
 
-        //Play Closing Camera animation 
-        CoroutineManager.Instance.StartThread(CameraMovement(1, _cameraStart));
+        //ToDo wait for damage to be applied and anims finish
+        yield return new WaitForSeconds(1);
 
+        //Play Closing Camera animation to reset back to where player had camera 
+        FacilitateCameraAnimation(1, _cameraStart);
 
-        //Let someone know we're done
+        while (!_cameraDone)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        //Let someone know we're done -To change 
         SelectionManager.Instance.EnableMove(false);
     }
     protected int CalculateDamage(UnitStats attacker, UnitStats defender)
@@ -120,22 +136,16 @@ public class Skill : ScriptableObject
         return (int)result;
     }
 
-    protected IEnumerator CameraMovement(int option, Vector3 location)
+
+    protected void FacilitateCameraAnimation(int TypeOfRotation, Vector3 destination)
     {
+        //TypeOfRotation unused but will hopefully dictate the different camera views 
 
-        yield return new WaitForSeconds(0.5f);
-     
-        //Save starting position somewhere? to return to it?
-
-        //Write own lerp and manually move Camera in this coroutine
-        //To Do Wyatt? <3
-        CameraController.Instance.MoveCameraToPos(location);
-
-        yield return new WaitForSeconds(0.5f);
-
-        //Let whatever is waiting on us know were done
-        _cameraDone = true;
-
+        _cameraDone = false;
+        cEventSystem.OnCameraFinishRevolution += CameraFinished;
+        CoroutineManager.Instance.StartThread(
+             CameraController.Instance.RevolveCoroutine(destination, false)
+             );
     }
 
     protected void CameraFinished()
@@ -155,6 +165,8 @@ public class Skill : ScriptableObject
             {
                 case eSkillEffect.PRESS:
                     {
+                        CoroutineManager.Instance.StartThread(Press(target, self));
+
                         break;
                     }
                 case eSkillEffect.PUSHBACK:
@@ -169,10 +181,23 @@ public class Skill : ScriptableObject
             }
         }
     }
+    protected IEnumerator Press(GameObject targetToPush, GameObject Presser) //Might need to be an Ienumerator 
+    {
+        yield return null;
+        Debug.LogWarning("TODO Make this lerp or look good with an animation");
+        float disToPush = 0.75f;
+        Vector3 EndPoint = targetToPush.transform.position - Presser.transform.position;
+        Presser.transform.position = targetToPush.transform.position;
+        targetToPush.transform.position = targetToPush.transform.position+ (EndPoint * disToPush);
+    }
 
     protected IEnumerator PushBack(GameObject targetToPush, Transform LocationFrom) //Might need to be an Ienumerator 
     {
         yield return null;
-        Debug.LogWarning("DEFAULT implementation");
+        Debug.LogWarning("TODO Make this lerp or look good with an animation");
+        float disToPush = 0.85f;
+        Vector3 EndPoint = targetToPush.transform.position - LocationFrom.position;
+
+        targetToPush.transform.position = targetToPush.transform.position + (EndPoint * disToPush);
     }
 }
