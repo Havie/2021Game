@@ -95,14 +95,24 @@ public class CameraController : MonoBehaviour
     /// <param name="_rotAmount_">Amount to rotate the camera by on the x and y axes. Euler angles.</param>
     private void RotateCamera(Vector2 _rotAmount_)
     {
+        // Set the rotation of the camera
+        SetCameraRotation(GetAnglesIfRotated(_rotAmount_));
+    }
+
+    /// <summary>
+    /// Returns the angles of the camera center if it was rotated the amount given.
+    /// </summary>
+    /// <param name="_rotAmount_">Amount to rotate the camera by on the x and y axes. Euler angles.</param>
+    /// <returns>Vector3 Euler Angles of the potential rotation.</returns>
+    private Vector3 GetAnglesIfRotated(Vector2 _rotAmount_)
+    {
         Vector3 newAngles = _camRotCenterTrans.rotation.eulerAngles + new Vector3(_rotAmount_.x, _rotAmount_.y);
         if (newAngles.x < MIN_X_ROT)
             newAngles.x = MIN_X_ROT;
         else if (newAngles.x > MAX_X_ROT)
             newAngles.x = MAX_X_ROT;
 
-        // Set the rotation of the camera
-        SetCameraRotation(newAngles);
+        return newAngles;
     }
 
     /// <summary>
@@ -267,18 +277,20 @@ public class CameraController : MonoBehaviour
     /// <returns>IEnumerator</returns>
     public IEnumerator RevolveCoroutine(Vector3 _targetRot_, bool _longWayRound_)
     {
+        Debug.Log("Target Rotation: " + _targetRot_ + ". Current Rotation: " + _camRotCenterTrans.rotation.eulerAngles);
+        Debug.Log("Is Long? " + _longWayRound_);
         // The direction the camera will rotation.
         Vector3 moveDir = new Vector3();
         // If we are taking the long way around, the camera will rotate in the opposite y direction.
         if (_longWayRound_)
         {
             Vector3 newTarget = _targetRot_ + new Vector3(0, -360, 0);
-            moveDir = (newTarget - this.transform.rotation.eulerAngles).normalized;
+            moveDir = (newTarget - _camRotCenterTrans.rotation.eulerAngles).normalized;
         }
         // Otherwise, its just normal
         else
         {
-            moveDir = (_targetRot_ - this.transform.rotation.eulerAngles).normalized;
+            moveDir = (_targetRot_ - _camRotCenterTrans.transform.rotation.eulerAngles).normalized;
         }
 
         // Precalculate the amount we will be rotating each time.
@@ -292,16 +304,19 @@ public class CameraController : MonoBehaviour
             RotateCamera(rotDir * Time.deltaTime);
 
             // Update these values to keep track of if the magnitude is increasing or decreasing.
-            lastMag = (_targetRot_ - this.transform.rotation.eulerAngles).magnitude;
-            nextMag = (_targetRot_ - (this.transform.rotation.eulerAngles + rotDir * Time.deltaTime)).magnitude;
+            //lastMag = nextMag;
+            //nextMag = (_targetRot_ - GetAnglesIfRotated(rotDir * Time.deltaTime)).magnitude;
+
+            lastMag = nextMag;
+            nextMag = (_targetRot_ - _camRotCenterTrans.eulerAngles).magnitude;
+
+            //Debug.Log("Last: " + lastMag + ". Next: " + nextMag);
 
             yield return null;
         }
 
         // Set the camera's rotation to be exactly the target rotation.
         SetCameraRotation(_targetRot_);
-        Debug.Log(this.transform.rotation.eulerAngles);
-
 
         // Call the finish revolving event
         cEventSystem.CallOnCameraFinishRevolution();

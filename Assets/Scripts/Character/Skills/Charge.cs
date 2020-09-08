@@ -26,7 +26,7 @@ public class Charge : Skill
         Time.timeScale = 1;
 
         //Do other logic 
-
+        self.GetComponentInChildren<EightDir>().LookAt(targets[0].transform);
             yield return new WaitForSeconds(2.4f);
 
         //Play Closing Camera animation 
