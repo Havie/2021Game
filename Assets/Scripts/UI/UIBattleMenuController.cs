@@ -14,6 +14,7 @@ public class UIBattleMenuController : MonoBehaviour
 
     public TextMeshProUGUI _name;
     public GameObject _subpanel;
+    public GameObject _backButton;
 
     public Animator _subpanelAnimator;
     public UIButton[] _menuButtons;
@@ -173,6 +174,7 @@ public class UIBattleMenuController : MonoBehaviour
         //Turn on or off the Background components
         _subpanel.gameObject.SetActive(cond);
         _name.gameObject.SetActive(cond);
+        EnableBackButton(cond);
 
         //Update state
         _isOn = cond;
@@ -184,6 +186,17 @@ public class UIBattleMenuController : MonoBehaviour
         return Camera.main.WorldToScreenPoint(pos) + _offsetFromCharacter;
     }
 
+    private void EnableBackButton(bool cond)
+    {
+        if (_backButton == null)
+             { Debug.LogError("BackButtonMissing, return"); return;}
+
+        if(!cond || _menuState == eMenuState.DEFAULT) // Don't show it on default
+            _backButton.SetActive(false);
+        else if(_menuState!=eMenuState.DEFAULT) // else if were in a sub state, show it
+            _backButton.SetActive(cond);
+
+    }
     //returns the string for the button at a index based on menu state
     private string DetermineButtonText(int index)
     {
@@ -327,6 +340,10 @@ public class UIBattleMenuController : MonoBehaviour
             }
         }
     }
+    public void ResetToDefault()
+    {
+        SwitchState(eMenuState.DEFAULT);
+    }
 
     private void SwitchState(eMenuState state)
     {
@@ -399,6 +416,8 @@ public class UIBattleMenuController : MonoBehaviour
                 }
 
         }
+
+        EnableBackButton(true);
     }
 }
 
