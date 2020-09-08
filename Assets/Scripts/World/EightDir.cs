@@ -82,4 +82,10 @@ public class EightDir : Billboard
         // Change the looking angle.
         ChangeLookingAngle(newLookAngles);
     }
+
+
+
+
+    // Getters
+    public Vector3 GetLookingAngles() { return _lookingAngles; }
 }

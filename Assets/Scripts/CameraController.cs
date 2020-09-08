@@ -9,7 +9,10 @@ public class CameraController : MonoBehaviour
 
     // Reference to the camera's center of rotation
     [SerializeField]
-    private Transform _camRotCenterTrans;
+    private Transform _camRotCenterTrans = null;
+    // Reference to the actual camera
+    [SerializeField]
+    private Camera _cam = null;
 
     // How fast the camera should rotate from reading input.
     private const float ROT_SPEED = 1f;
@@ -20,11 +23,15 @@ public class CameraController : MonoBehaviour
     private const float MOVE_SPEED = 0.07f;
     // How fast the camera should revolve
     private const float REV_SPEED = 130f;
+    // How fast the camera should zoom
+    private const float ZOOM_SPEED = 30f;
 
     // The distance away to snap from
     private const float SNAP_DIST = 0f;
     // The rotation before snapping
     private const float ROT_SNAP_DIST = 1f;
+    // Base FOV level for being 1 meter away
+    private const float ZOOM_BASE = 40f;
 
 
     // Called when the component is enabled.
@@ -69,13 +76,6 @@ public class CameraController : MonoBehaviour
             RotateCamera(camInp * ROT_SPEED);
         }
         */
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            RevolveFaceDirection(new Vector3(15, 90), true);
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-            RevolveFaceDirection(new Vector3(15, 90), false);
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-            SetCameraRotation(new Vector2(30, 0));
     }
 
     /// <summary>
@@ -265,20 +265,19 @@ public class CameraController : MonoBehaviour
     /// Basically changes if the camera spins left or right.</param>
     public void RevolveFaceDirection(Vector3 _targetRot_, bool _longRotation_)
     {
+        StopAllCoroutines();
         StartCoroutine(RevolveCoroutine(_targetRot_, _longRotation_));
     }
 
     /// <summary>
     /// Coroutine to revolve the camera until it is facing the given direction.
     /// </summary>
-    /// <param name="_targetRot_">The rotation the camera will move to look to.</param>
+    /// <param name="_targetRot_">The rotation the camera will move to look to in Euler Angles.</param>
     /// <param name="_longWayRound_">If the camrea should take the long path or the shortest path.
     /// Basically changes if the camera spins left or right.</param>
     /// <returns>IEnumerator</returns>
     public IEnumerator RevolveCoroutine(Vector3 _targetRot_, bool _longWayRound_)
     {
-        //Debug.Log("Target Rotation: " + _targetRot_ + ". Current Rotation: " + _camRotCenterTrans.rotation.eulerAngles);
-        //Debug.Log("Is Long? " + _longWayRound_);
         // The direction the camera will rotation.
         Vector3 moveDir = new Vector3();
         // If we are taking the long way around, the camera will rotate in the opposite y direction.
@@ -293,6 +292,7 @@ public class CameraController : MonoBehaviour
             moveDir = (_targetRot_ - _camRotCenterTrans.transform.rotation.eulerAngles).normalized;
         }
 
+
         // Precalculate the amount we will be rotating each time.
         Vector3 rotDir = moveDir * REV_SPEED;
         // Rotate the camera until it starts getting farther away.
@@ -303,14 +303,8 @@ public class CameraController : MonoBehaviour
             // Rotate the camera a small bit.
             RotateCamera(rotDir * Time.deltaTime);
 
-            // Update these values to keep track of if the magnitude is increasing or decreasing.
-            //lastMag = nextMag;
-            //nextMag = (_targetRot_ - GetAnglesIfRotated(rotDir * Time.deltaTime)).magnitude;
-
             lastMag = nextMag;
             nextMag = (_targetRot_ - _camRotCenterTrans.eulerAngles).magnitude;
-
-            //Debug.Log("Last: " + lastMag + ". Next: " + nextMag);
 
             yield return null;
         }
@@ -321,4 +315,85 @@ public class CameraController : MonoBehaviour
         // Call the finish revolving event
         cEventSystem.CallOnCameraFinishRevolution();
     }
+
+    /// <summary>
+    /// Coroutine for changing the field of view of the camera.
+    /// </summary>
+    /// <param name="_targetFOV_">Target field of view to end on.</param>
+    /// <returns>IEnumerator</returns>
+    public IEnumerator ZoomCoroutine(float _targetFOV_)
+    {
+        // Increase
+        if (_cam.fieldOfView < _targetFOV_)
+            while (_cam.fieldOfView < _targetFOV_)
+            {
+                _cam.fieldOfView += ZOOM_SPEED * Time.deltaTime;
+                yield return null;
+            }
+        // Decrease
+        else
+            while (_cam.fieldOfView > _targetFOV_)
+            {
+                _cam.fieldOfView -= ZOOM_SPEED * Time.deltaTime;
+                yield return null;
+            }
+
+        _cam.fieldOfView = _targetFOV_;
+
+        yield return null;
+    }
+
+    /// <summary>
+    /// Orients the camera such that the camera is viewing the first character's right side and
+    /// the camera fits both the characters in the view.
+    /// </summary>
+    /// <param name="_rightMain_">First character that will be on the right.</param>
+    /// <param name="_leftOther_">Second character that will be on the left.</param>
+    public void SideFrameTwoCharacters(EightDir _rightMain_, EightDir _leftOther_)
+    {
+        // Calculate Movement.
+        // Just move the center of the camera to the middle of the two characters.
+        Vector3 betweenChars = (_rightMain_.transform.position + _leftOther_.transform.position) / 2;
+        Vector3 moveDest = new Vector3(betweenChars.x, _camRotCenterTrans.position.y, betweenChars.z);
+
+        // Calculate Rotation.
+        // Get the facing y angle of the main character who will be on the right.
+        // Rotate that angle an additional -90 degrees to view the character from the left.
+        Vector3 faceDir = _rightMain_.GetLookingAngles();
+        float yFaceAngle = faceDir.y;
+        float yCamAngle = -(yFaceAngle + 90);
+        while (yCamAngle < 0)
+            yCamAngle += 360;
+        // Create the desired camera angle
+        Vector3 camAngles = new Vector3(15, yCamAngle, 0);
+
+        // Calculate Zoom.
+        Vector3 diff = _rightMain_.transform.position - _leftOther_.transform.position;
+        float zoomAm = ZOOM_BASE * Mathf.Log(diff.magnitude);
+
+
+        MoveRevolveAndZoomCamera(moveDest, camAngles, false, zoomAm);
+    }
+
+    /// <summary>
+    /// Starts coroutines to move, revolve, and zoom the camera at the same time.
+    /// </summary>
+    /// <param name="_destMovePos_">The desired position to move to camera to.</param>
+    /// <param name="_targetAngles_">The desired angles to rotate the camera to. X must be between 15 and 90. Z must be 0.</param>
+    /// <param name="_longRevolve_">If the revolution will go the long way or the short way.</param>
+    /// <param name="_zoomAm_">Desired field of view for the camera.</param>
+    public void MoveRevolveAndZoomCamera(Vector3 _destMovePos_, Vector3 _targetAngles_, bool _longRevolve_, float _zoomAm_)
+    {
+        StopAllCoroutines();
+        // Start the move, revolve, and zoom coroutines.
+        StartCoroutine(MoveCamera(_destMovePos_));
+        StartCoroutine(RevolveCoroutine(_targetAngles_, _longRevolve_));
+        StartCoroutine(ZoomCoroutine(_zoomAm_));
+    }
+
+
+
+    // Getters
+
+    public Camera GetCamera() { return _cam; }
 }
