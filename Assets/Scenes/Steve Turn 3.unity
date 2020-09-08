@@ -11239,6 +11239,7 @@ MonoBehaviour:
   _attackRadius: {fileID: 0}
   _isActive: 0
   _isSelected: 0
+  _AP: 0
 --- !u!195 &478482320
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -22321,6 +22322,7 @@ MonoBehaviour:
   _attackRadius: {fileID: 0}
   _isActive: 0
   _isSelected: 0
+  _AP: 0
 --- !u!114 &1188228297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22461,7 +22463,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.083333336
   m_BuildHeightMesh: 0
-  m_NavMeshData: {fileID: 23800000, guid: d4652379ded9eeb41b40072a3e45094f, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: bcfbbc2ca18bbb440bc210107f79be6d, type: 2}
 --- !u!4 &1238419450
 Transform:
   m_ObjectHideFlags: 0
