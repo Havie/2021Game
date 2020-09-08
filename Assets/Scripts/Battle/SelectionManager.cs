@@ -52,6 +52,7 @@ public class SelectionManager : MonoBehaviour
             Instance = this;
         else if (Instance != this)
             Destroy(this);
+
     }
     //Ideally get rid of this update 
     private void Update()
@@ -146,6 +147,7 @@ public class SelectionManager : MonoBehaviour
     /// </summary>
     public void ShowBattleMenu()
     {
+
         if (_activeChar)
         {
             //Turn off Cursor/path
@@ -246,6 +248,15 @@ public class SelectionManager : MonoBehaviour
     }
     #endregion
 
+
+
+    private void ResetFromAttack()
+    {
+        cEventSystem.OnAttackFinished -= ResetFromAttack;
+        UIBattleMenuController.Instance.ResetToDefault();
+        //Tmp? Don't like this solution the method name is awkward
+        EnableMove(false);
+    }
     /**
      * Not sure what this method will do
      * Currently not used
@@ -302,10 +313,13 @@ public class SelectionManager : MonoBehaviour
             bool valid = BattleManager.Instance.ManageAttack(_activeChar, character.GetComponent<Playable>());
 
             if (valid) //Prevent them from clicking anything else while executing combat
+            {
                 _selectionState = eSelectionState.WAITING;
+                cEventSystem.OnAttackFinished += ResetFromAttack;
+            }
 
 
-        }
+            }
     }
     private void ClickToUseSkill()
     {
@@ -337,10 +351,13 @@ public class SelectionManager : MonoBehaviour
             valid = BattleManager.Instance.ManageSkill(_skillUsers, location, _SkillToUse);
         }
 
-       
+
 
         if (valid) //Prevent them from clicking anything else while executing combat
+        {
             _selectionState = eSelectionState.WAITING;
+            cEventSystem.OnAttackFinished += ResetFromAttack;
+        }
         //else
             //Display some kind of response to player
 

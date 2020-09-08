@@ -1,6 +1,7 @@
 ﻿
 public class cEventSystem
 {
+    #region GameEvents
     // When the battle round ends.
     public delegate void BattleRoundEnd();
     public static event BattleRoundEnd OnBattleRoundEnd;
@@ -16,6 +17,12 @@ public class cEventSystem
     public static event CharacterDeath OnCharacterDeath;
     public static void CallOnCharacterDeath(Officer _corpse_) { OnCharacterDeath?.Invoke(_corpse_); }
 
+    //When a character finishes attacking
+    public delegate void AttackFinished();
+    public static event AttackFinished OnAttackFinished;
+    public static void CallOnAttackFinished() { OnAttackFinished?.Invoke(); }
+
+    #endregion
 
     #region InputEvents
 
