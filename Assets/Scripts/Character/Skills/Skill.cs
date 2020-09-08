@@ -55,6 +55,13 @@ public class Skill : ScriptableObject
     /// <returns>bool</returns>
     public bool GetIsUseImmediate() => _useImmediate;
 
+    /// <summary>
+    /// Main Skill logic to perform the action
+    /// Functions off of its derived assests variables
+    /// </summary>
+    /// <param name="self"></param>
+    /// <param name="targets"></param>
+    /// <returns></returns>
     public virtual  IEnumerator Perform(GameObject self, List<GameObject> targets)
     {
         Debug.Log("Perform " + _name);
@@ -83,9 +90,7 @@ public class Skill : ScriptableObject
         CameraController.Instance.SideFrameTwoCharacters(self.GetComponentInChildren<EightDir>(), targets[0].GetComponentInChildren<EightDir>());
 
         while (!_cameraDone) 
-        {
-            yield return new WaitForEndOfFrame();
-        }
+            {yield return new WaitForEndOfFrame();}
 
         //Play Animations and wait till they are ready for damage
         cAnimator sAnimator = self.GetComponentInChildren<cAnimator>();
@@ -117,12 +122,10 @@ public class Skill : ScriptableObject
         CameraController.Instance.MoveRevolveAndZoomCamera(cameraStartPos, cameraStartRot, false, cameraStartFOV);
 
         while (!_cameraDone)
-        {
-            yield return new WaitForEndOfFrame();
-        }
+            { yield return new WaitForEndOfFrame(); }
 
-        //Let someone know we're done -To change 
-        SelectionManager.Instance.EnableMove(false);
+        //Let someone know we're done 
+        cEventSystem.CallOnAttackFinished();
     }
     protected int CalculateDamage(UnitStats attacker, UnitStats defender)
     {
