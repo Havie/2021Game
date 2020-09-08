@@ -91,8 +91,11 @@ public class Skill : ScriptableObject
 
         //Play Animations and wait till they are ready for damage
         cAnimator sAnimator = self.GetComponentInChildren<cAnimator>();
+        List<cAnimator> returnToIdles = new List<cAnimator>(); // not sure this is ideal
+        float hitAnimTime = 0;
         if (sAnimator)
         {
+            //75% thru the animation begin to apply damage
             yield return new WaitForSeconds
                 (sAnimator.PlayAnim(_animationID) * 0.75f);
             //Apply Damage and any effects
@@ -105,6 +108,13 @@ public class Skill : ScriptableObject
                     defender.IncrementTroops(CalculateDamage(attacker, defender));
                 else
                     Debug.Log("Missing");
+                Debug.Log("Defender=" + g);
+                cAnimator dAnimator = g.GetComponentInChildren<cAnimator>();
+                returnToIdles.Add(dAnimator);
+                float time= dAnimator.PlayAnim(cAnimator.AnimationID.HITREACTION);
+
+                if (time > hitAnimTime)
+                    hitAnimTime = time;
 
                 HandleEffects(self, g);
             }
@@ -112,6 +122,11 @@ public class Skill : ScriptableObject
         }
 
         //ToDo wait for damage to be applied and anims finish
+        yield return new WaitForSeconds(hitAnimTime);
+        foreach (var animator in returnToIdles)
+            animator.ReturnToIdle();
+
+        //Maybe wait for some UI to clear 
         yield return new WaitForSeconds(1);
 
         //Play Closing Camera animation to reset back to where player had camera 
@@ -188,8 +203,8 @@ public class Skill : ScriptableObject
     {
         yield return null;
         Debug.LogWarning("TODO Make this lerp or look good with an animation");
-        float disToPush = 0.75f;
-        Vector3 EndPoint = targetToPush.transform.position - Presser.transform.position;
+        float disToPush = 2.75f;
+        Vector3 EndPoint = (targetToPush.transform.position - Presser.transform.position).normalized;
         Presser.transform.position = targetToPush.transform.position;
         targetToPush.transform.position = targetToPush.transform.position+ (EndPoint * disToPush);
     }
@@ -198,8 +213,8 @@ public class Skill : ScriptableObject
     {
         yield return null;
         Debug.LogWarning("TODO Make this lerp or look good with an animation");
-        float disToPush = 0.85f;
-        Vector3 EndPoint = targetToPush.transform.position - LocationFrom.position;
+        float disToPush = 2.85f;
+        Vector3 EndPoint = (targetToPush.transform.position - LocationFrom.position).normalized;
 
         targetToPush.transform.position = targetToPush.transform.position + (EndPoint * disToPush);
     }

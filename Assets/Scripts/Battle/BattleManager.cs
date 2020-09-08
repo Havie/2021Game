@@ -121,12 +121,11 @@ public class BattleManager : MonoBehaviour
     }
 
     //Underdevelopment subject to change
-    public bool ManageAttack(Playable attacker, Playable defender)
+    public bool ManageSkill(Playable attacker, Playable defender, Skill skill)
     {
-
+        Debug.Log("ManageSkill 0");
         if (!attacker || !defender)
             return false;
-        Skill basic = attacker.GetComponent<SkillManager>().GetBasicAttack();
 
         //Check if Enemy (or ally depending on skill?)
         Faction current = attacker.GetComponent<Faction>();
@@ -136,7 +135,7 @@ public class BattleManager : MonoBehaviour
             return ErrorManager.Instance.DisplayError("[TODO] Can't target an Ally (for now)");
 
         //Check if enough AP (1?)
-        if (attacker.GetCurrentAP() < basic.GetAPCost())
+        if (attacker.GetCurrentAP() < skill.GetAPCost())
             return ErrorManager.Instance.DisplayError("Not enough AP to attack : " +attacker.name);
 
 
@@ -147,16 +146,16 @@ public class BattleManager : MonoBehaviour
         {
             //If not in range move to location then attack?
             MovementController mc = attacker.GetComponent<MovementController>(); //cant be null, required 
-            mc.DoMovement(CursorController.Instance.transform.position, basic.Perform(attacker.transform.gameObject, targets));
+            mc.DoMovement(CursorController.Instance.transform.position, skill.Perform(attacker.transform.gameObject, targets));
             // TODO Will need to subtract AP Costs of getting there
             
         }
         else
         {
-            StartCoroutine(basic.Perform(attacker.transform.gameObject, targets));
+            StartCoroutine(skill.Perform(attacker.transform.gameObject, targets));
         }
         //Subtract AP now?
-        attacker.SubtractAP(basic.GetAPCost());
+        attacker.SubtractAP(skill.GetAPCost());
 
         return true;
     }
@@ -167,7 +166,7 @@ public class BattleManager : MonoBehaviour
     //Underdevelopment subject to change
     public bool ManageSkill(List<Playable> attackers, Playable target, Skill skill)
     {
-        Debug.Log("Manage1");
+        Debug.Log("ManageSkill 1");
         if (attackers == null || target == null || skill == null)
             return ErrorManager.Instance.DisplayError("ManageSkill: somethings null");
         if (attackers.Count == 0)
@@ -192,7 +191,7 @@ public class BattleManager : MonoBehaviour
     //Underdevelopment subject to change
     public bool ManageSkill(List<Playable> attackers, Vector3 location, Skill skill)
     {
-        Debug.Log("Manage2");
+        Debug.Log("ManageSkill 2");
         if (attackers == null || location == null || skill == null)
             return ErrorManager.Instance.DisplayError("ManageSkill: somethings null");
         if (attackers.Count == 0)

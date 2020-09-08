@@ -8,6 +8,7 @@ public class UnitStats : MonoBehaviour
     #region cached
     public Officer _officer;
     public TroopContainer _troops;
+    private cAnimator _animator;
     public List<Modifier> _modifiers = new List<Modifier>();
     #endregion
 
@@ -36,7 +37,8 @@ public class UnitStats : MonoBehaviour
             _officer = this.GetComponent<Officer>();
         if (_troops == null)
             _troops = this.GetComponent<TroopContainer>();
-
+        if(_animator==null)
+            _animator = this.GetComponentInChildren<cAnimator>();
     }
 
     public void InitBattle()
@@ -85,7 +87,6 @@ public class UnitStats : MonoBehaviour
     {
         return _troops.GetHP();
     }
-
     public void IncrementTroops(int amnt)
     {
         //actually adjust the troops on _troops so this result will carry over to campaign
