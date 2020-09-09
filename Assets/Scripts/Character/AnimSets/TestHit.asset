@@ -13,4 +13,68 @@ MonoBehaviour:
   m_Name: TestHit
   m_EditorClassIdentifier: 
   _name: 
-  _animSet: []
+  _animSet:
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: 1adab822d5028524aaaabb812ba7b563, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: 1adab822d5028524aaaabb812ba7b563, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: 1adab822d5028524aaaabb812ba7b563, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: 1adab822d5028524aaaabb812ba7b563, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: 1adab822d5028524aaaabb812ba7b563, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: 1adab822d5028524aaaabb812ba7b563, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: 1adab822d5028524aaaabb812ba7b563, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: 1adab822d5028524aaaabb812ba7b563, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0

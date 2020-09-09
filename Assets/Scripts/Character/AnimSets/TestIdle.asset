@@ -10,7 +10,71 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6141db90acd83c54889ce7483168f1d0, type: 3}
-  m_Name: DEIdle
+  m_Name: TestIdle
   m_EditorClassIdentifier: 
-  _animSet: []
-  _name: 
+  _name: DEIdle
+  _animSet:
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: ac0d9fb628dfe41428a99b3111c08554, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: 5fcb220675685fd429b1cc285a1795c3, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: 1a8ef9feefe46244eab71835de7d883a, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: a3b82021e722e224480514f64f8f62cc, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: f5f53ada93babb44f9c04ef3bfadfb34, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: a0adf5eb19d04cd4bbd29720933db66d, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: 52c082ab345c988459c189b9ec677659, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
+  - _FadeDuration: 0
+    _Events:
+      _Names: []
+      _NormalizedTimes: []
+      _Callbacks: []
+    _Clip: {fileID: 7400000, guid: bae4a0afe541b724ca73f807d63a2122, type: 2}
+    _Speed: 0
+    _NormalizedStartTime: 0
