@@ -75,7 +75,9 @@ public class Skill : ScriptableObject
 
 
         //Save Camera initial position
-        Vector3 _cameraStart = CameraController.Instance.transform.rotation.eulerAngles;
+        Vector3 cameraStartPos = CameraController.Instance.transform.position;
+        Vector3 cameraStartRot = CameraController.Instance.transform.rotation.eulerAngles;
+        float cameraStartFOV = CameraController.Instance.GetCamera().fieldOfView;
         //Play Camera and wait till its done 
 
         //Make chars face eachother
@@ -84,7 +86,8 @@ public class Skill : ScriptableObject
              targets[0].GetComponentInChildren<EightDir>().LookAt(self.transform);
 
         //Rotate the camera to focal point for combat
-        FacilitateCameraAnimation(1, new Vector3(15, 90));
+        //FacilitateCameraAnimation(1, new Vector3(15, 90));
+        CameraController.Instance.SideFrameTwoCharacters(self.GetComponentInChildren<EightDir>(), targets[0].GetComponentInChildren<EightDir>());
 
         while (!_cameraDone) 
             {yield return new WaitForEndOfFrame();}
@@ -112,10 +115,11 @@ public class Skill : ScriptableObject
         }
 
         //ToDo wait for damage to be applied and anims finish
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(5);
 
         //Play Closing Camera animation to reset back to where player had camera 
-        FacilitateCameraAnimation(1, _cameraStart);
+        //FacilitateCameraAnimation(1, _cameraStart);
+        CameraController.Instance.MoveRevolveAndZoomCamera(cameraStartPos, cameraStartRot, false, cameraStartFOV);
 
         while (!_cameraDone)
             { yield return new WaitForEndOfFrame(); }
@@ -168,13 +172,13 @@ public class Skill : ScriptableObject
             {
                 case eSkillEffect.PRESS:
                     {
-                        CoroutineManager.Instance.StartThread(Press(target, self));
+                        //CoroutineManager.Instance.StartThread(Press(target, self));
 
                         break;
                     }
                 case eSkillEffect.PUSHBACK:
                     {
-                        CoroutineManager.Instance.StartThread(PushBack(target, self.transform));
+                        //CoroutineManager.Instance.StartThread(PushBack(target, self.transform));
                         break;
                     }
                 case eSkillEffect.SWITCH:
