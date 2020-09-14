@@ -31,5 +31,6 @@ public class InputManager : MonoBehaviour
     private void LateUpdate()
     {
         InputController.RefreshHolder();
+        PS4ControllerInput.ReadInput();
     }
 }
