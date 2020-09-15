@@ -21427,6 +21427,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camRotCenterTrans: {fileID: 861034903}
+  _cam: {fileID: 122166884}
 --- !u!1001 &886073986
 PrefabInstance:
   m_ObjectHideFlags: 0

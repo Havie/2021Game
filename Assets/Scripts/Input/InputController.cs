@@ -9,7 +9,7 @@ public class InputController
     // Current menu time
     private static float _menuActiveTime = 0;
     // Time to allow for menu input again
-    private static readonly float MENU_INPUT_DELAY = 0.35f;
+    private static readonly float MENU_INPUT_DELAY = 0.2f;
 
     /// <summary>
     /// Creates the input holder.
@@ -28,7 +28,7 @@ public class InputController
     {
         if (_inpHolder.HasSelPress == NullBool.NULL)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) || PS4ControllerInput.GetXButtonDown())
                 _inpHolder.HasSelPress = NullBool.TRUE;
             else
                 _inpHolder.HasSelPress = NullBool.FALSE;
@@ -47,13 +47,15 @@ public class InputController
         {
             Vector2 arrowVect = Vector2.zero;
 
-            if (Input.GetKey(KeyCode.LeftArrow))
+            Vector2 contVect = PS4ControllerInput.GetLeftJoystick();
+
+            if (Input.GetKey(KeyCode.LeftArrow) || contVect.x < 0)
                 arrowVect.x = -1;
-            else if (Input.GetKey(KeyCode.RightArrow))
+            else if (Input.GetKey(KeyCode.RightArrow) || contVect.x > 0)
                 arrowVect.x = 1;
-            if (Input.GetKey(KeyCode.DownArrow))
+            if (Input.GetKey(KeyCode.DownArrow) || contVect.y < 0)
                 arrowVect.y = -1;
-            else if (Input.GetKey(KeyCode.UpArrow))
+            else if (Input.GetKey(KeyCode.UpArrow) || contVect.y > 0)
                 arrowVect.y = 1;
 
             _inpHolder.CursorMoveAxis = arrowVect;
@@ -222,44 +224,37 @@ public class InputController
             _inpHolder.MenuAxis.y == int.MinValue)
         {
             Vector2Int rtnVect = new Vector2Int();
+            Vector2Int readInp = new Vector2Int();
 
-            /* Can't get this to work yet
+            // Read controller input
+            Vector2 ps4DPad = PS4ControllerInput.GetDPad();
+
+            // Read x input
+            if (Input.GetKey(LEFT_KEYCODE) || ps4DPad.x > 0)
+                readInp.x = 1;
+            else if (Input.GetKey(RIGHT_KEYCODE) || ps4DPad.x < 0)
+                readInp.x = -1;
+
+            // Read y input
+            if (Input.GetKey(DOWN_KEYCODE) || ps4DPad.y < 0)
+                readInp.y = -1;
+            else if (Input.GetKey(UP_KEYCODE) || ps4DPad.y > 0)
+                readInp.y = 1;
+
+            // If the input was nothing, then it is okay to reset the timer
+            if (readInp.x == 0 && readInp.y == 0)
+                _menuActiveTime = 0;
+
             // For holding input, wait until the delay is over
             if (_menuActiveTime <= Time.time)
             {
-                _menuActiveTime = Time.time + MENU_INPUT_DELAY;
+                // Since timer is up, set the return vector to the input that was read.
+                rtnVect = readInp;
 
-                if (Input.GetKey(LEFT_KEYCODE) )
-                    rtnVect.x = 1;
-                else if (Input.GetKey(RIGHT_KEYCODE))
-                    rtnVect.x = -1;
-
-                if (Input.GetKey(DOWN_KEYCODE))
-                    rtnVect.y = -1;
-                else if (Input.GetKey(UP_KEYCODE))
-                    rtnVect.y = 1;
+                // Only increase the timer if there was some input
+                if (rtnVect.x != 0 || rtnVect.y != 0)
+                    _menuActiveTime = Time.time + MENU_INPUT_DELAY;
             }
-
-            // Reset for releases
-            if ((Input.GetKeyUp(LEFT_KEYCODE) && rtnVect.x == -1) ||
-                (Input.GetKeyUp(RIGHT_KEYCODE) && rtnVect.x == 1))
-                rtnVect.x = 0;
-            if ((Input.GetKeyUp(UP_KEYCODE) && rtnVect.y == 1) ||
-                (Input.GetKeyUp(DOWN_KEYCODE) && rtnVect.y == -1))
-                rtnVect.y = 0;
-                */
-
-            // Don't wait for the delay for presses
-            if (Input.GetKeyDown(LEFT_KEYCODE))
-                rtnVect.x = 1;
-            else if (Input.GetKeyDown(RIGHT_KEYCODE))
-                rtnVect.x = -1;
-
-            if (Input.GetKeyDown(DOWN_KEYCODE))
-                rtnVect.y = -1;
-            else if (Input.GetKeyDown(UP_KEYCODE))
-                rtnVect.y = 1;
-
 
             _inpHolder.MenuAxis = rtnVect;
         }
@@ -275,14 +270,10 @@ public class InputController
     {
         if (_inpHolder.HasMenuSelPress == NullBool.NULL)
         {
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
+            if (Input.GetKeyDown(KeyCode.Return) || PS4ControllerInput.GetXButtonDown())
                 _inpHolder.HasMenuSelPress = NullBool.TRUE;
-            }
             else
-            {
                 _inpHolder.HasMenuSelPress = NullBool.FALSE;
-            }
         }
 
         return _inpHolder.HasMenuSelPress == NullBool.TRUE;
