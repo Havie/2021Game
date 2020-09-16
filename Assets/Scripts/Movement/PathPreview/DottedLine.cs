@@ -78,4 +78,13 @@ public class DottedLine
             _dotList.Add(newDot);
         }
     }
+
+    /// <summary>
+    /// Gets the Number of Dots in the line to calculate Movement Costs
+    /// </summary>
+    /// <returns></returns>
+    public int GetNumDots()
+    {
+        return _dotList.Count;
+    }
 }

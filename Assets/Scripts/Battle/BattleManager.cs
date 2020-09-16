@@ -173,7 +173,6 @@ public class BattleManager : MonoBehaviour
             return ErrorManager.Instance.DisplayError("ManageSkill: Missing Attacker");
         if (attackers[0].GetCurrentAP() >= skill.GetAPCost())
         {
-
             List<GameObject> targets = FindTargets(attackers[0], target.transform.position, skill);
 
             foreach (Playable attacker in attackers)

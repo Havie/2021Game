@@ -20,17 +20,17 @@ public class VFXAura : MonoBehaviour
         {
             case eColorChoice.WHITE:
                 {
-                    SetColor(ColorManager.Instance._white);
+                    SetColor(ColorManager.Instance._whiteAura);
                     break;
                 }
             case eColorChoice.RED:
                 {
-                    SetColor(ColorManager.Instance._red);
+                    SetColor(ColorManager.Instance._redAura);
                     break;
                 }
             case eColorChoice.PURPLE:
                 {
-                    SetColor(ColorManager.Instance._purple);
+                    SetColor(ColorManager.Instance._purpleAura);
                     break;
                 }
         }
