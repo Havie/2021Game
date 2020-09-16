@@ -44,13 +44,13 @@ public class Skill : ScriptableObject
     public int GetRadius() => _radius;
 
     /// <summary>
-    /// Whether the skill targets allies or enemies?
+    /// Whether the skill targets allies or enemies
     /// </summary>
     /// <returns>bool </returns>
     public bool GetIsFriendly() => _isFriendly;
 
     /// <summary>
-    /// Tells the selection manager is the skill requires further input
+    /// Tells the selection manager if the skill requires further input
     /// </summary>
     /// <returns>bool</returns>
     public bool GetIsUseImmediate() => _useImmediate;
@@ -85,17 +85,20 @@ public class Skill : ScriptableObject
         if(_range==0) //Melee 
              targets[0].GetComponentInChildren<EightDir>().LookAt(self.transform);
 
-        //Rotate the camera to focal point for combat
-        //FacilitateCameraAnimation(1, new Vector3(15, 90));
-        CameraController.Instance.SideFrameTwoCharacters(self.GetComponentInChildren<EightDir>(), targets[0].GetComponentInChildren<EightDir>());
+        //Play Camera and wait till its done 
+        //Rotate the camera to focal point for combat  //Will need tweaking if no target
+        OpeningCameraAnimation(self.GetComponentInChildren<EightDir>(), targets[0].GetComponentInChildren<EightDir>());
 
         while (!_cameraDone) 
             {yield return new WaitForEndOfFrame();}
 
         //Play Animations and wait till they are ready for damage
         cAnimator sAnimator = self.GetComponentInChildren<cAnimator>();
+        List<cAnimator> returnToIdles = new List<cAnimator>(); // not sure this is ideal
+        float hitAnimTime = 0;
         if (sAnimator)
         {
+            //75% thru the animation begin to apply damage
             yield return new WaitForSeconds
                 (sAnimator.PlayAnim(_animationID) * 0.75f);
             //Apply Damage and any effects
@@ -108,18 +111,29 @@ public class Skill : ScriptableObject
                     defender.IncrementTroops(CalculateDamage(attacker, defender));
                 else
                     Debug.Log("Missing");
+                Debug.Log("Defender=" + g);
+                cAnimator dAnimator = g.GetComponentInChildren<cAnimator>();
+                returnToIdles.Add(dAnimator);
+                float time= dAnimator.PlayAnim(cAnimator.AnimationID.HITREACTION);
+
+                if (time > hitAnimTime)
+                    hitAnimTime = time;
 
                 HandleEffects(self, g);
             }
             sAnimator.ReturnToIdle();
         }
 
-        //ToDo wait for damage to be applied and anims finish
-        yield return new WaitForSeconds(5);
+        //TODO wait for damage to be applied and anims finish
+        yield return new WaitForSeconds(hitAnimTime);
+        foreach (var animator in returnToIdles)
+            animator.ReturnToIdle();
+
+        //TODO wait for some UI to clear 
+        yield return new WaitForSeconds(1);
 
         //Play Closing Camera animation to reset back to where player had camera 
-        //FacilitateCameraAnimation(1, _cameraStart);
-        CameraController.Instance.MoveRevolveAndZoomCamera(cameraStartPos, cameraStartRot, false, cameraStartFOV);
+        ClosingCameraAnimation(cameraStartPos, cameraStartRot, false, cameraStartFOV);
 
         while (!_cameraDone)
             { yield return new WaitForEndOfFrame(); }
@@ -144,20 +158,29 @@ public class Skill : ScriptableObject
     }
 
 
-    protected void FacilitateCameraAnimation(int TypeOfRotation, Vector3 destination)
+    protected void OpeningCameraAnimation(EightDir selfDir, EightDir targetDir)
     {
         //TypeOfRotation unused but will hopefully dictate the different camera views 
 
         _cameraDone = false;
         cEventSystem.OnCameraFinishRevolution += CameraFinished;
-        CoroutineManager.Instance.StartThread(
-             CameraController.Instance.RevolveCoroutine(destination, false)
-             );
+        CameraController.Instance.SideFrameTwoCharacters(selfDir, targetDir);
+
+        //Old way
+        /* CoroutineManager.Instance.StartThread(
+              CameraController.Instance.RevolveCoroutine(destination, false)
+              ); */
+    }
+
+    protected void ClosingCameraAnimation(Vector3 cameraStartPos, Vector3 cameraStartRot, bool cond,  float cameraStartFOV)
+    {
+        _cameraDone = false;
+        cEventSystem.OnCameraFinishRevolution += CameraFinished;
+        CameraController.Instance.MoveRevolveAndZoomCamera(cameraStartPos, cameraStartRot, false, cameraStartFOV);
     }
 
     protected void CameraFinished()
     {
-        Debug.Log("CALLED Camera Finsihed");
         _cameraDone = true;
         cEventSystem.OnCameraFinishRevolution -= CameraFinished;
     }
@@ -172,13 +195,12 @@ public class Skill : ScriptableObject
             {
                 case eSkillEffect.PRESS:
                     {
-                        //CoroutineManager.Instance.StartThread(Press(target, self));
-
+                        CoroutineManager.Instance.StartThread(Press(target, self));
                         break;
                     }
                 case eSkillEffect.PUSHBACK:
                     {
-                        //CoroutineManager.Instance.StartThread(PushBack(target, self.transform));
+                        CoroutineManager.Instance.StartThread(PushBack(target, self.transform));
                         break;
                     }
                 case eSkillEffect.SWITCH:
@@ -192,19 +214,30 @@ public class Skill : ScriptableObject
     {
         yield return null;
         Debug.LogWarning("TODO Make this lerp or look good with an animation");
-        float disToPush = 0.75f;
-        Vector3 EndPoint = targetToPush.transform.position - Presser.transform.position;
-        Presser.transform.position = targetToPush.transform.position;
-        targetToPush.transform.position = targetToPush.transform.position+ (EndPoint * disToPush);
+        float disToPush = 2.75f;
+        Vector3 EndPoint = (targetToPush.transform.position - Presser.transform.position).normalized;
+
+        // Presser.transform.position = targetToPush.transform.position;
+        // targetToPush.transform.position = targetToPush.transform.position+ (EndPoint * disToPush);
+
+        Presser.GetComponentInParent<MovementController>().DoMovement(targetToPush.transform.position, AttackDone);
+        targetToPush.GetComponentInParent<MovementController>().DoMovement(targetToPush.transform.position + (EndPoint * disToPush), AttackDone);
     }
 
     protected IEnumerator PushBack(GameObject targetToPush, Transform LocationFrom) //Might need to be an Ienumerator 
     {
         yield return null;
         Debug.LogWarning("TODO Make this lerp or look good with an animation");
-        float disToPush = 0.85f;
-        Vector3 EndPoint = targetToPush.transform.position - LocationFrom.position;
+        float disToPush = 2.85f;
+        Vector3 EndPoint = (targetToPush.transform.position - LocationFrom.position).normalized;
 
-        targetToPush.transform.position = targetToPush.transform.position + (EndPoint * disToPush);
+        targetToPush.GetComponentInParent<MovementController>().DoMovement(targetToPush.transform.position + (EndPoint * disToPush), AttackDone);
+
+       // targetToPush.transform.position = targetToPush.transform.position + (EndPoint * disToPush);
+    }
+
+    private void AttackDone()
+    {
+        //TMP
     }
 }

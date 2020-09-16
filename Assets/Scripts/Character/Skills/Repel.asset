@@ -21,7 +21,8 @@ MonoBehaviour:
   _requiresTarget: 0
   _numTargets: 4
   _range: 0
-  _radius: 1
+  _radius: 10
   _isFriendly: 0
   _useImmediate: 0
+  _animationID: 2
   _effects: 01000000

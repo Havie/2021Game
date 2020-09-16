@@ -22,7 +22,7 @@ public sealed class cAnimator : MonoBehaviour
     private EightDir.eDirection _direction = EightDir.eDirection.DOWN;
     private ArtSet _artset;
 
-    public enum AnimationID { IDLE, WALK, BASICATTACK };
+    public enum AnimationID { IDLE, WALK, BASICATTACK, HITREACTION };
 
     /************************************************************************************************************************/
     #region AnimancerProperties
@@ -89,7 +89,7 @@ public sealed class cAnimator : MonoBehaviour
 
     private float PlayAnim(int id)
     {
-       // Debug.Log("PLAY ID=" + id);
+       //Debug.Log("PLAY ID=" + id);
         if (_artset == null)
             return 0;
 
@@ -98,26 +98,7 @@ public sealed class cAnimator : MonoBehaviour
         lastKnown.Clip = _artset.GetAnimation(_lastId)[(int)_direction].Clip;
         _Animancer.Play(lastKnown.Clip, 0.3f).Speed = 1f;
         return lastKnown.Clip.length;
-        // Debug.Log("PlayAnim" + id);
-        /* switch (id)
-         {
-             case 0:
-                 lastKnown.Clip = _artset.GetAnimation(id)[(int)_direction].Clip;
-                 _Animancer.Play(lastKnown.Clip, 0.3f).Speed = 1f;
-                 break;
-             case 1:
-                 lastKnown.Clip = _walk[(int)_direction].Clip;
-                 _Animancer.Play(lastKnown.Clip, 0.3f).Speed = 1f;
-                 break;
-             case 2:
-                 lastKnown.Clip = _BasicAttack[(int)_direction].Clip;
-                 _Animancer.Play(lastKnown.Clip, 0.3f).Speed = 1f;
-                 // Time.timeScale = 0.5f;
-                 break;
-         }
-         _lastId = id;
-         return lastKnown.Clip.length;
-         */
+
     }
 
     /************************************************************************************************************************/

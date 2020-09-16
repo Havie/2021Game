@@ -9,6 +9,7 @@ public class Playable : MonoBehaviour
     #region Variables
     [SerializeField] SpriteRenderer _sprRend;
     [SerializeField] AttackRadius _attackRadius;
+    [SerializeField] cAnimator _animator;
 
     public bool _isActive;
     public bool _isSelected;
@@ -56,6 +57,9 @@ public class Playable : MonoBehaviour
                 Debug.LogError("Could not find AttackRadius for " + gameObject);
             }
         }
+
+        if (_animator == null)
+            _animator = this.GetComponentInChildren<cAnimator>();
     }
     #endregion
 
@@ -171,5 +175,17 @@ public class Playable : MonoBehaviour
         //Debug.Log("AP for " + this.gameObject.name + "  is:" + _AP);
     }
 
+
+    public void SetMoving()
+    {
+        if (_animator)
+            _animator.PlayAnim(cAnimator.AnimationID.WALK);
+    }
+
+    public void SetIdle()
+    {
+        if (_animator)
+            _animator.PlayAnim(cAnimator.AnimationID.IDLE);
+    }
 
 }

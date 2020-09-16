@@ -298,7 +298,7 @@ public class SelectionManager : MonoBehaviour
             CameraController.Instance.BeginFollowingCharacter(mc.transform);
             //Start the movement and pass in a callback function
             mc.DoMovement(CursorController.Instance.transform.position, MoveComplete);
-
+            _activeChar.SetMoving();
 
         }
     }
@@ -309,8 +309,9 @@ public class SelectionManager : MonoBehaviour
         {
             //Find Character at location of click:
             GameObject character = CursorController.Instance.GetCharacterAtCursor();
+            Skill basic = _activeChar.GetComponent<SkillManager>().GetBasicAttack();
             //BM handles nulls
-            bool valid = BattleManager.Instance.ManageAttack(_activeChar, character.GetComponent<Playable>());
+            bool valid = BattleManager.Instance.ManageSkill(_activeChar, character.GetComponent<Playable>(), basic);
 
             if (valid) //Prevent them from clicking anything else while executing combat
             {
@@ -367,6 +368,7 @@ public class SelectionManager : MonoBehaviour
     {
         ShowBattleMenu();
         CameraController.Instance.StopFollowingCharacter();
+        _activeChar.SetIdle();
     }
 
 

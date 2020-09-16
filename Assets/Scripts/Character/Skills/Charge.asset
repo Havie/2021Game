@@ -24,4 +24,5 @@ MonoBehaviour:
   _radius: 1
   _isFriendly: 0
   _useImmediate: 0
+  _animationID: 2
   _effects: 03000000

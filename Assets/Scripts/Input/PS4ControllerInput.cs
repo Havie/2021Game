@@ -37,7 +37,7 @@ public class PS4ControllerInput
         float x = Input.GetAxisRaw("PS4Controller_LeftJoystick_X");
         float y = Input.GetAxisRaw("PS4Controller_LeftJoystick_Y");
         _frontHolder.LeftJoystick = new Vector2(x, y);
-        Debug.Log("( " + x + ", " + y + ")");
+        //Debug.Log("( " + x + ", " + y + ")");
     }
 
     /// <summary>
