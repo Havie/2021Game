@@ -1,4 +1,6 @@
 ﻿
+//using UnityEngine;  // To print things w debug.log
+
 public class cEventSystem
 {
     #region GameEvents
@@ -43,7 +45,30 @@ public class cEventSystem
     public static event HasMenuInputDelegate OnHasMenuInput;
     public static bool IsOnHasMenuInputUsed() { return OnHasMenuInput != null; }
     public static void CallOnHasMenuInput() { OnHasMenuInput?.Invoke(); }
+    
+    // Shows the AP text
+    public delegate void ShowAPCostPrediction();
+    public static event ShowAPCostPrediction OnShowAPCostPrediction;
+    public static void CallOnShowAPCostPrediction() { OnShowAPCostPrediction?.Invoke(); }
 
+
+    // Hides the AP text
+    public delegate void HideAPCostPrediction();
+    public static event HideAPCostPrediction OnHideAPCostPrediction;
+    public static void CallOnHideAPCostPrediction() { OnHideAPCostPrediction?.Invoke(); }
+
+    //Stores last known AP cost
+    public static int _lastMovementCost;
+    //Updates the UI for AP costs
+    public delegate void MovementCostPrediction(int num);
+    public static event MovementCostPrediction OnHasMovementPrediction;
+    public static void CallOnHasMovementPrediction(int amnt)
+    {
+        _lastMovementCost = amnt;
+        OnHasMovementPrediction?.Invoke(amnt);
+    }
+
+  
     #endregion
 
 

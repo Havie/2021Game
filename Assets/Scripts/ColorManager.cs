@@ -6,14 +6,16 @@ public class ColorManager : MonoBehaviour
 {
     private static ColorManager _instance;
 
-    public Color _purple;
-    public Color _red;
-    public Color _white;
+    public Color _purpleAura;
+    public Color _redAura;
+    public Color _whiteAura;
 
     public Color _menuValid;
     public Color _menuInvalid;
     public Color _buttonHighlighed;
     public Color _buttonNormal;
+    public Color _textValid;
+    public Color _textInvalid;
 
     public static ColorManager Instance
     {

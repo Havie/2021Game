@@ -39,6 +39,8 @@ public class CreateMovementLine : MonoBehaviour
     // If the preview is on
     private bool _previewEnabled;
 
+    private bool _isAttackPrediction;
+
     // Called 0th
     private void Awake()
     {
@@ -56,20 +58,32 @@ public class CreateMovementLine : MonoBehaviour
     }
 
     // Update is called once per frame
-    private void Update()
+    private void Update() //Maybe change to late update?
     {
-        if (_previewEnabled)
-            CreatePathPreview();     
+        if (_previewEnabled && !_isAttackPrediction)
+        {
+            cEventSystem.CallOnHasMovementPrediction(CreatePathPreview());
+        }
+        else if(_previewEnabled && _isAttackPrediction)
+        {
+            CreatePathPreview();
+            cEventSystem.CallOnHasMovementPrediction(
+                SelectionManager.Instance.GetCurrentSkill().GetAPCost()
+                );
+
+        }
     }
 
     /// <summary>
     /// Enables the line preview.
     /// </summary>
     /// <param name="_charToMove_">MovementController of the character that will be moving.</param>
-    public void EnablePathPreview(MovementController _charToMove_)
+    public void EnablePathPreview(MovementController _charToMove_, bool isAttack)
     {
         _curCharaMove = _charToMove_;
         _previewEnabled = true;
+        cEventSystem.CallOnShowAPCostPrediction();
+        _isAttackPrediction = isAttack;
     }
 
     /// <summary>
@@ -80,14 +94,13 @@ public class CreateMovementLine : MonoBehaviour
         ClearDottedLines();
         _curCharaMove = null;
         _previewEnabled = false;
-        //TODO
-        //This method doesnt disable the last known path preview, only stops future previews
+        cEventSystem.CallOnHideAPCostPrediction();
     }
 
     /// <summary>
     /// Creates a new path preview.
     /// </summary>
-    private void CreatePathPreview()
+    private int CreatePathPreview()
     {
         // Clear the last lines
         ClearDottedLines();
@@ -125,6 +138,12 @@ public class CreateMovementLine : MonoBehaviour
 
             curPos = corner;
         }
+
+        //Random calculation of movement costs 
+        int dotCount = 0;
+        foreach (DottedLine d in _dotLines)
+            dotCount += d.GetNumDots();
+        return (dotCount / 3 ) +1;
     }
 
     /// <summary>

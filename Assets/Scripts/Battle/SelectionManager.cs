@@ -68,6 +68,14 @@ public class SelectionManager : MonoBehaviour
             {
                 ShowBattleMenu();
             }
+            if (_selectionState == eSelectionState.ATTACK)
+            {
+                ShowBattleMenu();
+            }
+            if (_selectionState == eSelectionState.SKILL)
+            {
+                ShowBattleMenu();
+            }
         }
     }
 
@@ -124,6 +132,9 @@ public class SelectionManager : MonoBehaviour
                 break;
         }
     }
+    public Skill GetCurrentSkill() => _SkillToUse;
+
+    public Playable GetActiveCharacter() => _activeChar;
     /// <summary>
     /// Changes the SelectionManagers knowledge on who's turn it is, then shows its battlemenu
     /// </summary>
@@ -195,7 +206,7 @@ public class SelectionManager : MonoBehaviour
         {
             _selectionState = eSelectionState.MOVE;
             UIBattleMenuController.Instance.ShowMenu(false, _activeChar.transform.position);
-            CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>());
+            CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>(), false);
             // CameraController.Instance.SetFollowTarget(cond, _activeChar.transform);
             CameraController.Instance.BeginFollowingCharacter(_activeChar.transform);
             CursorController.Instance.ToggleCursor(true);
@@ -214,7 +225,7 @@ public class SelectionManager : MonoBehaviour
         if (_activeChar)
         {
             UIBattleMenuController.Instance.ShowMenu(false, _activeChar.transform.position);
-            CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>());
+            CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>(), true);
             CameraController.Instance.BeginFollowingCharacter(_activeChar.transform);
 
         }
@@ -240,7 +251,7 @@ public class SelectionManager : MonoBehaviour
             if (_activeChar)
             {
                 UIBattleMenuController.Instance.ShowMenu(false, _activeChar.transform.position);
-                CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>());
+                CreateMovementLine.Instance.EnablePathPreview(_activeChar.GetComponent<MovementController>(), true);
                 CameraController.Instance.BeginFollowingCharacter(_activeChar.transform);
 
             }
@@ -285,20 +296,35 @@ public class SelectionManager : MonoBehaviour
         if (_activeChar)
         {
 
-            //Won't be null because its required
-            MovementController mc = _activeChar.GetComponent<MovementController>();
+            //Get the last known AP costs and subtract from playable 
+            int cost = cEventSystem._lastMovementCost;
 
-            //TODO make sure no obstacles are there 
+            if (_activeChar.GetCurrentAP() >= cost)
+            {
+                _activeChar.SubtractAP(cost);
+                //Won't be null because its required
+                MovementController mc = _activeChar.GetComponent<MovementController>();
 
-            // Hide the cursor and stop drawing a path
-            CreateMovementLine.Instance.DisablePathPreview();
-            CursorController.Instance.ToggleCursor(false);
+                //TODO make sure no obstacles are there 
 
-            // Follow the character who will move
-            CameraController.Instance.BeginFollowingCharacter(mc.transform);
-            //Start the movement and pass in a callback function
-            mc.DoMovement(CursorController.Instance.transform.position, MoveComplete);
-            _activeChar.SetMoving();
+                // Hide the cursor and stop drawing a path
+                CreateMovementLine.Instance.DisablePathPreview();
+                CursorController.Instance.ToggleCursor(false);
+
+                // Follow the character who will move
+                CameraController.Instance.BeginFollowingCharacter(mc.transform);
+                //Start the movement and pass in a callback function
+                mc.DoMovement(CursorController.Instance.transform.position, MoveComplete);
+                _activeChar.SetMoving();
+            }
+            else
+            {
+                //ToDo change some type of color cost here? 
+                //Would be better to do this sooner while predicting the costs
+                //probably run it thru the event system
+                //And just play a noise here (err errr)
+            }
+
 
         }
     }
@@ -317,6 +343,10 @@ public class SelectionManager : MonoBehaviour
             {
                 _selectionState = eSelectionState.WAITING;
                 cEventSystem.OnAttackFinished += ResetFromAttack;
+
+                // Hide the cursor and stop drawing a path
+                CreateMovementLine.Instance.DisablePathPreview();
+                CursorController.Instance.ToggleCursor(false);
             }
 
 
@@ -358,6 +388,10 @@ public class SelectionManager : MonoBehaviour
         {
             _selectionState = eSelectionState.WAITING;
             cEventSystem.OnAttackFinished += ResetFromAttack;
+
+            // Hide the cursor and stop drawing a path
+            CreateMovementLine.Instance.DisablePathPreview();
+            CursorController.Instance.ToggleCursor(false);
         }
         //else
             //Display some kind of response to player
