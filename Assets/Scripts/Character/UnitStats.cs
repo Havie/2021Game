@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-//Used by Generals and Troops
+//99% Sure this script is obsolete 
 public class UnitStats : MonoBehaviour
 {
 

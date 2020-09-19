@@ -6,6 +6,7 @@ using UnityEngine;
 public class Officer : MonoBehaviour
 {
     private Faction _faction;
+    private TroopContainer _troopContainer;
     private Army _army; //Can be null
                         //  private Skill[] _skills;
     public string _name;
@@ -73,18 +74,21 @@ public class Officer : MonoBehaviour
             _name = gameObject.name;
         if (_faction == null)
             _faction = this.GetComponent<Faction>();
+        if (_troopContainer == null)
+            _troopContainer = this.GetComponent<TroopContainer>();
 
     }
 
+    //Should be unused now 
     internal int GetMorale()
     {
-        Debug.LogWarning("Need to base this off of skills -- Used by TurnManager");
-        return UnityEngine.Random.Range(9, 19);
+       return  _troopContainer.GetMorale();
     }
 
     internal Sprite GetPortrait()
     {
-        Debug.LogWarning("Need to clean this up from calling ref");
+        Debug.LogWarning("Need to clean this up from calling ref, get some other way");
+        //Might wana try to rework arset to be a scriptablebject 
        return  GetArtSet()._portrait;
     }
 }

@@ -17,10 +17,10 @@ public class PortraitHolder : MonoBehaviour
 
     private void Awake()
     {
-        _alliedFrame = Resources.Load<Sprite>("UI/Battle/Frame_ally");
-        _enemyFrame = Resources.Load<Sprite>("UI/Battle/Frame_enemy");
-        _alliedCFrame = Resources.Load<Sprite>("UI/Battle/FrameCurrentTurn_Allied");
-        _enemyCFrame = Resources.Load<Sprite>("UI/Battle/FrameCurrentTurn_Enemy");
+        _alliedFrame = Resources.Load<Sprite>("UI/Battle/CharacterPortraits/Frame_ally");
+        _enemyFrame = Resources.Load<Sprite>("UI/Battle/CharacterPortraits/Frame_enemy");
+        _alliedCFrame = Resources.Load<Sprite>("UI/Battle/CharacterPortraits/FrameCurrentTurn_Allied");
+        _enemyCFrame = Resources.Load<Sprite>("UI/Battle/CharacterPortraits/FrameCurrentTurn_Enemy");
 
         if (!_alliedFrame || !_alliedCFrame || !_enemyFrame || !_enemyCFrame)
             Debug.LogError("(PortraitHolder) Can't locate a Frame");

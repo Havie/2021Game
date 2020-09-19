@@ -25,7 +25,7 @@ public class TurnManager
         if (cond)
             cEventSystem.OnCharacterTurnEnd += Next;
        else //Is this Legal? lol seems to work 
-            cEventSystem.OnBattleRoundEnd -= Next;
+            cEventSystem.OnCharacterTurnEnd -= Next;
     }
     //Constructor
     public TurnManager(bool isBattle)
@@ -40,6 +40,14 @@ public class TurnManager
         // TODO Based on battlemode should verify they are char vs faction 
         if (!_allPossible.Contains(go))
             _allPossible.Add(go);
+    }
+    public void RemoveFromList(GameObject go)
+    {
+        if (_allPossible.Contains(go))
+        {
+            _allPossible.Remove(go);
+            _inOrder.Remove(go);
+        }
     }
     /**
      * Called from Next() which is subscribed to the event system 
@@ -77,13 +85,13 @@ public class TurnManager
             {
                 if (!newOrder.Contains(go))
                 {
-                    Officer general = go.GetComponent<Officer>();
-                    if (general)
+                    TroopContainer unit = go.GetComponent<TroopContainer>();
+                    if (unit)
                     {
-                        if (general.GetMorale() > highestMorale)
+                        if (unit.GetMorale() > highestMorale)
                         {
                             lastGo = go;
-                            highestMorale = general.GetMorale();
+                            highestMorale = unit.GetMorale();
                         }
                     }
                     else
@@ -107,7 +115,7 @@ public class TurnManager
      */
     public void Next()
     {
-        if (_index == _inOrder.Count) // -1 ?
+        if (_index >= _inOrder.Count) // -1 ?
             BeginNewTurn();
         else
         {

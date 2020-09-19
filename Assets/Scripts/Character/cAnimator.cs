@@ -22,7 +22,7 @@ public sealed class cAnimator : MonoBehaviour
     private EightDir.eDirection _direction = EightDir.eDirection.DOWN;
     private ArtSet _artset;
 
-    public enum AnimationID { IDLE, WALK, BASICATTACK, HITREACTION };
+    public enum AnimationID { IDLE, WALK, BASICATTACK, HITREACTION , DEATH};
 
     /************************************************************************************************************************/
     #region AnimancerProperties
@@ -84,7 +84,13 @@ public sealed class cAnimator : MonoBehaviour
     }
     public float PlayAnim(AnimationID anim)
     {
-        return  PlayAnim((int)anim);
+        float duration=  PlayAnim((int)anim);
+        if(anim== AnimationID.DEATH)
+        {
+            StartCoroutine(DeathDelay(duration));
+        }
+
+        return duration;
     }
 
     private float PlayAnim(int id)
@@ -113,6 +119,15 @@ public sealed class cAnimator : MonoBehaviour
         _Animancer.Play(_artset.GetAnimation(0)[(int)_direction], 0.25f).Speed = 0.15f;
     }
 
+    //Turn Let the game know were dead after our animation
+    private System.Collections.IEnumerator DeathDelay(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        // this.enabled = false;
+        cEventSystem.CallOnCharacterDeath(this.transform.parent.gameObject);
+    }
+
     /************************************************************************************************************************/
 }
+
 

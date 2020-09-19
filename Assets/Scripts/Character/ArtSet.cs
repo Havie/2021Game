@@ -19,7 +19,6 @@ public class ArtSet : MonoBehaviour
 
     #endregion
 
-    public enum eAnimType { IDLE, WALK, ATTACK, DEATH, BURST }
 
     [SerializeField] private ClipState.Transition[][] _animations;
 

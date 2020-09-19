@@ -21,6 +21,8 @@ public class SelectionManager : MonoBehaviour
     //Skill to use assigned by UIBattleMenu
     private Skill _SkillToUse;
 
+    private bool _battlesOver;
+
 
     // Called when the component is enabled.
     // Subscribe to events.
@@ -28,21 +30,19 @@ public class SelectionManager : MonoBehaviour
     {
         cEventSystem.OnHasMenuInput += HandleInput;
         cEventSystem.OnSelectPressDown += HandleInput;
+        cEventSystem.OnBattleEnd += BattleWon;
     }
     // Called when the component is disabled.
     // Unsubscribe from events.
+    //Pretty sure OnDestroy Calls this 
     private void OnDisable()
     {
         cEventSystem.OnHasMenuInput -= HandleInput;
         cEventSystem.OnSelectPressDown -= HandleInput;
+        cEventSystem.OnBattleEnd -= BattleWon;
     }
-    // Called when the gameobject is destroyed.
-    // Unsubscribe from ALL events.
-    private void OnDestroy()
-    {
-        cEventSystem.OnHasMenuInput -= HandleInput;
-        cEventSystem.OnSelectPressDown -= HandleInput;
-    }
+
+  
 
     // Called 0th
     private void Awake()
@@ -101,7 +101,7 @@ public class SelectionManager : MonoBehaviour
                 }
             case eSelectionState.ATTACK:
                 {
-                    ClickToAttack();
+                    ClickToUseSkill();
                     break;
                 }
             case eSelectionState.SKILL:
@@ -158,7 +158,6 @@ public class SelectionManager : MonoBehaviour
     /// </summary>
     public void ShowBattleMenu()
     {
-
         if (_activeChar)
         {
             //Turn off Cursor/path
@@ -221,6 +220,7 @@ public class SelectionManager : MonoBehaviour
     {
         _selectionState = eSelectionState.ATTACK;
         CursorController.Instance.ToggleCursor(cond);
+        _SkillToUse = _activeChar.GetComponent<SkillManager>().GetBasicAttack();
         //Turn on/off the Menu
         if (_activeChar)
         {
@@ -264,9 +264,13 @@ public class SelectionManager : MonoBehaviour
     private void ResetFromAttack()
     {
         cEventSystem.OnAttackFinished -= ResetFromAttack;
-        UIBattleMenuController.Instance.ResetToDefault();
-        //Tmp? Don't like this solution the method name is awkward
-        EnableMove(false);
+
+        //IF battle isn't over 
+        if (!_battlesOver) //Turns menu back on 
+        {
+            UIBattleMenuController.Instance.ResetToDefault();
+            EnableMove(false);//Tmp? Don't like this solution the method name is awkward
+        }
     }
     /**
      * Not sure what this method will do
@@ -328,30 +332,7 @@ public class SelectionManager : MonoBehaviour
 
         }
     }
-    private void ClickToAttack()
-    {
-        // Debug.Log("MoveClick");
-        if (_activeChar)
-        {
-            //Find Character at location of click:
-            GameObject character = CursorController.Instance.GetCharacterAtCursor();
-            Skill basic = _activeChar.GetComponent<SkillManager>().GetBasicAttack();
-            //BM handles nulls
-            bool valid = BattleManager.Instance.ManageSkill(_activeChar, character.GetComponent<Playable>(), basic);
 
-            if (valid) //Prevent them from clicking anything else while executing combat
-            {
-                _selectionState = eSelectionState.WAITING;
-                cEventSystem.OnAttackFinished += ResetFromAttack;
-
-                // Hide the cursor and stop drawing a path
-                CreateMovementLine.Instance.DisablePathPreview();
-                CursorController.Instance.ToggleCursor(false);
-            }
-
-
-            }
-    }
     private void ClickToUseSkill()
     {
         if (!_SkillToUse || !_activeChar)
@@ -418,7 +399,12 @@ public class SelectionManager : MonoBehaviour
             _selectionState = eSelectionState.FREE; // might need diff logic
     }
 
-
+    /** Lets us know to stop Displaying the menu */
+    private void BattleWon(bool ignore)
+    {
+        _battlesOver = true;
+        this.enabled = false;
+    }
 
 
     ///---------------------------------------------------------------------///

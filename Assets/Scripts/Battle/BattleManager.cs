@@ -17,7 +17,7 @@ public class BattleManager : MonoBehaviour
     #endregion
 
     #region ArtificalTestVars
-    public GameObject[] _chars;
+    public GameObject[] _chars; //Somehow will have to pass these in or build from binary data
     #endregion
 
     // Called 0th
@@ -72,6 +72,7 @@ public class BattleManager : MonoBehaviour
         }
 
         _turnManager = new TurnManager(true);
+        cEventSystem.OnCharacterDeath += CharacterDied;
 
         //TMP will have async load start the battle or something in UI 
         StartBattle();
@@ -118,6 +119,33 @@ public class BattleManager : MonoBehaviour
             return _darkelves;
         else
             return _orcs;
+    }
+    /// <summary>
+    /// Removes the GO from our cached factions list so they will not take another turn
+    /// Turns off the GO so no more calculation are ran on it 
+    /// </summary>
+    /// <param name="go"></param>
+    public void CharacterDied(GameObject go)
+    {
+        Faction f = go.GetComponent<Faction>();
+        if (f)
+        {
+            if (f.IsHuman() && _darkelves.Contains(go))
+                _darkelves.Remove(go);
+            else if (_orcs.Contains(go))
+                _orcs.Remove(go);
+        }
+        _turnManager.RemoveFromList(go);
+        go.SetActive(false);
+
+        if (_darkelves.Count == 0)
+            cEventSystem.CallOnBattleEnd(false);
+        else if (_orcs.Count == 0)
+            cEventSystem.CallOnBattleEnd(true);
+
+        //SHUT DOWN The turn Manager - how ??
+        _turnManager.Subscribe(false);
+        _turnManager = null; 
     }
 
     //Underdevelopment subject to change
@@ -231,7 +259,7 @@ public class BattleManager : MonoBehaviour
         foreach (var hitCollider in hitColliders)
         {
             //Somehow it isnt being added sometimes and giving an odd error ToDo
-            Debug.Log("Collider found  " + ++i + "  "+ hitCollider.transform.gameObject);
+           // Debug.Log("Collider found  " + ++i + "  "+ hitCollider.transform.gameObject);
             Playable p = hitCollider.transform.GetComponent<Playable>();
             if ( p && !targets.Contains(hitCollider.transform.gameObject))
             {
@@ -243,7 +271,7 @@ public class BattleManager : MonoBehaviour
                 //Validate if skill effects enemies or allies 
                 if (skill.GetIsFriendly() == sameFaction)
                 {
-                    Debug.Log("Found and added: " + hitCollider.transform.gameObject);
+                   // Debug.Log("Found and added: " + hitCollider.transform.gameObject);
                     targets.Add(hitCollider.transform.gameObject);
 
                 }
