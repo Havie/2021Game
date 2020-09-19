@@ -9,12 +9,13 @@ public class TroopContainer : MonoBehaviour
     private eTroopType _etype;
     [SerializeField] private TroopType _type;
 
-    //private Skill[] _skills;
+
     [SerializeField] private int _hpMAX=10000;
     [SerializeField] private int _hpSword;
     [SerializeField] private int _hpBow;
     [SerializeField] private int _hpPoleaxe;
 
+    public List<Modifier> _modifiers = new List<Modifier>();
     public bool test;
 
     internal void Init()
@@ -41,6 +42,7 @@ public class TroopContainer : MonoBehaviour
     #region SimpleGetters
     public Army GetArmy() => this.GetComponent<Army>(); // shouldn't be used often
 
+    //These will have to be expanded to handle modifiers (TallyModifier) See UnitStats and General boosts
     public int GetMorale() { return _type != null ? (_type.GetMorale()) : 0; }
     public int GetAttack() { return _type != null ? (_type.GetAttack()) : 0; }
     public int GetDefense() { return _type != null ? (_type.GetDefense()) : 0; }
@@ -116,8 +118,11 @@ public class TroopContainer : MonoBehaviour
             case eTroopType.SWORD:
                 {
                     _hpSword += amnt;
-                    if (_hpSword < 0)
+                    if (_hpSword <= 0)
+                    {
                         _hpSword = 0;
+                        Die();
+                    }
                     else if (_hpSword > _hpMAX)
                         _hpSword = _hpMAX;
                     break;
@@ -141,6 +146,55 @@ public class TroopContainer : MonoBehaviour
                     break;
                 }
         }
+    }
+
+    private void Die()
+    {
+        //TODO : IF in Battle Cond
+
+        //Play Anim (will remove from BM list thru event system)
+        cAnimator animator = this.GetComponentInChildren<cAnimator>();
+        animator.PlayAnim(cAnimator.AnimationID.DEATH);
+    }
+
+
+    public void SetModifier(Modifier mod)
+    {
+        //Might have to pass in values to instantiate new, OR a prefab modifier?
+
+        //set a child of this object and add to list 
+    }
+    public void RemoveModifier(Modifier mod)
+    {
+        if (_modifiers.Contains(mod))
+
+        {
+            //Not sure if you can pass in the exact modifier
+            // or if you remove a modifier of a certain type
+
+            //More than likely the modifier itself has an update loop (or subbed to event sys) and when it expires
+            // it calls this method to be removed from the list 
+        }
+    }
+    /**
+    * Helper function to calculate the modifiers on top of initial stats
+    */
+    private int TallyModifier(int flat, float bonus, Modifier.eStat stat)
+    {
+        //shouldn't be a problem if empty yea?
+        foreach (Modifier m in _modifiers)
+
+        {
+            if (m._stat == stat)
+            {
+                if (m._type == Modifier.eType.FLAT)
+                    flat += m._amnt;
+                else if (m._type == Modifier.eType.PERCENT)
+                    bonus += m._amnt;
+            }
+        }
+
+        return (int)bonus * flat;
     }
 
     private int RNG() => UnityEngine.Random.Range(1, 90);

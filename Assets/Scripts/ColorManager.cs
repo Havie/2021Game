@@ -17,6 +17,9 @@ public class ColorManager : MonoBehaviour
     public Color _textValid;
     public Color _textInvalid;
 
+    public Color _textWin;
+    public Color _textLose;
+
     public static ColorManager Instance
     {
         get

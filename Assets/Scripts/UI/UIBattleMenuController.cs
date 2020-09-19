@@ -49,7 +49,7 @@ public class UIBattleMenuController : MonoBehaviour
     private void OnEnable()
     {
         cEventSystem.OnCameraMove += ResetMenu;
-
+        Debug.Log("2");
         ShowMenu(true, Vector3.zero);
     }
     // Called when the component is disabled
@@ -105,11 +105,7 @@ public class UIBattleMenuController : MonoBehaviour
 
     void Update()
     {
-        //TMP
-        if (Input.GetKeyDown(KeyCode.O))
-            ShowMenu(true, Vector3.zero);
-        if (Input.GetKeyDown(KeyCode.C))
-            ShowMenu(false, Vector3.zero);
+
 
         //ToDo Get this from InputController
         if (Input.GetKeyDown(KeyCode.Backspace) && _isOn)
@@ -342,6 +338,7 @@ public class UIBattleMenuController : MonoBehaviour
     }
     public void ResetToDefault()
     {
+        Debug.Log("re");
         SwitchState(eMenuState.DEFAULT);
     }
 

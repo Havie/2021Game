@@ -14,10 +14,15 @@ public class cEventSystem
     public static event CharacterTurnEnd OnCharacterTurnEnd;
     public static void CallOnCharacterTurnEnd() { OnCharacterTurnEnd?.Invoke(); }
 
+    //When battles over
+    public delegate void BattleEnd(bool playerWon);
+    public static event BattleEnd OnBattleEnd;
+    public static void CallOnBattleEnd(bool playerWon) { OnBattleEnd?.Invoke(playerWon); }
+
     // When a character dies. Takes in the character that died as a parameter.
-    public delegate void CharacterDeath(Officer officer);
+    public delegate void CharacterDeath(UnityEngine.GameObject officer);
     public static event CharacterDeath OnCharacterDeath;
-    public static void CallOnCharacterDeath(Officer _corpse_) { OnCharacterDeath?.Invoke(_corpse_); }
+    public static void CallOnCharacterDeath(UnityEngine.GameObject corpse) { OnCharacterDeath?.Invoke(corpse); }
 
     //When a character finishes attacking
     public delegate void AttackFinished();

@@ -102,16 +102,16 @@ public class Skill : ScriptableObject
             yield return new WaitForSeconds
                 (sAnimator.PlayAnim(_animationID) * 0.75f);
             //Apply Damage and any effects
-            UnitStats attacker = self.GetComponent<UnitStats>();
+            TroopContainer attacker = self.GetComponent<TroopContainer>();
             foreach (GameObject g in targets)
             {
-                UnitStats defender = g.GetComponent<UnitStats>();
+                TroopContainer defender = g.GetComponent<TroopContainer>();
 
                 if (defender && attacker)
-                    defender.IncrementTroops(CalculateDamage(attacker, defender));
+                    defender.IncrementTroops(0-CalculateDamage(attacker, defender));
                 else
-                    Debug.Log("Missing");
-                Debug.Log("Defender=" + g);
+                    Debug.Log("Missing defender" + g.name  + " , a:" + self.name);
+
                 cAnimator dAnimator = g.GetComponentInChildren<cAnimator>();
                 returnToIdles.Add(dAnimator);
                 float time= dAnimator.PlayAnim(cAnimator.AnimationID.HITREACTION);
@@ -141,17 +141,17 @@ public class Skill : ScriptableObject
         //Let someone know we're done 
         cEventSystem.CallOnAttackFinished();
     }
-    protected int CalculateDamage(UnitStats attacker, UnitStats defender)
+    protected int CalculateDamage(TroopContainer attacker, TroopContainer defender)
     {
         float dmg = attacker.GetAttack();
         float def = defender.GetDefense();
 
 
-        int atkWeight = attacker.GetTroopStrength();
-        int defWeight = defender.GetTroopStrength();
+        int atkWeight = attacker.GetHP();
+        int defWeight = defender.GetHP();
 
         //TMP idk 
-        float result = Mathf.Max(((_power * dmg) + atkWeight) - (def + defWeight), 0);
+        float result = Mathf.Max(((_power * dmg) + atkWeight) - (def + defWeight/2), 0);
 
         Debug.Log("DAMGE= " + result);
         return (int)result;

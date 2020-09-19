@@ -110,7 +110,10 @@ public class Playable : MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// Called when starting a new turn 
+    /// </summary>
+    /// <param name="t"></param>
     public void YourTurn(TurnManager t)
     {
         //When you start your turn, refresh your AP:
@@ -127,7 +130,8 @@ public class Playable : MonoBehaviour
         //-- could base WHICH event u sub to based on faction vs char
         cEventSystem.OnCharacterTurnEnd += EndTurn;
     }
-    public void EndTurn()
+    //Lets us know when our turn ends 
+    private void EndTurn()
     {
         _isActive = false;
         //unsubscribe from event system 
